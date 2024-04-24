@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- Gạch chân với chiều cao là 2dp -->
+    <stroke
+        android:width="2dp"
+        android:color="@color/colorPrimary" />
+    <!-- Màu nền trong suốt để không che khuất chữ -->
+    <solid android:color="@android:color/transparent" />
+</shape>

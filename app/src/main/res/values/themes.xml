@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Datn" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item> <!-- Sử dụng màu colorPrimary từ colors.xml -->
+        <item name="colorPrimaryDark">@color/colorPrimary</item> <!-- Sử dụng màu colorPrimaryDark từ colors.xml -->
+        <item name="colorAccent">@color/colorAccent</item> <!-- Sử dụng màu colorAccent từ colors.xml -->
+
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Datn" parent="Base.Theme.Datn" />
+</resources>
