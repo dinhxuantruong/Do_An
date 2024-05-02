@@ -2,7 +2,6 @@ package com.example.datn.utils.network
 
 
 import com.example.datn.service.myApi
-import com.example.datn.utils.Token.ACCESS_TOKEN
 import com.example.datn.utils.network.Constance.Companion.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
 
-    var Token = ACCESS_TOKEN
+    var Token = ""
 
     private val interceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -25,7 +24,7 @@ object RetrofitInstance {
         .callTimeout(30, TimeUnit.SECONDS) // Thời gian tối đa để hoàn thành cuộc gọi
         .connectTimeout(5, TimeUnit.SECONDS) // Thời gian tối đa để kết nối với máy chủ
         .readTimeout(30, TimeUnit.SECONDS) // Thời gian tối đa để đọc dữ liệu từ máy chủ
-        .addInterceptor{chain ->
+        .addInterceptor { chain ->
             val request = chain.request().newBuilder().addHeader("Authorization", Token).build()
             chain.proceed(request)
         }

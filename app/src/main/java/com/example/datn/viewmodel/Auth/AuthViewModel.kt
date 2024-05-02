@@ -1,5 +1,6 @@
-package com.example.datn.viewmodel
+package com.example.datn.viewmodel.Auth
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,7 @@ import com.example.datn.data.model.sendOTP
 import com.example.datn.repository.repositoryAuth
 import com.example.datn.utils.DataResult
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -48,6 +50,30 @@ class AuthViewModel(private val repositoryAuth: repositoryAuth) : ViewModel() {
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _resultLogout : MutableLiveData<DataResult<ResultMessage>> = MutableLiveData()
+    val resultLogout : LiveData<DataResult<ResultMessage>> get() = _resultLogout
+
+    fun authLogout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repositoryAuth.authLogout()
+                if (response.isSuccessful) {
+                    val logout = response.body()!!
+                    _resultLogout.postValue(DataResult.Success(logout))
+                } else {
+                    val errorMessage = "Logout unsuccessful: ${response.message()}"
+                    _resultLogout.postValue(DataResult.Error(errorMessage))
+                }
+            } catch (e: IOException) {
+                _resultLogout.postValue(DataResult.Error("Network connection error2!"))
+            } catch (e: HttpException) {
+                _resultLogout.postValue(DataResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultLogout.postValue(DataResult.Error("An unknown error has occurred!"))
+            }
+        }
+    }
 
     fun authCheckAccount(sendOTP: sendOTP) {
         _resultCheckAccount.value = null
@@ -236,6 +262,10 @@ class AuthViewModel(private val repositoryAuth: repositoryAuth) : ViewModel() {
                     _loginResult.postValue(DataResult.Success(user))
                 } else {
                     val errorMessage = "Login unsuccessful: ${response.message()}"
+//                    val errorBody = response.errorBody()?.string()
+//                    val gson = Gson()
+//                    val errorJson: JsonObject? = gson.fromJson(errorBody, JsonObject::class.java)
+//                    val errorMessage = errorJson?.get("message")?.asString ?: "Unknown error"
                     _loginResult.postValue(DataResult.Error(errorMessage))
                 }
             } catch (e: IOException) {

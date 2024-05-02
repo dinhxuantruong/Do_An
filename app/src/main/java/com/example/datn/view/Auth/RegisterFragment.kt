@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -21,7 +20,7 @@ import com.example.datn.data.model.Register
 import com.example.datn.databinding.FragmentRegisterBinding
 import com.example.datn.utils.DataResult
 import com.example.datn.utils.EmailType
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
 class RegisterFragment : Fragment(), View.OnClickListener, View.OnKeyListener,

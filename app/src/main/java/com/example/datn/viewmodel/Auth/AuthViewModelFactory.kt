@@ -1,4 +1,4 @@
-package com.example.datn.viewmodel
+package com.example.datn.viewmodel.Auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

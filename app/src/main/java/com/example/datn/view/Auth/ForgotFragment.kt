@@ -1,6 +1,5 @@
 package com.example.datn.view.Auth
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -21,7 +20,7 @@ import com.example.datn.data.model.sendOTP
 import com.example.datn.databinding.FragmentForgotBinding
 import com.example.datn.utils.DataResult
 import com.example.datn.utils.EmailType
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
 class ForgotFragment : Fragment(), View.OnClickListener, View.OnKeyListener,

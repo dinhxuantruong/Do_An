@@ -4,26 +4,28 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.datn.R
 import com.example.datn.databinding.ActivityMainViewBinding
 import com.example.datn.repository.repositoryAuth
 import com.example.datn.utils.DataResult
 import com.example.datn.utils.SharePreference.PrefManager
-import com.example.datn.utils.SharePreference.UserPreferences
-import com.example.datn.utils.Token.ACCESS_TOKEN
-import com.example.datn.utils.network.RetrofitInstance
 import com.example.datn.view.Auth.AuthActivity
-import com.example.datn.viewmodel.MainViewModel
-import com.example.datn.viewmodel.MainViewModelFactory
+import com.example.datn.view.Detail.ProductActivity
+import com.example.datn.viewmodel.Auth.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainViewActivity : AppCompatActivity() {
-    private var _binding : ActivityMainViewBinding? = null
+    private var _binding: ActivityMainViewBinding? = null
     private val binding get() = _binding!!
-    private lateinit var  viewModel : MainViewModel
     private var _prefManager: PrefManager? = null
     private val prefManager get() = _prefManager!!
+    private lateinit var viewModel: AuthViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainViewBinding.inflate(layoutInflater)
@@ -31,8 +33,9 @@ class MainViewActivity : AppCompatActivity() {
 
         init()
 
-        binding.button.setOnClickListener {
-            viewModel.authLogout()
+        binding.fab.setOnClickListener {
+            startActivity(Intent(this,ProductActivity::class.java))
+//            finish()
         }
 
         viewModel.resultLogout.observe(this){
@@ -46,20 +49,28 @@ class MainViewActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-    private fun init() {
-        _prefManager = PrefManager(this)
-        val userPreferences = UserPreferences(this)
-        userPreferences.authToken.asLiveData().observe(this){
-            RetrofitInstance.Token = it.toString()
-        }
-        val repositoryAuth = repositoryAuth(this)
-        val vmFactory = MainViewModelFactory(repositoryAuth)
-        viewModel = ViewModelProvider(this,vmFactory)[MainViewModel::class.java]
+
+
+
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
+
+
+private fun init() {
+    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+    val navController = findNavController(R.id.fragment)
+    bottomNavigationView.setupWithNavController(navController)
+    binding.bottomNavigationView.background = null
+    binding.bottomNavigationView.menu[2].isEnabled = false
+    _prefManager = PrefManager(this)
+    val repositoryAuth = repositoryAuth(this)
+    val vmFactory = AuthViewModelFactory(repositoryAuth)
+    viewModel = ViewModelProvider(this,vmFactory)[AuthViewModel::class.java]
+}
+
+override fun onDestroy() {
+    super.onDestroy()
+    _binding = null
+}
 }

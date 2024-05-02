@@ -1,19 +1,25 @@
 package com.example.datn.service
 
+import com.example.datn.data.ProductType
 import com.example.datn.data.ResultMessage
+import com.example.datn.data.ResultProductDetail
 import com.example.datn.data.Resutl_RefreshToken
 import com.example.datn.data.User
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass
+import com.example.datn.data.Result_slideimages
 import com.example.datn.data.model.Register
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.data.model.sendOTP
+import com.velmurugan.paging3android.ProductResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Header
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface myApi {
 
@@ -23,15 +29,16 @@ interface myApi {
 
     //Get refresh token
     @POST("token")
-    suspend fun getRefreshToken(@Body google : google_input) : Response<Resutl_RefreshToken>
+    suspend fun getRefreshToken(@Body google: google_input): Response<Resutl_RefreshToken>
 
     //Login with google
     @POST("auth/google")
-    suspend fun loginWithGoogle(@Body lg : loginWithGoogle) : Response<User>
+    suspend fun loginWithGoogle(@Body lg: loginWithGoogle): Response<User>
 
     //Register
     @POST("auth/register")
     suspend fun authRegister1(@Body register: Register): Response<ResultMessage>
+
     @POST("auth/register2")
     suspend fun authAcceptRegister(@Body acceptOTP: AcceptOTP): Response<ResultMessage>
 
@@ -51,4 +58,49 @@ interface myApi {
     @POST("auth/logout")
     suspend fun authLogout(): Response<ResultMessage>
 
+
+    //Slide images
+    @GET("get/slide/images")
+    suspend fun getImageSlide(): Response<Result_slideimages>
+
+    //all product max
+    @GET("product/all/product/type/max")
+    suspend fun allProductsTypeMax(): Response<ProductType>
+
+    //all productype
+    @GET("product/all/product/type")
+    suspend fun allProductsType(): Response<ProductType>
+
+
+    //Sản phẩm mới
+    @GET("product/all/product/type/time")
+    suspend fun allProductsTypeTime(): Response<ProductType>
+
+    //get all image out
+    @GET("get/slide/images/out")
+    suspend fun getImageSlideOut(): Response<Result_slideimages>
+
+    //get product details
+    @GET("product/get/detail/{id}")
+    suspend fun getDetailProduct(@Path("id") id: Int): Response<ResultProductDetail>
+
+    //add favorite
+    @POST("product/like/{id}")
+    suspend fun addFavorite(@Path("id") id: Int): Response<ResultMessage>
+
+    //get product_type same
+    @GET("product/search/category")
+    suspend fun searchByCategory(@Query("category_id") categoryId: Int): Response<ProductType>
+
+    //get paging product
+    @GET("product/page")
+    suspend fun getProductsPage(
+        @Query("page") page: Int,
+    ): Response<ProductResponse>
+
+    //get all product favorite
+    @GET("product/details/favorite/like")
+    suspend fun getProductsFavorite(
+        @Query("page") page: Int,
+    ): Response<ProductResponse>
 }

@@ -44,7 +44,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -54,9 +53,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0-alpha01")
 
@@ -95,5 +93,17 @@ dependencies {
     implementation ("io.github.yahiaangelo.markdownedittext:markdownedittext:1.1.3")
 
     implementation ("com.google.android.gms:play-services-auth:21.1.0")
+
+    implementation("androidx.palette:palette-ktx:1.0.0")
+
+    implementation ("com.google.android.material:material:1.13.0-alpha01")
+
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("at.blogc:expandabletextview:1.0.5")
+
+    implementation ("androidx.paging:paging-runtime-ktx:3.2.1")
+
+    implementation ("com.squareup.retrofit2:converter-scalars:2.6.4")
+
 
 }

@@ -1,7 +1,6 @@
 package com.example.datn.view.Auth
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,15 +15,13 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.datn.R
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.sendOTP
 import com.example.datn.databinding.FragmentOtpBinding
 import com.example.datn.utils.DataResult
 import com.example.datn.utils.EmailType
-import com.example.datn.view.MainView.MainViewActivity
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
 class OtpFragment : Fragment() {

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
-
-
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,7 +16,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Datn"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".view.Detail.ListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.MainActivity4"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.ListProductTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.ListProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.ProductActivity"
+            android:exported="false"
+            android:label="@string/title_activity_details_product"
+            android:theme="@style/Theme.Datn" />
         <activity
             android:name=".view.MainView.MainViewActivity"
             android:exported="false" />

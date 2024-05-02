@@ -15,20 +15,27 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
+import com.example.datn.data.User
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.utils.DataResult
+import com.example.datn.utils.LiveDataExtensions.observeOnce
+import com.example.datn.utils.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.SharePreference.PrefManager
+import com.example.datn.utils.SharePreference.UserPreferences
 import com.example.datn.utils.network.Constance.Companion.CLIENT_ID
 import com.example.datn.utils.network.Constance.Companion.CLIENT_SECRET
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE_GOOGLE
+import com.example.datn.utils.network.RetrofitInstance
 import com.example.datn.view.MainView.MainViewActivity
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -37,8 +44,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
 @Suppress("DEPRECATION")
-class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
-    View.OnFocusChangeListener {
+class LoginFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -46,11 +52,13 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     private val prefManager get() = _prefManager!!
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private val RC_SIGN_IN = 9001 //
+    private var isLoggedInFirstTime = false
     private var gso: GoogleSignInOptions? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
 
@@ -77,13 +85,13 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
 
 
 
-        binding.emailEdt.onFocusChangeListener = this
-        binding.passwordEdt.onFocusChangeListener = this
-        binding.emailEdt.onFocusChangeListener = this
-        binding.passwordEdt.onFocusChangeListener = this
-
-        binding.emailEdt.addTextChangedListener(emailWatcher)
-        binding.passwordEdt.addTextChangedListener(passwordWatcher)
+//        binding.emailEdt.onFocusChangeListener = this
+//        binding.passwordEdt.onFocusChangeListener = this
+//        binding.emailEdt.onFocusChangeListener = this
+//        binding.passwordEdt.onFocusChangeListener = this
+//
+//        binding.emailEdt.addTextChangedListener(emailWatcher)
+//        binding.passwordEdt.addTextChangedListener(passwordWatcher)
         binding.btnForgotPass.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_forgotFragment)
         }
@@ -100,6 +108,81 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
         }
 
 
+//        binding.loginButton.setOnClickListener {
+//            val email = binding.emailEdt.text.toString()
+//            val password = binding.passwordEdt.text.toString()
+//
+//
+//            // Kiểm tra dữ liệu đầu vào
+//            if (email.isNotEmpty() && password.isNotEmpty()) {
+//                // Gọi hàm đăng nhập từ ViewModel
+//                viewModel.login(Auth(email, password))
+//                if (isLoggedInFirstTime) {
+//                    viewModel.loginResult.observeOnceAfterInit(viewLifecycleOwner) { result ->
+//                        when (result) {
+//                            is DataResult.Success -> {
+//                                // Xử lý khi đăng nhập thành công
+//                                prefManager.setLogin(true)
+//                                prefManager.setFlag(0)
+//                                saveAccount(email, password)
+//                                if (result.data.user.role == 1) {
+//                                } else {
+//                                    startActivity(
+//                                        Intent(requireActivity(), MainViewActivity::class.java)
+//                                    )
+//                                    requireActivity().finish()
+//                                }
+//                            }
+//
+//                            is DataResult.Error -> {
+//                                // Xử lý khi đăng nhập thất bại
+//                                val errorMessage = result.message
+//                                prefManager.setLogin(false)
+//                                Toast.makeText(requireContext(), "hehehe", Toast.LENGTH_SHORT)
+//                                    .show()
+//                            }
+//
+//                        }
+//                    }
+//                }else{
+//                    viewModel.loginResult.observeOnce(viewLifecycleOwner) { result ->
+//                        when (result) {
+//                            is DataResult.Success -> {
+//                                // Xử lý khi đăng nhập thành công
+//                                prefManager.setLogin(true)
+//                                prefManager.setFlag(0)
+//                                saveAccount(email, password)
+//                                if (result.data.user.role == 1) {
+//                                } else {
+//                                    startActivity(
+//                                        Intent(requireActivity(), MainViewActivity::class.java)
+//                                    )
+//                                    requireActivity().finish()
+//                                }
+//                            }
+//
+//                            is DataResult.Error -> {
+//                                // Xử lý khi đăng nhập thất bại
+//                                val errorMessage = result.message
+//                                prefManager.setLogin(false)
+//                                Toast.makeText(requireContext(), "hehehe", Toast.LENGTH_SHORT)
+//                                    .show()
+//                            }
+//
+//                        }
+//                    }
+//                    isLoggedInFirstTime = true
+//                }
+//            } else {
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Vui lòng nhập đủ thông tin đăng nhập",
+//                    Toast.LENGTH_SHORT
+//                )
+//                    .show()
+//            }
+     //   }
+
         binding.loginButton.setOnClickListener {
             val email = binding.emailEdt.text.toString()
             val password = binding.passwordEdt.text.toString()
@@ -108,54 +191,56 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 // Gọi hàm đăng nhập từ ViewModel
                 viewModel.login(Auth(email, password))
-                viewModel.loginResult.observe(viewLifecycleOwner) { result ->
-                    when (result) {
-                        is DataResult.Success -> {
-                            // Xử lý khi đăng nhập thành công
-                            prefManager.setLogin(true)
-                            prefManager.setFlag(0)
-                            saveAccount(email, password)
-                            if (result.data.user.role == 1) {
-//                        startActivity(Intent(requireActivity(), AdminActivity::class.java))
-//                        requireActivity().finish()
-                            } else {
-                                startActivity(
-                                    Intent(
-                                        requireActivity(),
-                                        MainViewActivity::class.java
-                                    )
-                                )
-                                requireActivity().finish()
-                            }
-//                    val intent = Intent(requireActivity(), HomeActivity::class.java)
-//                    startActivity(intent)
-//                    requireActivity().finish()
-                        }
 
-                        is DataResult.Error -> {
-                            // Xử lý khi đăng nhập thất bại
-                            val errorMessage = result.message
-                            prefManager.setLogin(false)
-                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-
-                        else -> {}
+                if (isLoggedInFirstTime) {
+                    viewModel.loginResult.observeOnceAfterInit(viewLifecycleOwner) { result ->
+                        handleLoginResult(result, email, password)
+                    }
+                } else {
+                    viewModel.loginResult.observeOnce(viewLifecycleOwner) { result ->
+                        handleLoginResult(result, email, password)
+                        isLoggedInFirstTime = true
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Vui lòng nhập đủ thông tin đăng nhập",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                Toast.makeText(requireContext(), "Vui lòng nhập đủ thông tin đăng nhập", Toast.LENGTH_SHORT).show()
             }
         }
 
-
         return binding.root
     }
+
+    private fun handleLoginResult(dataResult: DataResult<User>, email: String, password: String) {
+        when (dataResult) {
+            is DataResult.Success -> {
+                // Xử lý khi đăng nhập thành công
+                prefManager.setLogin(true)
+                prefManager.setFlag(0)
+                saveAccount(email, password)
+                if (dataResult.data.user.role == 1) {
+                } else {
+                    val userPreferences = UserPreferences(requireContext())
+                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
+                        RetrofitInstance.Token = it.toString()
+                    }
+                    startActivity(
+                        Intent(requireActivity(), MainViewActivity::class.java)
+                    )
+                    requireActivity().finish()
+                }
+            }
+
+            is DataResult.Error -> {
+                // Xử lý khi đăng nhập thất bại
+                val errorMessage = dataResult.message
+                prefManager.setLogin(false)
+                Toast.makeText(requireContext(), "hehehe", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+    }
+
 
     private fun checkLogin() {
         if (prefManager.isLogin()!!) {
@@ -208,6 +293,10 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is DataResult.Success -> {
+                    val userPreferences = UserPreferences(requireContext())
+                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
+                        RetrofitInstance.Token = it.toString()
+                    }
                     saveAccount(email, password)
                     val intent = Intent(requireActivity(), MainViewActivity::class.java)
                     intent.putExtra("email", result.data.user.email)
@@ -242,55 +331,54 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
         }
     }
 
-    private val emailWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        override fun afterTextChanged(s: Editable?) {
-            val email = s.toString()
-
-            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                // Email đúng định dạng, thực hiện các xử lý tương ứng
-                binding.emailTil.apply {
-                    isErrorEnabled = false
-                }
-            } else {
-                // Email không đúng định dạng, hiển thị lỗi và xóa icon check
-                binding.emailTil.apply {
-                    isErrorEnabled = true
-                    error = "Invalid email format"
-                    startIconDrawable = null
-                }
-            }
-        }
-    }
-
-    private val passwordWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        override fun afterTextChanged(s: Editable?) {
-            val password = s.toString()
-            if (password.length in 6..15) {
-                // Độ dài mật khẩu hợp lệ, thực hiện các xử lý tương ứng
-                binding.passwordTil.apply {
-                    isErrorEnabled = false
-                    setStartIconDrawable(R.drawable.baseline_check_24)
-                    setStartIconTintList(ColorStateList.valueOf(Color.GREEN))
-                }
-            } else {
-                // Độ dài mật khẩu không hợp lệ, hiển thị lỗi và xóa icon check
-                binding.passwordTil.apply {
-                    isErrorEnabled = true
-                    error = "Password must be between 6 and 15 characters long"
-                    startIconDrawable = null
-                }
-            }
-        }
-    }
-
+//    private val emailWatcher = object : TextWatcher {
+//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//
+//        override fun afterTextChanged(s: Editable?) {
+//            val email = s.toString()
+//
+//            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//                // Email đúng định dạng, thực hiện các xử lý tương ứng
+//                binding.emailTil.apply {
+//                    isErrorEnabled = false
+//                }
+//            } else {
+//                // Email không đúng định dạng, hiển thị lỗi và xóa icon check
+//                binding.emailTil.apply {
+//                    isErrorEnabled = true
+//                    error = "Invalid email format"
+//                    startIconDrawable = null
+//                }
+//            }
+//        }
+//    }
+//
+//    private val passwordWatcher = object : TextWatcher {
+//        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//
+//        override fun afterTextChanged(s: Editable?) {
+//            val password = s.toString()
+//            if (password.length in 6..15) {
+//                // Độ dài mật khẩu hợp lệ, thực hiện các xử lý tương ứng
+//                binding.passwordTil.apply {
+//                    isErrorEnabled = false
+//                    setStartIconDrawable(R.drawable.baseline_check_24)
+//                    setStartIconTintList(ColorStateList.valueOf(Color.GREEN))
+//                }
+//            } else {
+//                // Độ dài mật khẩu không hợp lệ, hiển thị lỗi và xóa icon check
+//                binding.passwordTil.apply {
+//                    isErrorEnabled = true
+//                    error = "Password must be between 6 and 15 characters long"
+//                    startIconDrawable = null
+//                }
+//            }
+//        }
+//    }
 
 
     private fun saveAccount(email: String, password: String) {
@@ -303,25 +391,29 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         gso = null
         mGoogleSignInClient = null
-        binding.emailEdt.removeTextChangedListener(emailWatcher)
-        binding.passwordEdt.removeTextChangedListener(passwordWatcher)
+//        binding.emailEdt.removeTextChangedListener(emailWatcher)
+//        binding.passwordEdt.removeTextChangedListener(passwordWatcher)
+//        binding.passwordEdt.setText("")
+//        binding.emailEdt.setText("")
+//        binding.emailTil.isErrorEnabled = false
+//        binding.passwordTil.isErrorEnabled = false
         _binding = null
+        super.onDestroyView()
     }
 
-    override fun onFocusChange(v: View?, hasFocus: Boolean) {
-
-    }
-
-    override fun onClick(v: View?) {
-
-    }
-
-    override fun onKey(view: View?, keyCode: Int, event: KeyEvent?): Boolean {
-        return false
-    }
+//    override fun onFocusChange(v: View?, hasFocus: Boolean) {
+//
+//    }
+//
+//    override fun onClick(v: View?) {
+//
+//    }
+//
+//    override fun onKey(view: View?, keyCode: Int, event: KeyEvent?): Boolean {
+//        return false
+//    }
 
     private fun signInWithGoogle() {
         val signInIntent = mGoogleSignInClient?.signInIntent
