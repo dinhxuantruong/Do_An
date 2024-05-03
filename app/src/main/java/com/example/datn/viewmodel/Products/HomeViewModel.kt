@@ -42,6 +42,36 @@ class HomeViewModel(private val repositoryProduct: repositoryProduct) : ViewMode
 
     val errorMessage = MutableLiveData<String>()
 
+    private val _resultGetAllProType : MutableLiveData<DataResult<ProductType>>  = MutableLiveData()
+    val resultGetAllPrType : LiveData<DataResult<ProductType>> get() = _resultGetAllProType
+
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+    fun getAllProductType() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repositoryProduct.getALlProductType()
+                if (response.isSuccessful) {
+                    val logout = response.body()!!
+                    _resultGetAllProType.postValue(DataResult.Success(logout))
+                    _isLoading.postValue(true)
+                } else {
+                    val errorMessage = "Logout unsuccessful: ${response.message()}"
+                    _resultGetAllProType.postValue(DataResult.Error(errorMessage))
+                }
+            } catch (e: IOException) {
+                _resultGetAllProType.postValue(DataResult.Error("Network connection error2!"))
+            } catch (e: HttpException) {
+                _resultGetAllProType.postValue(DataResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultGetAllProType.postValue(DataResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+
     private val _resultProductAll : MutableLiveData<DataResult<ProductType>> = MutableLiveData()
     val resultProductTypeAll : LiveData<DataResult<ProductType>> get() =  _resultProductAll
 

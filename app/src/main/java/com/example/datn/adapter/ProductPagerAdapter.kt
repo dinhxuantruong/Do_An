@@ -25,7 +25,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
 
     object ProductComparator : DiffUtil.ItemCallback<ProductType>() {
         override fun areItemsTheSame(oldItem: ProductType, newItem: ProductType): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.image_url == newItem.image_url
         }
 
         override fun areContentsTheSame(oldItem: ProductType, newItem: ProductType): Boolean {
@@ -36,8 +36,10 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = getItem(position)!!
         val text = holder.itemView.findViewById<TextView>(R.id.txtNameProduct)
+        val price = holder.itemView.findViewById<TextView>(R.id.txtPriceProduct)
         val image = holder.itemView.findViewById<ImageView>(R.id.imageProduct)
         text.text = product.name
+        price.text = product.price.toString()
 
         Picasso.get().load(product.image_url).into(image)
 
@@ -55,5 +57,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
     interface ClickListener {
         fun onClickedItem(itemBlog: ProductType)
     }
+
+
 
 }

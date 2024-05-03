@@ -1,5 +1,6 @@
 package com.example.datn.view.MainView
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.paging.LoadState
 import com.example.datn.R
 import com.example.datn.databinding.FragmentFavoriteBinding
 import com.example.datn.repository.repositoryProduct
+import com.example.datn.utils.DataResult
 import com.example.datn.viewmodel.Products.FavoriteViewModel
 import com.example.datn.viewmodel.Products.HomeViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
@@ -44,7 +46,19 @@ class FavoriteFragment : Fragment() {
         _adapter = ProductPagerAdapter(object : ProductPagerAdapter.ClickListener {
 
             override fun onClickedItem(itemBlog: ProductType) {
-                Toast.makeText(requireContext(), itemBlog.id.toString(), Toast.LENGTH_SHORT).show()
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("Xác nhận xóa")
+                builder.setMessage("Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách yêu thích không?")
+                builder.setPositiveButton("Xóa") { dialog, _ ->
+                    // Gọi hàm xóa sản phẩm yêu thích ở đây
+                    viewModel.addFavorite(itemBlog.id)
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("Hủy") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                val dialog = builder.create()
+                dialog.show()
             }
         })
         // Sử dụng RetrofitClient để lấy instance của RetrofitService
@@ -52,6 +66,23 @@ class FavoriteFragment : Fragment() {
         binding.recyclerviewFavo.adapter = adapter
 
 
+        viewModel.resultAddFavorite.observe(viewLifecycleOwner){
+            when(it){
+                is DataResult.Success -> {
+                    lifecycleScope.launch {
+                        viewModel.getProductFavorite().observe(viewLifecycleOwner) {data ->
+                            data?.let {
+                                adapter.submitData(lifecycle, data)
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                }
+                is DataResult.Error -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()

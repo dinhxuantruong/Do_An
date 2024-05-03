@@ -9,10 +9,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
+import com.example.datn.data.ResultMessage
 import com.example.datn.repository.repositoryProduct
+import com.example.datn.utils.DataResult
 import com.example.datn.utils.network.Constance
 import com.velmurugan.paging3android.Adapter.CustomPagingSource
 import com.velmurugan.paging3android.ProductType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 class FavoriteViewModel(private val repositoryProduct: repositoryProduct) : ViewModel() {
@@ -40,4 +45,28 @@ class FavoriteViewModel(private val repositoryProduct: repositoryProduct) : View
 
         return page
     }
+    private val _resultAddFavorite : MutableLiveData<DataResult<ResultMessage>> = MutableLiveData()
+    val resultAddFavorite : LiveData<DataResult<ResultMessage>> get() = _resultAddFavorite
+    fun addFavorite(id : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repositoryProduct.addFavorite(id)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultAddFavorite.postValue(DataResult.Success(resultMessage))
+                } else {
+                    val errorMessage = "Add favorite does not exist : ${response.message()}"
+                    _resultAddFavorite.postValue(DataResult.Error(errorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAddFavorite.postValue(DataResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAddFavorite.postValue(DataResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAddFavorite.postValue(DataResult.Error("An unknown error has occurred!"))
+            }
+        }
+    }
+
+
 }

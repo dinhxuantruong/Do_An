@@ -27,6 +27,10 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.allProductsTypeMax()
     }
     suspend fun allProductsType() : Response<ProductType>{
+        return RetrofitInstance.appApi.allProductsTypeLimit()
+    }
+
+    suspend fun getALlProductType() : Response<ProductType>{
         return RetrofitInstance.appApi.allProductsType()
     }
 

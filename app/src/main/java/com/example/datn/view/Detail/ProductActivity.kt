@@ -114,6 +114,9 @@ class ProductActivity : AppCompatActivity() {
                     product.forEach { item ->
                         listProductSame.add(item)
                     }
+                    if (listProductSame.isNotEmpty()) {
+                        listProductSame.removeAt(0)
+                    }
                     adapter = productAdapter(this,object : productAdapter.ClickListener2{
                         override fun onClickedItem(itemBlog: ProductTypeX) {
                             Toast.makeText(this@ProductActivity, itemBlog.id.toString(), Toast.LENGTH_SHORT).show()
@@ -124,7 +127,7 @@ class ProductActivity : AppCompatActivity() {
                 }
 
                 is DataResult.Error -> {
-
+                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }

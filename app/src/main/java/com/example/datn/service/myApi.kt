@@ -67,7 +67,11 @@ interface myApi {
     @GET("product/all/product/type/max")
     suspend fun allProductsTypeMax(): Response<ProductType>
 
-    //all productype
+    //all productype limit
+    @GET("product/all/product/type/limit")
+    suspend fun allProductsTypeLimit(): Response<ProductType>
+
+    //get all product
     @GET("product/all/product/type")
     suspend fun allProductsType(): Response<ProductType>
 

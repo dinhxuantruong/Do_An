@@ -1,5 +1,6 @@
 package com.example.datn.viewmodel.Products
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -76,8 +77,9 @@ class ViewModelDetailProduct(private val repositoryProduct: repositoryProduct) :
                  if (response.isSuccessful) {
                      val result = response.body()!!
                      _resultDetail.postValue(DataResult.Success(result))
-                     delay(200)
-                     getProductSame(result.ProductType.id_category)
+                     delay(100)
+                     val categoryId = result.ProductType.id_category
+                     getProductSame(categoryId)
                  } else {
                      val errorMessage = "Detail product does not exist : ${response.message()}"
                      _resultDetail.postValue(DataResult.Error(errorMessage))
