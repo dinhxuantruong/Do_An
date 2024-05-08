@@ -1,5 +1,8 @@
-package com.example.datn.utils
+package com.example.datn.utils.Extention
 
+import android.app.Activity
+import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -11,19 +14,19 @@ object NumberExtensions {
         return formatter.format(this)
     }
 
-    fun Long.toVietnameseCurrency(): String {
+    fun Long.toVietnameseCurrencyLong(): String {
         val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN")) as DecimalFormat
         formatter.applyPattern("#,### đ")
         return formatter.format(this)
     }
 
-    fun Float.toVietnameseCurrency(): String {
+    fun Float.toVietnameseCurrencyFloat(): String {
         val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN")) as DecimalFormat
         formatter.applyPattern("#,###.# đ")
         return formatter.format(this)
     }
 
-    fun Double.toVietnameseCurrency(): String {
+    fun Double.toVietnameseCurrencyDouble(): String {
         val formatter = NumberFormat.getNumberInstance(Locale("vi", "VN")) as DecimalFormat
         formatter.applyPattern("#,###.# đ")
         return formatter.format(this)
@@ -44,6 +47,14 @@ object NumberExtensions {
             String.format("%.1f", value)
         }
         return "$formattedValue${suffixes[index]}"
+    }
+
+    fun Activity.snackBar(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).also { snackbar ->
+            snackbar.setAction("Ok") {
+                snackbar.dismiss()
+            }
+        }.show()
     }
 
 

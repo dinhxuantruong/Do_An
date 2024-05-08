@@ -8,9 +8,7 @@ import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.datn.R
-import com.example.datn.data.ProductTypeX
 import com.squareup.picasso.Picasso
 import com.velmurugan.paging3android.ProductType
 
@@ -46,6 +44,10 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         holder.itemView.setOnClickListener {
             onClick.onClickedItem(product)
         }
+        holder.itemView.setOnLongClickListener {
+            onClick.onLongItemClick(product)
+            true
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -55,7 +57,8 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
     }
 
     interface ClickListener {
-        fun onClickedItem(itemBlog: ProductType)
+        fun onClickedItem(itemProduct: ProductType)
+        fun onLongItemClick(itemProduct: ProductType)
     }
 
 

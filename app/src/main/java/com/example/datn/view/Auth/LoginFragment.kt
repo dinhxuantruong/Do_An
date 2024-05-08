@@ -1,32 +1,25 @@
 package com.example.datn.view.Auth
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.util.Patterns
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
-import com.example.datn.data.User
+import com.example.datn.data.dataresult.User
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.databinding.FragmentLoginBinding
-import com.example.datn.utils.DataResult
-import com.example.datn.utils.LiveDataExtensions.observeOnce
-import com.example.datn.utils.LiveDataExtensions.observeOnceAfterInit
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.utils.Extention.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extention.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.utils.SharePreference.UserPreferences
 import com.example.datn.utils.network.Constance.Companion.CLIENT_ID
@@ -210,9 +203,9 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    private fun handleLoginResult(dataResult: DataResult<User>, email: String, password: String) {
+    private fun handleLoginResult(dataResult: ResponseResult<User>, email: String, password: String) {
         when (dataResult) {
-            is DataResult.Success -> {
+            is ResponseResult.Success -> {
                 // Xử lý khi đăng nhập thành công
                 prefManager.setLogin(true)
                 prefManager.setFlag(0)
@@ -230,11 +223,11 @@ class LoginFragment : Fragment() {
                 }
             }
 
-            is DataResult.Error -> {
+            is ResponseResult.Error -> {
                 // Xử lý khi đăng nhập thất bại
                 val errorMessage = dataResult.message
                 prefManager.setLogin(false)
-                Toast.makeText(requireContext(), "hehehe", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
                     .show()
             }
 
@@ -266,12 +259,12 @@ class LoginFragment : Fragment() {
         )
         viewModel.loginWithGoogle.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     startActivity(Intent(requireActivity(), MainViewActivity::class.java))
                     requireActivity().finish()
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     //prefManager.removeDate()
                 }
             }
@@ -292,7 +285,7 @@ class LoginFragment : Fragment() {
         viewModel.login(Auth(email, password))
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     val userPreferences = UserPreferences(requireContext())
                     userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
                         RetrofitInstance.Token = it.toString()
@@ -304,7 +297,7 @@ class LoginFragment : Fragment() {
                     requireActivity().finish()
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     // Handle error
                 }
             }
@@ -315,7 +308,7 @@ class LoginFragment : Fragment() {
     private fun observeView() {
         viewModel.googleResult.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     prefManager.setLogin(true)
                     prefManager.setFlag(1)
                     prefManager.saveGoogleRefreshToken(it.data.refresh_token)
@@ -324,7 +317,7 @@ class LoginFragment : Fragment() {
                     //startActivity(Intent(requireActivity(), MainViewActivity::class.java))
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     //
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.datn.data
+package com.example.datn.data.dataresult
 
 data class User(
     val message: String,

@@ -26,6 +26,7 @@
         android:id="@+id/txtView"
         android:text="Wigs"
         android:textSize="18sp"
+        android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:fontFamily="@font/robotoregular"

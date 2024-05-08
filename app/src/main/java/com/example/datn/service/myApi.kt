@@ -1,21 +1,24 @@
 package com.example.datn.service
 
-import com.example.datn.data.ProductType
-import com.example.datn.data.ResultMessage
-import com.example.datn.data.ResultProductDetail
-import com.example.datn.data.Resutl_RefreshToken
-import com.example.datn.data.User
+import com.example.datn.data.dataresult.ProductType
+import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.ResultProductDetail
+import com.example.datn.data.dataresult.Resutl_RefreshToken
+import com.example.datn.data.dataresult.User
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass
-import com.example.datn.data.Result_slideimages
+import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.Register
+import com.example.datn.data.model.addCart
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.data.model.sendOTP
 import com.velmurugan.paging3android.ProductResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -107,4 +110,42 @@ interface myApi {
     suspend fun getProductsFavorite(
         @Query("page") page: Int,
     ): Response<ProductResponse>
+
+    //add cart
+    @POST("product/add/cart/item")
+    suspend fun addToCart(@Body cart : addCart) : Response<ResultMessage>
+
+    //get all cart
+    @GET("product/get/cart/item")
+    suspend fun getAllCart() : Response<resultCart>
+
+    //change cart
+    @POST("product/change/status/item/cart/{idCart}")
+    suspend fun changeCart(@Path("idCart") idCart : Int) : Response<ResultMessage>
+
+    //check all box
+    @POST("product/all/check")
+    suspend fun checkAllBox() : Response<ResultMessage>
+
+    //delete check box all
+    @POST("product/delete/check/box")
+    suspend fun deleteCheckBoxAll() : Response<ResultMessage>
+
+    //delete cart
+    @POST("product/delete/cart")
+    suspend fun deleteCart() : Response<ResultMessage>
+
+    //delete item cart
+
+    @POST("product/delete/item/cart/{id}")
+    suspend fun deleteItemCart(@Path("id") id : Int) : Response<ResultMessage>
+
+    //plus item cart
+    @POST("product/plus/item/cart/{id}")
+    suspend fun plusItemCart(@Path("id") id : Int) : Response<ResultMessage>
+
+
+    //minus item cart
+    @POST("product/minus/item/cart/{id}")
+    suspend fun minusItemCart(@Path("id") id : Int) : Response<ResultMessage>
 }

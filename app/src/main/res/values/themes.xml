@@ -5,8 +5,8 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item> <!-- Sử dụng màu colorPrimaryDark từ colors.xml -->
         <item name="colorAccent">@color/colorPrimary</item> <!-- Sử dụng màu colorAccent từ colors.xml -->
         <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:fontFamily">@font/robotoregular</item>
 <!--        <item name="android:windowLightStatusBar">true</item>-->
     </style>

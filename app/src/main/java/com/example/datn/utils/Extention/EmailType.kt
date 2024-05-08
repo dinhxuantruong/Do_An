@@ -1,4 +1,4 @@
-package com.example.datn.utils
+package com.example.datn.utils.Extention
 
 object EmailType {
     var REGISTER = "email_from_register"

@@ -1,10 +1,7 @@
-package com.example.datn.utils
+package com.example.datn.utils.Extention
 
 import javax.crypto.Cipher
-import javax.crypto.SecretKey
-import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.text.Charsets.UTF_8
 

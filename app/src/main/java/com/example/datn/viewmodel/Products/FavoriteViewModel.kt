@@ -9,9 +9,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
-import com.example.datn.data.ResultMessage
+import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.DataResult
+import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.utils.network.Constance
 import com.velmurugan.paging3android.Adapter.CustomPagingSource
 import com.velmurugan.paging3android.ProductType
@@ -45,25 +45,25 @@ class FavoriteViewModel(private val repositoryProduct: repositoryProduct) : View
 
         return page
     }
-    private val _resultAddFavorite : MutableLiveData<DataResult<ResultMessage>> = MutableLiveData()
-    val resultAddFavorite : LiveData<DataResult<ResultMessage>> get() = _resultAddFavorite
+    private val _resultAddFavorite : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultAddFavorite : LiveData<ResponseResult<ResultMessage>> get() = _resultAddFavorite
     fun addFavorite(id : Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repositoryProduct.addFavorite(id)
                 if (response.isSuccessful) {
                     val resultMessage = response.body()!!
-                    _resultAddFavorite.postValue(DataResult.Success(resultMessage))
+                    _resultAddFavorite.postValue(ResponseResult.Success(resultMessage))
                 } else {
                     val errorMessage = "Add favorite does not exist : ${response.message()}"
-                    _resultAddFavorite.postValue(DataResult.Error(errorMessage))
+                    _resultAddFavorite.postValue(ResponseResult.Error(errorMessage))
                 }
             } catch (e: IOException) {
-                _resultAddFavorite.postValue(DataResult.Error("Network connection error!"))
+                _resultAddFavorite.postValue(ResponseResult.Error("Network connection error!"))
             } catch (e: HttpException) {
-                _resultAddFavorite.postValue(DataResult.Error("Error HTTP: ${e.message}"))
+                _resultAddFavorite.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
             } catch (e: Exception) {
-                _resultAddFavorite.postValue(DataResult.Error("An unknown error has occurred!"))
+                _resultAddFavorite.postValue(ResponseResult.Error("An unknown error has occurred!"))
             }
         }
     }

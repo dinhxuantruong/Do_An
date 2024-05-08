@@ -10,11 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.datn.R
 
-import com.example.datn.data.ProductTypeX
-import com.example.datn.utils.NumberExtensions.toVietnameseCurrency
+import com.example.datn.data.dataresult.ProductTypeX
+import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
 

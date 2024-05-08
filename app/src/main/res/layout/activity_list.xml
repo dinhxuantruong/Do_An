@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="false"
     android:layout_height="match_parent"
     tools:context=".view.Detail.ListActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
+        android:fitsSystemWindows="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimaryDark"
         app:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,13 +22,13 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolRegister"
+            android:fitsSystemWindows="false"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/white"
             app:boxBackgroundMode="none"
-            app:elevation="0dp"
             app:menu="@menu/menu_sort"
-            app:navigationIcon="@drawable/res2" />
+            app:navigationIcon="@drawable/back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

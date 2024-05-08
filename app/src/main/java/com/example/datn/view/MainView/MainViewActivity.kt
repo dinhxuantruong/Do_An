@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.datn.R
 import com.example.datn.databinding.ActivityMainViewBinding
 import com.example.datn.repository.repositoryAuth
-import com.example.datn.utils.DataResult
+import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.view.Auth.AuthActivity
 import com.example.datn.view.Detail.ProductActivity
@@ -40,11 +40,11 @@ class MainViewActivity : AppCompatActivity() {
 
         viewModel.resultLogout.observe(this){
             when(it){
-                is DataResult.Success ->{
+                is ResponseResult.Success ->{
                     prefManager.removeDate()
                     startActivity(Intent(this,AuthActivity::class.java))
                 }
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
                 }
             }

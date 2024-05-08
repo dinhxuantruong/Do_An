@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -23,11 +24,12 @@ import com.example.datn.R
 import com.example.datn.adapter.ImageOutAdapter
 import com.example.datn.adapter.categoryAdapter
 import com.example.datn.adapter.productAdapter
-import com.example.datn.data.ProductTypeX
+import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.data.model.categoryfilter
 import com.example.datn.databinding.FragmentHomeBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.DataResult
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.view.Detail.CartActivity
 import com.example.datn.view.Detail.ListActivity
 import com.example.datn.view.Detail.ProductActivity
 import com.example.datn.viewmodel.Products.HomeViewModel
@@ -47,8 +49,8 @@ class HomeFragment : Fragment() {
     private lateinit var listImageCate: MutableList<Int>
     private lateinit var listProductMax: MutableList<ProductTypeX>
     private lateinit var listProductTime: MutableList<ProductTypeX>
-    private lateinit var listImageOut: MutableList<com.example.datn.data.DataResult>
-    private lateinit var listProductAll : MutableList<ProductTypeX>
+    private lateinit var listImageOut: MutableList<com.example.datn.data.dataresult.DataResult>
+    private lateinit var listProductAll: MutableList<ProductTypeX>
 
     private var categoryAdapter: categoryAdapter? = null
     private var listProductAdapter: productAdapter? = null
@@ -81,29 +83,31 @@ class HomeFragment : Fragment() {
 
     private fun observeView() {
 
-        viewModel.resultProductTypeAll.observe(viewLifecycleOwner){
-            when(it){
-                is DataResult.Success -> {
+        viewModel.resultProductTypeAll.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResponseResult.Success -> {
                     listProductAll.clear()
                     val response = it.data.ProductTypes
                     response.forEach { item ->
                         listProductAll.add(item)
                     }
-                    listProductAdapter = productAdapter(requireActivity(),object : productAdapter.ClickListener2{
-                        override fun onClickedItem(itemProduct: ProductTypeX) {
-                            startActivity(itemProduct)
-                        }
-                    },listProductAll)
+                    listProductAdapter =
+                        productAdapter(requireActivity(), object : productAdapter.ClickListener2 {
+                            override fun onClickedItem(itemProduct: ProductTypeX) {
+                                startActivity(itemProduct)
+                            }
+                        }, listProductAll)
                     binding.recyclerview.adapter = listProductAdapter
                 }
-                is DataResult.Error -> {
+
+                is ResponseResult.Error -> {
                     Toast.makeText(requireActivity(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
         viewModel.resultAllPtypeMax.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     listProductMax.clear()
                     val dataResult = it.data.ProductTypes
                     dataResult.forEach { item ->
@@ -112,14 +116,14 @@ class HomeFragment : Fragment() {
                     listProductAdapter =
                         productAdapter(requireActivity(), object : productAdapter.ClickListener2 {
                             override fun onClickedItem(itemProduct: ProductTypeX) {
-                               startActivity(itemProduct)
+                                startActivity(itemProduct)
                             }
 
                         }, listProductMax)
                     binding.recySpbc.adapter = listProductAdapter
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     listProductMax.isEmpty()
                 }
 
@@ -130,7 +134,7 @@ class HomeFragment : Fragment() {
         //  viewModel.getImageSlide()
         viewModel.resultImage.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     val dataResult = it.data.data_result
                     listImageSlide.clear()
                     dataResult.forEach { item ->
@@ -139,7 +143,7 @@ class HomeFragment : Fragment() {
                     binding.imageSlider.setImageList(listImageSlide)
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
 
                 }
 
@@ -149,7 +153,7 @@ class HomeFragment : Fragment() {
 
         viewModel.resultAllPrTime.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     listProductTime.clear()
                     val dataResult = it.data.ProductTypes
                     dataResult.forEach { item ->
@@ -158,14 +162,14 @@ class HomeFragment : Fragment() {
                     listProductTimeAdapter =
                         productAdapter(requireActivity(), object : productAdapter.ClickListener2 {
                             override fun onClickedItem(itemProduct: ProductTypeX) {
-                               startActivity(itemProduct)
+                                startActivity(itemProduct)
                             }
 
                         }, listProductTime)
                     binding.recyPrTime.adapter = listProductTimeAdapter
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     listProductTime.isEmpty()
                 }
 
@@ -175,7 +179,7 @@ class HomeFragment : Fragment() {
 
         viewModel.resultImageOut.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     listImageOut.clear()
                     val dataResult = it.data.data_result
                     dataResult.forEach { item ->
@@ -185,7 +189,7 @@ class HomeFragment : Fragment() {
                     binding.reImage.adapter = listImageOutAdapter
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     Toast.makeText(requireActivity(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -207,7 +211,7 @@ class HomeFragment : Fragment() {
 
         categoryAdapter = categoryAdapter(object : categoryAdapter.ClickListener {
             override fun onClickedItem(itemBlog: categoryfilter) {
-                startActivity(Intent(requireActivity(),ListActivity::class.java))
+                startActivity(Intent(requireActivity(), ListActivity::class.java))
             }
         }, requireActivity(), listGrid)
         binding.recyViewcategory.adapter = categoryAdapter
@@ -226,7 +230,8 @@ class HomeFragment : Fragment() {
         addListGrid()
 
         binding.recyclerview.setHasFixedSize(true)
-        binding.recyclerview.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
+        binding.recyclerview.layoutManager =
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerview.isNestedScrollingEnabled = false
 
 
@@ -298,9 +303,9 @@ class HomeFragment : Fragment() {
 //        }
     }
 
-    private fun startActivity(item : ProductTypeX){
-        val intent = Intent(requireActivity(),ProductActivity::class.java)
-        intent.putExtra("id",item.id)
+    private fun startActivity(item: ProductTypeX) {
+        val intent = Intent(requireActivity(), ProductActivity::class.java)
+        intent.putExtra("id", item.id)
         startActivity(intent)
     }
 
@@ -327,6 +332,26 @@ class HomeFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.icCart -> {
+                startActivity(Intent(requireActivity(),CartActivity::class.java))
+                true
+            }
+
+            R.id.icNotifi -> {
+                // Xử lý khi người dùng click vào menu item 2
+                showToast("Menu item 2 clicked")
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
+}
     override fun onDestroyView() {
         super.onDestroyView()
         categoryAdapter = null

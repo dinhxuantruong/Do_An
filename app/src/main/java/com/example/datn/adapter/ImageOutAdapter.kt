@@ -1,16 +1,13 @@
 package com.example.datn.adapter
 
 import android.app.Activity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.datn.R
-import com.example.datn.data.DataResult
-import com.example.datn.data.Result_slideimages
+import com.example.datn.data.dataresult.DataResult
 import com.squareup.picasso.Picasso
 
 class ImageOutAdapter(private val activity: Activity,

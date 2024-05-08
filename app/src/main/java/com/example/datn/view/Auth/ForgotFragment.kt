@@ -18,8 +18,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.datn.R
 import com.example.datn.data.model.sendOTP
 import com.example.datn.databinding.FragmentForgotBinding
-import com.example.datn.utils.DataResult
-import com.example.datn.utils.EmailType
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.utils.Extention.EmailType
 import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
@@ -76,7 +76,7 @@ class ForgotFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
    {
        viewModel.resultCheckAccount?.observe(viewLifecycleOwner) {
            when (it) {
-               is DataResult.Success -> {
+               is ResponseResult.Success -> {
                    val bundle = Bundle()
                    Log.d("MainActivity","aaa")
                    EmailType.FORGOT = email
@@ -86,7 +86,7 @@ class ForgotFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
                    findNavController().navigate(R.id.action_forgotFragment_to_otpFragment,bundle)
                }
 
-               is DataResult.Error -> {
+               is ResponseResult.Error -> {
                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                }
 

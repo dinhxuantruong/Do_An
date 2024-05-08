@@ -4,23 +4,15 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
 import com.example.datn.adapter.productAdapter
-import com.example.datn.data.ProductTypeX
+import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.databinding.ActivityListBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.DataResult
+import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.viewmodel.Products.HomeViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
-import com.velmurugan.paging3android.Adapter.ProductPagerAdapter
-import com.velmurugan.paging3android.ProductType
-import kotlinx.coroutines.launch
 
 class ListActivity : AppCompatActivity() {
     lateinit var viewModel: HomeViewModel
@@ -58,7 +50,7 @@ class ListActivity : AppCompatActivity() {
         viewModel.getAllProductType()
         viewModel.resultGetAllPrType.observe(this) {result ->
             when (result) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     val data = result.data.ProductTypes
                     data.forEach { item ->
                         listProduct.add(item)
@@ -66,7 +58,7 @@ class ListActivity : AppCompatActivity() {
                     setUpRecyclerview(listProduct)
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
 
                 }
             }

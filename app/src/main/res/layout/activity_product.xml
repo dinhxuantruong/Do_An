@@ -4,11 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTintMode="screen"
+    android:fitsSystemWindows="true"
     tools:context=".view.Detail.ProductActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fitsSystemWindows="true"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,9 +69,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     app:contentInsetStart="0dp"
+                    app:menu="@menu/cart"
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
-                    app:menu="@menu/home_menu"
+                    app:navigationIcon="@drawable/back"
                     app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
 
 
@@ -102,6 +106,7 @@
                     <TextView
                         android:id="@+id/txtName"
                         android:paddingTop="30dp"
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/robotobold"
@@ -197,7 +202,7 @@
                     <at.blogc.android.views.ExpandableTextView
                         android:paddingTop="10dp"
                         android:fontFamily="@font/roboto"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:layout_marginBottom="10dp"
                         android:id="@+id/expandableTextView"
                         android:layout_width="wrap_content"
@@ -236,6 +241,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_weight="1"
+                            android:textColor="@color/black"
                             android:fontFamily="@font/robotomedium"
                             android:text="Sản phẩm tương tự"
                             android:textSize="18sp" />

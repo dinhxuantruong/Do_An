@@ -1,4 +1,4 @@
-package com.example.datn.utils
+package com.example.datn.utils.Extention
 
 // File: LiveDataExtensions.kt
 
@@ -30,6 +30,5 @@ object LiveDataExtensions {
             }
         })
     }
-
 
 }

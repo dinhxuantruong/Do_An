@@ -25,8 +25,9 @@
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/white"
             app:boxBackgroundMode="none"
-            app:elevation="0dp"
-            app:navigationIcon="@drawable/res2" />
+            app:title="Sản phẩm yêu thích"
+            android:background="@color/white"
+            app:elevation="0dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
