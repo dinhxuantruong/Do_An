@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolRegister"
+            android:id="@+id/toolListProduct"
             android:fitsSystemWindows="false"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

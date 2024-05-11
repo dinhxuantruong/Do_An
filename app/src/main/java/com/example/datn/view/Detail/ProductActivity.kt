@@ -40,7 +40,7 @@ class ProductActivity : AppCompatActivity() {
     private lateinit var listProductSame: MutableList<ProductTypeX>
     private  var adapter: productAdapter? = null
     private var id = 0
-    companion object{
+    companion object {
         var isLoggedInFirstTime = false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -258,6 +258,7 @@ class ProductActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isLoggedInFirstTime = false
         adapter = null
         _binding = null
     }

@@ -1,9 +1,10 @@
-package com.example.datn
+package com.example.datn.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.datn.databinding.ActivityMainBinding
+
 import com.example.datn.view.Auth.AuthActivity
 
 class MainActivity : AppCompatActivity() {

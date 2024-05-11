@@ -109,4 +109,12 @@ class repositoryProduct() {
     suspend fun minusItemCart(id : Int) : Response<ResultMessage>{
         return RetrofitInstance.appApi.minusItemCart(id)
     }
+
+    suspend fun checkStockStatus() : Response<ResultMessage>{
+        return RetrofitInstance.appApi.checkStockStatus()
+    }
+
+    suspend fun checkoutOrders() : Response<resultCart>{
+        return RetrofitInstance.appApi.checkoutOrders()
+    }
 }

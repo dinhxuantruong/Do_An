@@ -18,16 +18,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:layout_width="30dp"
-                android:id="@+id/checkBox"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:checked="false"
-                android:gravity="center" />
-
             <ImageView
-                android:id="@+id/cart_image"
+                android:id="@+id/imageCheckout"
                 android:layout_width="90dp"
                 android:src="@drawable/same"
                 android:layout_height="90dp"
@@ -43,7 +35,7 @@
             android:orientation="vertical">
 
             <at.blogc.android.views.ExpandableTextView
-                android:id="@+id/cartName"
+                android:id="@+id/ckName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -56,16 +48,16 @@
                 app:animation_duration="750" />
 
             <at.blogc.android.views.ExpandableTextView
-                android:id="@+id/cartTl"
+                android:id="@+id/ckPhanLoai"
                 android:maxLines="1"
                 android:maxLength="30"
                 android:ellipsize="end"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="8dp"
                 app:animation_duration="750"
                 android:fontFamily="@font/roboto"
-                android:text="@string/name_product_test" />
+                android:text="Phân loại: 500ml" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,8 +71,8 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/robotoregular"
                     android:gravity="bottom"
-                    android:id="@+id/price"
-                    android:text="131.000 đ/Chai"
+                    android:id="@+id/ckPrice"
+                    android:text="131.000 đ"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp" />
 
@@ -91,36 +83,15 @@
                     android:layout_weight="1"
                     android:enabled="false" />
 
-                <!-- Button to decrease quantity -->
-                <ImageButton
-                    android:id="@+id/btnDecrease"
-                    android:layout_gravity="bottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/minus" />
+        <TextView
+            android:id="@+id/ckCount"
+            android:layout_width="wrap_content"
+            android:text="Số lượng 10"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:layout_height="match_parent"/>
 
-                <!-- Text to display quantity -->
-                <EditText
-                    android:id="@+id/txtQuantity"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:text="1"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
 
-                <!-- Button to increase quantity -->
-                <ImageButton
-                    android:id="@+id/btnIncrease"
-                    android:layout_gravity="bottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/plus" />
             </LinearLayout>
 
         </LinearLayout>

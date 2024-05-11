@@ -2,8 +2,10 @@ package com.example.datn.view.Detail
 
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +23,7 @@ import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extention.MyButton
 import com.example.datn.utils.Extention.NumberExtensions.snackBar
 import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.view.Orders.OrdersActivity
 import com.example.datn.viewmodel.Products.CartViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 
@@ -42,7 +45,11 @@ class CartActivity : AppCompatActivity() {
         deleteAllCart()
         swipeCart()
         viewModel.getAllCart()
+        buttonOnClick()
 
+    }
+
+    private fun buttonOnClick() {
         binding.toolBarCart.setNavigationOnClickListener {
             onBackPressed()
         }
@@ -53,6 +60,10 @@ class CartActivity : AppCompatActivity() {
             } else {
                 viewModel.deleteCheckBoxAll()
             }
+        }
+
+        binding.btnMua.setOnClickListener {
+            viewModel.checkStockStatus()
         }
     }
 
@@ -99,6 +110,20 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun observeView() {
+
+        viewModel.resultCheckStock.observe(this){
+            when(it){
+                is ResponseResult.Success -> {
+                    startActivity(Intent(this@CartActivity,OrdersActivity::class.java))
+                }
+
+                is ResponseResult.Error -> {
+                    this.snackBar(it.message)
+                }
+            }
+        }
+
+
         viewModel.resultPlusItemCart.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
@@ -187,7 +212,7 @@ class CartActivity : AppCompatActivity() {
             when (it) {
                 is ResponseResult.Success -> {
                     adapter?.updateCartCountMinus(position)
-                    if (it.data.status){
+                    if (!it.data.status){
                         visibilityGone()
                     }
                     setTotal(it.data.total.toVietnameseCurrency())

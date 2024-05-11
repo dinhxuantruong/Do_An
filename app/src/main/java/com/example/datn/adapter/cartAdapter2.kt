@@ -51,10 +51,10 @@ class cartAdapter2(
         val plus = holder.itemView.findViewById<ImageButton>(R.id.btnIncrease)
 
         minus.setOnClickListener {
+            minusCheck = cartCount.text.toString().toInt() <= 1
             cartCount.clearFocus()
             onClick.minusCart(cartItem, position, minusCheck)
         }
-
 
         // Xóa TextWatcher cũ trước khi đặt giá trị mới để tránh trường hợp vòng lặp vô tận
 
@@ -170,12 +170,13 @@ class cartAdapter2(
     fun updateCartCountMinus(position: Int) {
         val itemCart = listCart[position]
         itemCart.quantity--
-        if (itemCart.quantity == 1){
-            minusCheck = true
-        }
         if (itemCart.quantity == 0) {
             listCart.removeAt(position)
+           // minusCheck = false
         }
+//        if (itemCart.quantity == 1){
+//            minusCheck = true
+//        }
         notifyDataSetChanged()
     }
 }

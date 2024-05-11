@@ -1,7 +1,8 @@
 package com.example.datn.data.dataresult
 
 data class resultCart(
-    val itemCartsWithTotal: List<ItemCartsWithTotal>
+    val itemCartsWithTotal: List<ItemCartsWithTotal>,
+    val total : Int
 )
 
 data class ItemCartsWithTotal(

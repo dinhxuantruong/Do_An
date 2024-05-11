@@ -27,6 +27,9 @@ class ListActivity : AppCompatActivity() {
 
         init()
 
+        binding.toolListProduct.setNavigationOnClickListener {
+            onBackPressed()
+        }
         binding.radioGroupSort.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radioAsc -> {

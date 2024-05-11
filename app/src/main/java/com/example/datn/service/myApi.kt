@@ -148,4 +148,12 @@ interface myApi {
     //minus item cart
     @POST("product/minus/item/cart/{id}")
     suspend fun minusItemCart(@Path("id") id : Int) : Response<ResultMessage>
+
+    //check stock status
+    @GET("product/cart/checkout")
+    suspend fun checkStockStatus() : Response<ResultMessage>
+
+    //checkout
+    @GET("cart/item/orders/status")
+    suspend fun  checkoutOrders() : Response<resultCart>
 }

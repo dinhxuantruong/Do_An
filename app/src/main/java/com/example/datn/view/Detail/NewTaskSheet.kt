@@ -3,6 +3,7 @@ package com.example.datn.view.Detail
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,6 @@ class NewTaskSheet : BottomSheetDialogFragment() {
     private var stock = 0
     private var updatingText = false
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +52,7 @@ class NewTaskSheet : BottomSheetDialogFragment() {
         setViewModel()
         binding.btnIncrease.isEnabled = false
         binding.btnIncrease.isEnabled = false
-        binding.txtQuantity.addTextChangedListener(countdWatcher)
+        binding.txtQuantity.addTextChangedListener(countWatcher)
 
         viewModel.resultDetail.observe(viewLifecycleOwner) {
             when (it) {
@@ -107,13 +107,15 @@ class NewTaskSheet : BottomSheetDialogFragment() {
             if (ProductActivity.isLoggedInFirstTime) {
                 viewModel.resultAddCart.observeOnceAfterInit(viewLifecycleOwner) { result ->
                     handleResult(result)
+                    //HomeFragment.isLoggedInFirstTime = false
                 }
             } else {
                 viewModel.resultAddCart.observeOnce(viewLifecycleOwner) { result ->
                     handleResult(result)
-                    ProductActivity.isLoggedInFirstTime = true
                 }
+                ProductActivity.isLoggedInFirstTime = true
             }
+            Log.e("CHECK", "${ProductActivity.isLoggedInFirstTime}")
         }
 
 
@@ -201,7 +203,7 @@ class NewTaskSheet : BottomSheetDialogFragment() {
 
     }
 
-    private val countdWatcher = object : TextWatcher {
+    private val countWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             // Không cần thực hiện gì trước khi thay đổi
         }
@@ -238,7 +240,7 @@ class NewTaskSheet : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.txtQuantity.removeTextChangedListener(countdWatcher)
+        binding.txtQuantity.removeTextChangedListener(countWatcher)
         listSize.forEach { it.isClicked = false }
         adapter?.notifyDataSetChanged()
         adapter = null

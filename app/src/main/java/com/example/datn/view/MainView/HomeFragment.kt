@@ -232,7 +232,7 @@ class HomeFragment : Fragment() {
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerview.isNestedScrollingEnabled = false
+
 
 
         binding.recySpbc.setHasFixedSize(true)

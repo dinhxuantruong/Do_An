@@ -40,8 +40,40 @@ class CartViewModel(private val repositoryProduct: repositoryProduct) : ViewMode
 
     private val _resultMinusItemCart : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultMinusItemCart : LiveData<ResponseResult<ResultMessage>> get() =  _resultMinusItemCart
+
+    private val _resultCheckStock : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultCheckStock : LiveData<ResponseResult<ResultMessage>> get() =  _resultCheckStock
+
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+
+
+
+    fun checkStockStatus(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.checkStockStatus()
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultCheckStock.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultCheckStock.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultCheckStock.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultCheckStock.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultCheckStock.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
     fun minusItemCart(id : Int){
         viewModelScope.launch(Dispatchers.IO) {
             try {

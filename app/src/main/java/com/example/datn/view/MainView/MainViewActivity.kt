@@ -14,7 +14,7 @@ import com.example.datn.repository.repositoryAuth
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.view.Auth.AuthActivity
-import com.example.datn.view.Detail.ProductActivity
+import com.example.datn.view.Chat.AdviseActivity
 import com.example.datn.viewmodel.Auth.AuthViewModel
 import com.example.datn.viewmodel.Auth.AuthViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,7 +34,7 @@ class MainViewActivity : AppCompatActivity() {
         init()
 
         binding.fab.setOnClickListener {
-            startActivity(Intent(this,ProductActivity::class.java))
+            startActivity(Intent(this,AdviseActivity::class.java))
 //            finish()
         }
 
