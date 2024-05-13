@@ -9,6 +9,7 @@ import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.Register
 import com.example.datn.data.model.addCart
@@ -156,4 +157,12 @@ interface myApi {
     //checkout
     @GET("cart/item/orders/status")
     suspend fun  checkoutOrders() : Response<resultCart>
+
+    //create order
+    @POST("product/order/by/user")
+    suspend fun createAddOrders() : Response<ResultMessage>
+
+    //get all orders
+    @GET("product/pending/orders")
+    suspend fun getAllOrdersPending() : Response<ResultOrders>
 }

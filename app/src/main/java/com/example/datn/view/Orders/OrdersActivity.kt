@@ -1,11 +1,13 @@
 package com.example.datn.view.Orders
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.example.datn.R
 import com.example.datn.databinding.ActivityOrdersBinding
 import com.example.datn.repository.repositoryProduct
+import com.example.datn.view.MainView.MainViewActivity
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
 
@@ -23,7 +25,11 @@ class OrdersActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this@OrdersActivity,vmFactory)[OrderViewModel::class.java]
 
     }
-
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        startActivity(Intent(this,OrdersActivity::class.java))
+//        finish()
+//    }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

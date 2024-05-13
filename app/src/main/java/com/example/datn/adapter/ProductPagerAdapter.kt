@@ -9,6 +9,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
+import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 import com.velmurugan.paging3android.ProductType
 
@@ -37,7 +38,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         val price = holder.itemView.findViewById<TextView>(R.id.txtPriceProduct)
         val image = holder.itemView.findViewById<ImageView>(R.id.imageProduct)
         text.text = product.name
-        price.text = product.price.toString()
+        price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
 
         Picasso.get().load(product.image_url).into(image)
 

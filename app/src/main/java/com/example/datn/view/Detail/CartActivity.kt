@@ -115,6 +115,7 @@ class CartActivity : AppCompatActivity() {
             when(it){
                 is ResponseResult.Success -> {
                     startActivity(Intent(this@CartActivity,OrdersActivity::class.java))
+                    finish()
                 }
 
                 is ResponseResult.Error -> {

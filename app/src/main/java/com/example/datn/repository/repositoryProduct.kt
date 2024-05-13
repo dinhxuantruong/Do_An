@@ -4,6 +4,7 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.addCart
 import com.example.datn.utils.network.RetrofitInstance
@@ -117,4 +118,13 @@ class repositoryProduct() {
     suspend fun checkoutOrders() : Response<resultCart>{
         return RetrofitInstance.appApi.checkoutOrders()
     }
+
+    suspend fun createAddOrders() : Response<ResultMessage>{
+        return RetrofitInstance.appApi.createAddOrders()
+    }
+
+    suspend fun getAllOrdersPending() : Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrdersPending()
+    }
+
 }

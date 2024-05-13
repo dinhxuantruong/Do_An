@@ -67,6 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
         <LinearLayout
+            android:id="@+id/moreAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F4F4F4"
@@ -78,7 +79,7 @@
                 android:layout_marginTop="6dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
-                android:paddingRight="16dp">
+                android:paddingEnd="16dp">
 
                 <ImageView
                     android:id="@+id/imageView3"
@@ -205,7 +206,17 @@
                         android:textColor="@color/black"
                         android:text="Chọn phương thức thanh toán"
                         android:textSize="18sp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:text="Xem thêm >"
+                        android:paddingRight="16dp"
+                        android:fontFamily="@font/roboto"
+                        android:textSize="12sp"
+                        android:gravity="end"
+                        android:textColor="@color/colorPrimary"
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
@@ -222,7 +233,7 @@
                         android:layout_height="wrap_content">
                         <ImageView
                             android:layout_marginLeft="16dp"
-                            android:src="@drawable/bank"
+                            android:src="@drawable/cod"
                             android:id="@+id/imageView2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -234,14 +245,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="46dp"
-                            android:text="Thanh toán qua thẻ ngân hàng"
+                            android:text="Thanh toán khi nhận hàng"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <CheckBox
-                            android:id="@+id/bankCheckBox"
+                            android:id="@+id/codCheckBox"
+                            android:checked="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -272,7 +284,7 @@
                         <ImageView
                             android:id="@+id/codImage"
                             android:layout_marginLeft="16dp"
-                            android:src="@drawable/cod"
+                            android:src="@drawable/bank"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -283,16 +295,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="46dp"
-                            android:text="Thanh toán khi nhận hàng"
+                            android:text="Thanh toán qua thẻ ngân hàng"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <CheckBox
-                            android:id="@+id/codCheckBox"
-                            android:checked="true"
+                            android:id="@+id/bankCheckBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -468,8 +478,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="8dp"
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -479,7 +489,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotomedium"
                 android:gravity="end"
-                android:text="Tổng cộng"
+                android:text="@string/count"
                 android:textSize="18sp" />
 
             <TextView
@@ -489,7 +499,7 @@
                 android:layout_gravity="top"
                 android:fontFamily="@font/robotobold"
                 android:gravity="end"
-                android:text="0 đ"
+                android:text="@string/zero"
                 android:textColor="#FF0000"
                 android:textSize="20sp" />
 
