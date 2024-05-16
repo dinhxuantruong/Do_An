@@ -9,9 +9,16 @@ import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.apiAddress.resultHuyen
+import com.example.datn.data.dataresult.apiAddress.resultListAddress
+import com.example.datn.data.dataresult.apiAddress.resultTInh
+import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.model.AddressRequest
+
 import com.example.datn.data.model.Register
+import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
@@ -160,9 +167,27 @@ interface myApi {
 
     //create order
     @POST("product/order/by/user")
-    suspend fun createAddOrders() : Response<ResultMessage>
+    suspend fun createAddOrders(@Body addressRequest: AddressRequest): Response<ResultMessage>
 
     //get all orders
     @GET("product/pending/orders")
     suspend fun getAllOrdersPending() : Response<ResultOrders>
+
+    // api tỉnh thành
+    @GET("api-tinhthanh/1/0.htm")
+    suspend fun getProvinces(): Response<resultTInh>
+
+    @GET("api-tinhthanh/2/{provinceId}.htm")
+    suspend fun getDistricts(@Path("provinceId") provinceId: String): Response<resultHuyen>
+
+    @GET("api-tinhthanh/3/{districtId}.htm")
+    suspend fun getWards(@Path("districtId") districtId: String): Response<resultXa>
+
+    //add address
+    @POST("product/add/user/addresses")
+    suspend fun addAddressUser(@Body address : addAddress) : Response<ResultMessage>
+
+    //all địa chi
+    @GET("product/get/all/address")
+    suspend fun getAllAddress() : Response<resultListAddress>
 }

@@ -4,9 +4,16 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.apiAddress.resultHuyen
+import com.example.datn.data.dataresult.apiAddress.resultListAddress
+import com.example.datn.data.dataresult.apiAddress.resultTInh
+import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.model.AddressRequest
+import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
+import com.example.datn.utils.network.RetrofitAddress
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
 import retrofit2.Response
@@ -119,12 +126,31 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.checkoutOrders()
     }
 
-    suspend fun createAddOrders() : Response<ResultMessage>{
-        return RetrofitInstance.appApi.createAddOrders()
+    suspend fun createAddOrders(addressRequest: AddressRequest) : Response<ResultMessage>{
+        return RetrofitInstance.appApi.createAddOrders(addressRequest)
     }
 
     suspend fun getAllOrdersPending() : Response<ResultOrders>{
         return RetrofitInstance.appApi.getAllOrdersPending()
     }
 
+    suspend fun getProvinces() : Response<resultTInh>{
+        return RetrofitAddress.appApi.getProvinces()
+    }
+
+    suspend fun getDistricts(idTinh : String) : Response<resultHuyen>{
+        return RetrofitAddress.appApi.getDistricts(idTinh)
+    }
+
+    suspend fun getWardsXa(districtId : String) : Response<resultXa>{
+        return RetrofitAddress.appApi.getWards(districtId)
+    }
+
+    suspend fun addAddressUser(address: addAddress) : Response<ResultMessage>{
+        return RetrofitInstance.appApi.addAddressUser(address)
+    }
+
+    suspend fun getAllAddress() : Response<resultListAddress>{
+        return RetrofitInstance.appApi.getAllAddress()
+    }
 }

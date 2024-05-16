@@ -52,6 +52,7 @@ class ConfirmFragment : Fragment() {
     }
 
     private fun observeView() {
+
         viewModel.resultOrderPending.observe(viewLifecycleOwner, Observer { data ->
             when(data){
                 is ResponseResult.Success -> {
@@ -59,6 +60,9 @@ class ConfirmFragment : Fragment() {
                     val data2 = data.data.Orders
                     data2.forEach { item ->
                         listPending.add(item)
+                    }
+                    if (listPending.size == 0){
+                        visiGoneView()
                     }
                     adapter = OrderAdapter(requireActivity(),listPending)
                     binding.recyclerViewCart.adapter = adapter!!
@@ -69,6 +73,13 @@ class ConfirmFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun visiGoneView() {
+        binding.apply {
+            txtEmpty.visibility = View.VISIBLE
+            imageView6.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

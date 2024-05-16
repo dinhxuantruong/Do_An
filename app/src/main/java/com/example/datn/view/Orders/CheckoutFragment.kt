@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -15,11 +14,11 @@ import com.example.datn.adapter.checkoutAdapter
 import com.example.datn.data.dataresult.ItemCartsWithTotal
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.model.AddressRequest
 import com.example.datn.databinding.FragmentCheckoutBinding
 import com.example.datn.utils.Extention.NumberExtensions.snackBar
 import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
-import com.example.datn.view.MainView.MainViewActivity
 import com.example.datn.viewmodel.Products.OrderViewModel
 
 class CheckoutFragment : Fragment() {
@@ -29,6 +28,7 @@ class CheckoutFragment : Fragment() {
 
     private val viewModel : OrderViewModel by  activityViewModels()
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
+    private var idaddress : String? = null
     private  var adapter : checkoutAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +55,11 @@ class CheckoutFragment : Fragment() {
             }
         }
 
+        binding.addAddresses.setOnClickListener {
+            //startActivity(Intent(requireActivity(),AddressesActivity::class.java))
+            findNavController().navigate(R.id.action_checkoutFragment_to_listAddressFragment)
+        }
+
         binding.codCheckBox.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked){
                 binding.bankCheckBox.isChecked = false
@@ -70,7 +75,7 @@ class CheckoutFragment : Fragment() {
             ) {
                 requireActivity().snackBar("Chọn phương thức thanh toán.")
             } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                viewModel.createAddOrders()
+                viewModel.createAddOrders(AddressRequest(idaddress))
             }
         }
     }
@@ -129,9 +134,6 @@ class CheckoutFragment : Fragment() {
 
         binding.toolListProduct.setNavigationOnClickListener {
             finishView()
-        }
-        binding.moreAddress.setOnClickListener {
-            findNavController().navigate(R.id.action_checkoutFragment_to_addressesFragment)
         }
 
     }

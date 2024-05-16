@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.model.AddressRequest
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extention.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
@@ -26,11 +27,11 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
 
 
 
-    fun createAddOrders(){
+    fun createAddOrders(addressRequest: AddressRequest){
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.postValue(true)
-                val response = repositoryProduct.createAddOrders()
+                val response = repositoryProduct.createAddOrders(addressRequest)
                 if (response.isSuccessful) {
                     val resultMessage = response.body()!!
                     _resultCreateOrder.postValue(ResponseResult.Success(resultMessage))
