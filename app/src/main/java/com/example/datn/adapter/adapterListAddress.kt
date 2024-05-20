@@ -52,7 +52,7 @@ RecyclerView.Adapter<adapterListAddress.aViewholder>(){
         }
 
         name.text = itemAddress.username
-        phone.text = " ${itemAddress.phone}"
+        phone.text = " | ${itemAddress.phone}"
         address.text = "${itemAddress.address}, Xã ${itemAddress.ward}," +
                 " Huyện ${itemAddress.district}, Tỉnh ${itemAddress.province}"
     }

@@ -6,5 +6,6 @@ data class ResultMessage(
     val status: Boolean,
     val productlikes_count: Int,
     val total: Int,
-    val count : Int
+    val count : Int,
+    val item_count : Int,
 )

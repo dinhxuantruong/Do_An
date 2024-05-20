@@ -1,15 +1,17 @@
 package com.example.datn.viewmodel.Products
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.ErrorBodyMessage.getErrorBodyMessage
+import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -25,8 +27,62 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
     private val _resultCreateOrder : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultCreateOrder : LiveData<ResponseResult<ResultMessage>> get() =  _resultCreateOrder
 
+    private val _resultDefaultAddress : MutableLiveData<ResponseResult<resultDefault>> = MutableLiveData()
+    val resultDefaultAddress : LiveData<ResponseResult<resultDefault>> get() =  _resultDefaultAddress
 
+    private val _resultDetailAddress : MutableLiveData<ResponseResult<resultDefault>> = MutableLiveData()
+    val resultDetailAddress : LiveData<ResponseResult<resultDefault>> get() =  _resultDetailAddress
 
+    fun getDetailAddress(idAddress : String?){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.getDetailAddress(idAddress)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN",resultBody.toString())
+                    _resultDetailAddress.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultDetailAddress.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultDetailAddress.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultDetailAddress.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultDetailAddress.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+    fun getDefaultAddress(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.getDefaultAddress()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN",resultBody.toString())
+                    _resultDefaultAddress.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultDefaultAddress.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultDefaultAddress.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultDefaultAddress.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultDefaultAddress.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
     fun createAddOrders(addressRequest: AddressRequest){
         viewModelScope.launch(Dispatchers.IO) {
             try {

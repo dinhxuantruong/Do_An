@@ -2,9 +2,11 @@ package com.example.datn.view.Orders
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,8 +18,8 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.databinding.FragmentCheckoutBinding
-import com.example.datn.utils.Extention.NumberExtensions.snackBar
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.viewmodel.Products.OrderViewModel
 
@@ -35,13 +37,16 @@ class CheckoutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
        _binding = FragmentCheckoutBinding.inflate(inflater,container,false)
-
         init()
         viewModel.checkoutOrders()
+        if(OrdersActivity.idAddress == null){
+            viewModel.getDefaultAddress()
+        }else{
+            viewModel.getDetailAddress(OrdersActivity.idAddress.toString())
+        }
         observeView()
 
         onClickButton()
-
         return binding.root
     }
 
@@ -56,8 +61,10 @@ class CheckoutFragment : Fragment() {
         }
 
         binding.addAddresses.setOnClickListener {
-            //startActivity(Intent(requireActivity(),AddressesActivity::class.java))
             findNavController().navigate(R.id.action_checkoutFragment_to_listAddressFragment)
+        }
+        binding.addAddresses2.setOnClickListener {
+          startActivity(Intent(requireActivity(),AddressesActivity::class.java))
         }
 
         binding.codCheckBox.setOnCheckedChangeListener{_, isChecked ->
@@ -75,12 +82,48 @@ class CheckoutFragment : Fragment() {
             ) {
                 requireActivity().snackBar("Chọn phương thức thanh toán.")
             } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                viewModel.createAddOrders(AddressRequest(idaddress))
+                viewModel.createAddOrders(AddressRequest(OrdersActivity.idAddress.toString()))
             }
         }
     }
 
     private fun observeView() {
+            viewModel.resultDefaultAddress.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ResponseResult.Success -> {
+                        binding.addAddresses2.visibility = View.GONE
+                        binding.addAddresses.visibility = View.VISIBLE
+                        val data = result.data.default_address
+                        OrdersActivity.idAddress = data.id
+                        binding.tvName.text = data.username
+                        binding.tvSdt.text = " | ${data.phone}"
+                        binding.tvAddress.text =
+                            "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
+                    }
+
+                    is ResponseResult.Error -> {
+                        binding.addAddresses2.visibility = View.VISIBLE
+                        binding.addAddresses.visibility = View.GONE
+                    }
+                }
+
+        }
+            viewModel.resultDetailAddress.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ResponseResult.Success -> {
+                        val data = result.data.default_address
+                        OrdersActivity.idAddress = data.id
+                        binding.tvName.text = data.username
+                        binding.tvSdt.text = " | ${data.phone}"
+                        binding.tvAddress.text =
+                            "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
+                    }
+
+                    is ResponseResult.Error -> {
+                        //
+                    }
+                }
+        }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
@@ -138,18 +181,30 @@ class CheckoutFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(OrdersActivity.idAddress == null){
+            viewModel.getDefaultAddress()
+        }else{
+            viewModel.getDetailAddress(OrdersActivity.idAddress.toString())
+        }
+    }
+
     private fun finishView() {
         startActivity(Intent(requireActivity(), CartActivity::class.java))
         requireActivity().finish()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        OrdersActivity.idAddress = null
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
         _binding = null
     }
-
 
 
 }

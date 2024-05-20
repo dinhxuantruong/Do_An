@@ -67,7 +67,7 @@
             android:id="@+id/id_sendImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/plus"
+            android:src="@drawable/photo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -75,15 +75,18 @@
         <EditText
             android:id="@+id/txtMessage"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:padding="6dp"
             android:layout_centerVertical="true"
             android:fontFamily="@font/roboto"
             android:hint="write message here .."
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnSend"
-            app:layout_constraintStart_toEndOf="@+id/id_sendImage"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@drawable/rounded_edittext_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSend"
+        app:layout_constraintStart_toEndOf="@+id/id_sendImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageView
             android:id="@+id/btnSend"

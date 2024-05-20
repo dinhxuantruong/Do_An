@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
 
 import com.example.datn.data.dataresult.ProductTypeX
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
 

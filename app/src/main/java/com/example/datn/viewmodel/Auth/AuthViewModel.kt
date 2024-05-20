@@ -16,7 +16,7 @@ import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.data.model.sendOTP
 import com.example.datn.repository.repositoryAuth
 import com.example.datn.data.dataresult.ResponseResult
-import com.example.datn.utils.Extention.ErrorBodyMessage.getErrorBodyMessage
+import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException

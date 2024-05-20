@@ -9,6 +9,8 @@ import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.apiAddress.Addresse
+import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
@@ -190,4 +192,20 @@ interface myApi {
     //all địa chi
     @GET("product/get/all/address")
     suspend fun getAllAddress() : Response<resultListAddress>
+
+    //lấy địa chỉ mặc định
+    @GET("product/get/default/address")
+    suspend fun getDefaultAddress() : Response<resultDefault>
+
+    //Lấy địa chỉ theo id
+    @GET("product/get/detail/address/user/{idaddess}")
+    suspend fun getDetailAddress(@Path("idaddess") idaddess : String?) : Response<resultDefault>
+
+    //get cart count
+    @GET("product/get/cart/count/user")
+    suspend fun getCartCount() : Response<ResultMessage>
+
+    //tìm kiếm sản phẩm
+    @GET("product/search/type/all")
+    suspend fun getSearchProduct(@Query("name") name : String) : Response<ProductType>
 }

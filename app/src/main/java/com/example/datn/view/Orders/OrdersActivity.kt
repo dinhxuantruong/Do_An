@@ -1,20 +1,22 @@
 package com.example.datn.view.Orders
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.datn.R
 import com.example.datn.databinding.ActivityOrdersBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.view.MainView.MainViewActivity
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
 
 class OrdersActivity : AppCompatActivity() {
-    private var _binding : ActivityOrdersBinding? = null
+    private var _binding: ActivityOrdersBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel : OrderViewModel
+    private lateinit var viewModel: OrderViewModel
+
+    companion object {
+        var idAddress: Int? = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityOrdersBinding.inflate(layoutInflater)
@@ -22,7 +24,7 @@ class OrdersActivity : AppCompatActivity() {
 
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
-        viewModel = ViewModelProvider(this@OrdersActivity,vmFactory)[OrderViewModel::class.java]
+        viewModel = ViewModelProvider(this@OrdersActivity, vmFactory)[OrderViewModel::class.java]
 
     }
 //    override fun onBackPressed() {
@@ -32,6 +34,6 @@ class OrdersActivity : AppCompatActivity() {
 //    }
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+    _binding = null
     }
 }

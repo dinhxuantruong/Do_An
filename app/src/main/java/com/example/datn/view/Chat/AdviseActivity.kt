@@ -1,6 +1,9 @@
 package com.example.datn.view.Chat
 
+
 import android.content.Intent
+
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +26,7 @@ class AdviseActivity : AppCompatActivity() {
     private val auth get() = _auth!!
     private lateinit var refUsers: DatabaseReference
     private lateinit var id: String
+    private val REQUEST_CALL_PERMISSION = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityAdviseBinding.inflate(layoutInflater)
@@ -50,7 +54,14 @@ class AdviseActivity : AppCompatActivity() {
         binding.btnRegister.setOnClickListener {
             register()
         }
+        binding.btnCall.setOnClickListener {
+            val numberPhone = "0373497770"
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(numberPhone)))
+            startActivity(intent)
+        }
     }
+
+
 
     private fun logout() {
         FirebaseAuth.getInstance().signOut()

@@ -6,6 +6,9 @@ import android.os.Bundle
 import com.example.datn.databinding.ActivityMainBinding
 
 import com.example.datn.view.Auth.AuthActivity
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
+
 
 class MainActivity : AppCompatActivity() {
     private var _binding : ActivityMainBinding? = null

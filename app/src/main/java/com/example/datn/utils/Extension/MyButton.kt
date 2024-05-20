@@ -1,4 +1,4 @@
-package com.example.datn.utils.Extention
+package com.example.datn.utils.Extension
 
 import android.content.Context
 import android.content.res.Resources

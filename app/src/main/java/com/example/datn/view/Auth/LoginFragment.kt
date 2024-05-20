@@ -18,8 +18,8 @@ import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.data.dataresult.ResponseResult
-import com.example.datn.utils.Extention.LiveDataExtensions.observeOnce
-import com.example.datn.utils.Extention.LiveDataExtensions.observeOnceAfterInit
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.utils.SharePreference.UserPreferences
 import com.example.datn.utils.network.Constance.Companion.CLIENT_ID
@@ -260,6 +260,10 @@ class LoginFragment : Fragment() {
         viewModel.loginWithGoogle.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseResult.Success -> {
+                    val userPreferences = UserPreferences(requireContext())
+                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){data ->
+                        RetrofitInstance.Token = data.toString()
+                    }
                     startActivity(Intent(requireActivity(), MainViewActivity::class.java))
                     requireActivity().finish()
                 }
@@ -309,6 +313,7 @@ class LoginFragment : Fragment() {
         viewModel.googleResult.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseResult.Success -> {
+                    RetrofitInstance.Token = it.data.access_token
                     prefManager.setLogin(true)
                     prefManager.setFlag(1)
                     prefManager.saveGoogleRefreshToken(it.data.refresh_token)

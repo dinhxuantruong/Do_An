@@ -25,6 +25,7 @@ class MainViewActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private var _prefManager: PrefManager? = null
     private val prefManager get() = _prefManager!!
+
     private lateinit var viewModel: AuthViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -3,7 +3,6 @@ package com.example.datn.adapter
 import android.app.Activity
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
 import com.example.datn.data.dataresult.ItemCartsWithTotal
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
 class cartAdapter2(

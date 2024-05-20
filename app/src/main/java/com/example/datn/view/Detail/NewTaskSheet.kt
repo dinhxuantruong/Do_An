@@ -19,10 +19,10 @@ import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.model.addCart
 import com.example.datn.databinding.FragmentNewTaskSheetBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.LiveDataExtensions.observeOnce
-import com.example.datn.utils.Extention.LiveDataExtensions.observeOnceAfterInit
-import com.example.datn.utils.Extention.NumberExtensions.snackBar
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.ViewModelDetailProduct
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -153,6 +153,7 @@ class NewTaskSheet : BottomSheetDialogFragment() {
     private fun handleResult(result: ResponseResult<ResultMessage>) {
         when (result) {
             is ResponseResult.Success -> {
+               viewModel.getCartCount()
                 dismiss()
            requireActivity().snackBar(result.data.message)
             }

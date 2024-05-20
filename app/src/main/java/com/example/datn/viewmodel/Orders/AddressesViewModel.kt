@@ -13,7 +13,7 @@ import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.model.addAddress
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.ErrorBodyMessage.getErrorBodyMessage
+import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -40,6 +40,8 @@ class AddressesViewModel(private val repositoryProduct: repositoryProduct) : Vie
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+
+
 
     fun getAllAddress(){
         viewModelScope.launch(Dispatchers.IO) {

@@ -3,7 +3,7 @@ package com.example.datn.utils.SharePreference
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.datn.utils.Extention.CryptoHelper
+import com.example.datn.utils.Extension.CryptoHelper
 
 class PrefManager(var context: Context) {
     val PRIVATE_MODE = 0

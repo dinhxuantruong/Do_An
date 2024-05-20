@@ -1,5 +1,6 @@
 package com.example.datn.view.Detail
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -7,10 +8,13 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.OvershootInterpolator
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,9 +29,9 @@ import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.databinding.ActivityProductBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.NumberExtensions.formatNumber
-import com.example.datn.utils.Extention.NumberExtensions.snackBar
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.formatNumber
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.ViewModelDetailProduct
 
@@ -40,23 +44,35 @@ class ProductActivity : AppCompatActivity() {
     private lateinit var listProductSame: MutableList<ProductTypeX>
     private  var adapter: productAdapter? = null
     private var id = 0
+    private var cartQuantity : Int = 0
     companion object {
         var isLoggedInFirstTime = false
     }
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        id = intent.getIntExtra("id", 0)
-        Log.d("MainActivity", id.toString())
-
         init()
-
+        id = intent.getIntExtra("id", 0)
         binding.btnCart.setOnClickListener {
             NewTaskSheet().show(supportFragmentManager, "New Task Sheet")
         }
-
+        viewModel.getCartCount()
+        viewModel.resultGetCartCount.observe(this@ProductActivity) { result ->
+            when (result) {
+                is ResponseResult.Success -> {
+                    cartQuantity = result.data.item_count
+                    this@ProductActivity.invalidateOptionsMenu()  // Yêu cầu cập nhật lại menu
+                }
+                is ResponseResult.Error -> {
+                    // Xử lý lỗi
+                }
+            }
+        }
         viewModel.getDetailProduct(id)
         viewModel.resultDetail.observe(this) {
             when (it) {
@@ -167,12 +183,16 @@ class ProductActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        setSupportActionBar(binding.toolbar)
-    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.cart, menu)
+        val menuItem  = menu.findItem(R.id.cart_id)
+        val actionView = menuItem.actionView
+        val cartIcon = actionView!!.findViewById<TextView>(R.id.txtCartView2)
+        cartIcon.text = cartQuantity.toString()
+        cartIcon.visibility = if (cartQuantity == 0) View.GONE else View.VISIBLE
+        actionView.setOnClickListener {
+            onOptionsItemSelected(menuItem)
+        }
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -185,7 +205,7 @@ class ProductActivity : AppCompatActivity() {
         }
     }
     private fun init() {
-
+        setSupportActionBar(binding.toolbar)
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(this, vmFactory)[ViewModelDetailProduct::class.java]
@@ -255,7 +275,10 @@ class ProductActivity : AppCompatActivity() {
 //        return super.onOptionsItemSelected(item)
 //    }
 
-
+    override fun onResume() {
+        super.onResume()
+        viewModel.getCartCount()
+    }
     override fun onDestroy() {
         super.onDestroy()
         isLoggedInFirstTime = false

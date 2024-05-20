@@ -26,14 +26,5 @@
         android:id="@+id/listAddressFragment"
         android:name="com.example.datn.view.Orders.ListAddressFragment"
         android:label="fragment_list_address"
-        tools:layout="@layout/fragment_list_address" >
-        <action
-            android:id="@+id/action_listAddressFragment_to_createAddressFragment"
-            app:destination="@id/createAddressFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/createAddressFragment"
-        android:name="com.example.datn.view.Orders.CreateAddressFragment"
-        android:label="fragment_create_address"
-        tools:layout="@layout/fragment_create_address" />
+        tools:layout="@layout/fragment_list_address" />
 </navigation>

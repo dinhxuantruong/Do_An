@@ -8,10 +8,9 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
-import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.addCart
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.ErrorBodyMessage.getErrorBodyMessage
+import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -35,7 +34,29 @@ class ViewModelDetailProduct(private val repositoryProduct: repositoryProduct) :
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+    private val _resultGetCartCount : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultGetCartCount : LiveData<ResponseResult<ResultMessage>> get() =  _resultGetCartCount
 
+    fun getCartCount(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repositoryProduct.getCartCount()
+                if (response.isSuccessful) {
+                    val logout = response.body()!!
+                    _resultGetCartCount.postValue(ResponseResult.Success(logout))
+                } else {
+                    val errorMessage = "Logout unsuccessful: ${response.message()}"
+                    _resultGetCartCount.postValue(ResponseResult.Error(errorMessage))
+                }
+            } catch (e: IOException) {
+                _resultGetCartCount.postValue(ResponseResult.Error("Network connection error2!"))
+            } catch (e: HttpException) {
+                _resultGetCartCount.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultGetCartCount.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }
+        }
+    }
     fun addToCart(cart : addCart) {
         viewModelScope.launch(Dispatchers.IO) {
             try {

@@ -10,17 +10,27 @@ class MainViewModelFactory(private val repositoryProduct: repositoryProduct) : V
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(repositoryProduct) as T
             }
+
             modelClass.isAssignableFrom(ViewModelDetailProduct::class.java) -> {
                 ViewModelDetailProduct(repositoryProduct) as T
             }
+
             modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> {
                 FavoriteViewModel(repositoryProduct) as T
             }
+
             modelClass.isAssignableFrom(CartViewModel::class.java) -> {
                 CartViewModel(repositoryProduct) as T
-            }  modelClass.isAssignableFrom(OrderViewModel::class.java) -> {
+            }
+
+            modelClass.isAssignableFrom(OrderViewModel::class.java) -> {
                 OrderViewModel(repositoryProduct) as T
             }
+
+            modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
+                SearchViewModel(repositoryProduct) as T
+            }
+
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

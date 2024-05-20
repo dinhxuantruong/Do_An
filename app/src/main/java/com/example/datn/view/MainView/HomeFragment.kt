@@ -1,6 +1,7 @@
 package com.example.datn.view.MainView
 
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,9 +14,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
@@ -33,17 +38,20 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.view.Detail.ListActivity
 import com.example.datn.view.Detail.ProductActivity
+import com.example.datn.view.Search.ListSearchActivity
 import com.example.datn.viewmodel.Products.HomeViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
 
 
 @Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var _viewModel: HomeViewModel? = null
+    private lateinit var viewModel: HomeViewModel
 
-    private val viewModel get() = _viewModel!!
+    //private val viewModel get() = _viewModel!!
     private lateinit var listImageSlide: MutableList<SlideModel>
 
     private lateinit var listGrid: MutableList<categoryfilter>
@@ -57,30 +65,40 @@ class HomeFragment : Fragment() {
     private var listProductAdapter: productAdapter? = null
     private var listProductTimeAdapter: productAdapter? = null
     private var listImageOutAdapter: ImageOutAdapter? = null
+
+    private var cartQuantity : Int = 0
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val repositoryProduct = repositoryProduct()
-        val vmFactory = MainViewModelFactory(repositoryProduct)
-        _viewModel = ViewModelProvider(requireActivity(), vmFactory)[HomeViewModel::class.java]
 
 
+       init()
+        viewModel.getCartCount()
+        viewModel.resultGetCartCount.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResponseResult.Success -> {
+                    cartQuantity = result.data.item_count
+                    requireActivity().invalidateOptionsMenu()  // Yêu cầu cập nhật lại menu
+                }
+                is ResponseResult.Error -> {
+                    // Xử lý lỗi
+                }
+            }
+        }
 
-        init()
-
-
-        viewModel.getImageSlideAndAllProductsType()
         observeView()
-
-
-
-
-
+        binding.btnSearch.setOnClickListener {
+            startActivity(Intent(requireActivity(),ListSearchActivity::class.java))
+        }
 
         return binding.root
     }
+
+
 
     private fun observeView() {
 
@@ -323,16 +341,35 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val repositoryProduct = repositoryProduct()
+        val vmFactory = MainViewModelFactory(repositoryProduct)
+        viewModel = ViewModelProvider(requireActivity(), vmFactory)[HomeViewModel::class.java]
+        viewModel.getImageSlideAndAllProductsType()
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getCartCount()
     }
 
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_menu, menu)
+        val menuItem  = menu.findItem(R.id.icCart)
+        val actionView = menuItem.actionView
+        val cartIcon = actionView!!.findViewById<TextView>(R.id.txtCartView)
+        cartIcon.text = cartQuantity.toString()
+        cartIcon.visibility = if (cartQuantity == 0) View.GONE else View.VISIBLE
+        actionView.setOnClickListener {
+            onOptionsItemSelected(menuItem)
+        }
         super.onCreateOptionsMenu(menu, inflater)
+
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -361,8 +398,8 @@ class HomeFragment : Fragment() {
         listProductTimeAdapter = null
         listImageOutAdapter = null
         listProductAdapter = null
-        _viewModel?.cancelJobs()
-        _viewModel = null
+//        _viewModel?.cancelJobs()
+//        _viewModel = null
         _binding?.appBarLayout?.removeAllViews()
         binding.imageSlider.stopSliding()
         _binding = null

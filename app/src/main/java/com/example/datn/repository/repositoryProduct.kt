@@ -4,6 +4,8 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.Result_slideimages
+import com.example.datn.data.dataresult.apiAddress.Addresse
+import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
@@ -152,5 +154,21 @@ class repositoryProduct() {
 
     suspend fun getAllAddress() : Response<resultListAddress>{
         return RetrofitInstance.appApi.getAllAddress()
+    }
+
+    suspend fun getDefaultAddress() : Response<resultDefault> {
+        return RetrofitInstance.appApi.getDefaultAddress()
+    }
+
+    suspend fun getDetailAddress(idAddress : String?) :Response<resultDefault>{
+        return RetrofitInstance.appApi.getDetailAddress(idAddress)
+    }
+
+
+    suspend fun getCartCount() : Response<ResultMessage>{
+        return RetrofitInstance.appApi.getCartCount()
+    }
+    suspend fun getSearchProduct(name : String) : Response<ProductType>{
+        return RetrofitInstance.appApi.getSearchProduct(name)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.datn.utils.Extention
+package com.example.datn.utils.Extension
 
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec

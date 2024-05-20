@@ -10,4 +10,7 @@
     <color name="shimmer_color">#C2C2C2</color>
     <color name="size">#FBFBFB</color>
     <color name="isCheckFailed">#958D8D</color>
+    <color name="colorPrimary2">#272727</color>
+    <color name="colorPrimaryDark2">#000000</color>
+    <color name="colorAccent2">#E53935</color>
 </resources>

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.example.datn.R
 import com.example.datn.adapter.productAdapter
+import com.example.datn.adapter.productAdapterAll
 import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.databinding.ActivityListBinding
 import com.example.datn.repository.repositoryProduct
@@ -16,7 +17,7 @@ import com.example.datn.viewmodel.Products.MainViewModelFactory
 
 class ListActivity : AppCompatActivity() {
     lateinit var viewModel: HomeViewModel
-    private lateinit var adapter: productAdapter
+    private lateinit var adapter: productAdapterAll
     private var _binding: ActivityListBinding? = null
     private val binding get() = _binding!!
     private lateinit var listProduct: MutableList<ProductTypeX>
@@ -79,7 +80,7 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerview(listProduct : MutableList<ProductTypeX>){
-        adapter = productAdapter(this, object : productAdapter.ClickListener2 {
+        adapter = productAdapterAll(this, object : productAdapter.ClickListener2 {
             override fun onClickedItem(itemProduct: ProductTypeX) {
                 val intent = Intent(this@ListActivity,ProductActivity::class.java)
                 intent.putExtra("id",itemProduct.id)

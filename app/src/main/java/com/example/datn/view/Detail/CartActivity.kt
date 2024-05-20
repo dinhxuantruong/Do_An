@@ -2,10 +2,10 @@ package com.example.datn.view.Detail
 
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -20,9 +20,9 @@ import com.example.datn.data.dataresult.ItemCartsWithTotal
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.databinding.ActivityCartBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.MyButton
-import com.example.datn.utils.Extention.NumberExtensions.snackBar
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.MyButton
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Orders.OrdersActivity
 import com.example.datn.viewmodel.Products.CartViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
@@ -90,19 +90,7 @@ class CartActivity : AppCompatActivity() {
         binding.toolBarCart.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.deleteAllCart -> {
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("Xác nhận xóa")
-                    builder.setMessage("Bạn có chắc chắn muốn xóa toàn bộ sản sản phẩm khỏi giỏ hàng không?")
-                    builder.setPositiveButton("Xóa") { dialog, _ ->
-                        // Gọi hàm xóa sản phẩm yêu thích
-                        viewModel.deleteCart()
-                        dialog.dismiss()
-                    }
-                    builder.setNegativeButton("Hủy") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val dialog = builder.create()
-                    dialog.show()
+                    viewDialog("Bạn có chắc chắn muốn xóa toàn bộ sản sản phẩm khỏi giỏ hàng không?",true,null)
                 }
             }
             true
@@ -254,19 +242,7 @@ class CartActivity : AppCompatActivity() {
                                     if (!minusCheck){
                                         viewModel.minusItemCart(itemCart.id)
                                     }else{
-                                        val builder = AlertDialog.Builder(this@CartActivity)
-                                        builder.setTitle("Xác nhận xóa")
-                                        builder.setMessage("Bạn có chắc chắn muốn xóa sản sản phẩm khỏi giỏ hàng không?")
-                                        builder.setPositiveButton("Xóa") { dialog, _ ->
-                                            // Gọi hàm xóa sản phẩm yêu thích
-                                            viewModel.minusItemCart(itemCart.id)
-                                            dialog.dismiss()
-                                        }
-                                        builder.setNegativeButton("Hủy") { dialog, _ ->
-                                            dialog.dismiss()
-                                        }
-                                        val dialog = builder.create()
-                                        dialog.show()
+                                        viewDialog("Bạn có chắc chắn muốn xóa sản sản phẩm khỏi giỏ hàng không?",false,itemCart.id)
                                     }
                                 }
 
@@ -307,6 +283,27 @@ class CartActivity : AppCompatActivity() {
         }
     }
 
+    private fun viewDialog(message : String, check : Boolean,itemCart :Int?){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Xác nhận xóa")
+        builder.setMessage(message)
+        builder.setPositiveButton("Xóa") { dialog, _ ->
+            // Gọi hàm xóa sản phẩm yêu thích
+            if (check) {
+                viewModel.deleteCart()
+            }else{
+                viewModel.minusItemCart(itemCart!!)
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Hủy") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+        val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+        negativeButton?.setTextColor(resources.getColor(android.R.color.black))
+    }
     private fun visibilityGone() {
         binding.layoutCart.visibility = View.GONE
         binding.toolBarCart.menu.clear()

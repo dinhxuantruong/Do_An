@@ -20,7 +20,7 @@ import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.sendOTP
 import com.example.datn.databinding.FragmentOtpBinding
 import com.example.datn.data.dataresult.ResponseResult
-import com.example.datn.utils.Extention.EmailType
+import com.example.datn.utils.Extension.EmailType
 import com.example.datn.viewmodel.Auth.AuthViewModel
 
 

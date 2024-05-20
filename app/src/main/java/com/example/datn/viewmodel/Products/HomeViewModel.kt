@@ -2,6 +2,7 @@ package com.example.datn.viewmodel.Products
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -13,6 +14,7 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.Result_slideimages
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.utils.network.Constance.Companion.NETWORK_PAGE_SIZE
 import com.velmurugan.paging3android.Adapter.CustomPagingSource
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class HomeViewModel(private val repositoryProduct: repositoryProduct) : ViewModel() {
+class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewModel() {
 
     private val _resultImageSlide: MutableLiveData<ResponseResult<Result_slideimages>> =
         MutableLiveData()
@@ -45,6 +47,30 @@ class HomeViewModel(private val repositoryProduct: repositoryProduct) : ViewMode
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _resultGetCartCount : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultGetCartCount : LiveData<ResponseResult<ResultMessage>> get() =  _resultGetCartCount
+
+    fun getCartCount(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repositoryProduct.getCartCount()
+                if (response.isSuccessful) {
+                    val logout = response.body()!!
+                    _resultGetCartCount.postValue(ResponseResult.Success(logout))
+                } else {
+                    val errorMessage = "Logout unsuccessful: ${response.message()}"
+                    _resultGetCartCount.postValue(ResponseResult.Error(errorMessage))
+                }
+            } catch (e: IOException) {
+                _resultGetCartCount.postValue(ResponseResult.Error("Network connection error2!"))
+            } catch (e: HttpException) {
+                _resultGetCartCount.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultGetCartCount.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }
+        }
+    }
     fun getAllProductType() {
         viewModelScope.launch(Dispatchers.IO) {
             try {

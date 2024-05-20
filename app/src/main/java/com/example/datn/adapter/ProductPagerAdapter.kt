@@ -9,7 +9,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 import com.velmurugan.paging3android.ProductType
 
@@ -53,7 +53,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_search_item, parent, false)
         return ProductViewHolder(view)
     }
 

@@ -98,6 +98,8 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +108,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         app:spanCount="2"
         tools:itemCount="10"
-        tools:listitem="@layout/item_product" />
+        tools:listitem="@layout/layout_search_item" />
 
     <ProgressBar
         android:id="@+id/progressDialog"

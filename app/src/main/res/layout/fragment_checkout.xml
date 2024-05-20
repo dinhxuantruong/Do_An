@@ -26,8 +26,7 @@
             android:layout_height="36dp"
             android:layout_centerInParent="true"
             android:elevation="100dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:indeterminate="true" />
 
     </RelativeLayout>
 
@@ -74,6 +73,31 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/addAddresses2"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/robotomedium"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:text="+ Thêm địa chỉ"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
                 android:id="@+id/addAddresses"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,6 +161,7 @@
 
 
                         <TextView
+                            android:id="@+id/tvName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
@@ -146,6 +171,7 @@
                             android:textSize="15sp" />
 
                         <TextView
+                            android:id="@+id/tvSdt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
@@ -158,6 +184,7 @@
 
 
                     <TextView
+                        android:id="@+id/tvAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"

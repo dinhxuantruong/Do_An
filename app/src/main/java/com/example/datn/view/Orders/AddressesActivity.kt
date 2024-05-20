@@ -27,7 +27,7 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.model.addAddress
 import com.example.datn.databinding.ActivityAddressesBinding
 import com.example.datn.repository.repositoryProduct
-import com.example.datn.utils.Extention.NumberExtensions.snackBar
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.viewmodel.Orders.AddressesViewModel
 import com.example.datn.viewmodel.Orders.OrdersViewModelFactory
 import com.google.android.gms.common.api.ApiException
@@ -300,6 +300,7 @@ class AddressesActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CONTACT)
     }
 
+    @Deprecated("Deprecated in Java")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -369,8 +370,6 @@ class AddressesActivity : AppCompatActivity() {
                         AdapterView.OnItemClickListener { _, _, i, _ ->
                             idHuyen = result.data.data[i].id
                             viewModel.getWards(idHuyen!!)
-                            Toast.makeText(this@AddressesActivity, idHuyen, Toast.LENGTH_SHORT)
-                                .show()
                             binding.autoCompleXa.setText("")
                             //binding.autoCompleXa.hint = "Phường xã"
                         }

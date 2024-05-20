@@ -1,7 +1,6 @@
 package com.example.datn.adapter
 
 import android.app.Activity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
 import com.example.datn.data.dataresult.orders.Order
-import com.example.datn.utils.Extention.NumberExtensions.toVietnameseCurrency
+import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
 class OrderAdapter(private val activity: Activity, private val listOrder : MutableList<Order>) :

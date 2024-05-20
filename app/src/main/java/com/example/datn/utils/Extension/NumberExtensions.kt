@@ -1,8 +1,6 @@
-package com.example.datn.utils.Extention
+package com.example.datn.utils.Extension
 
 import android.app.Activity
-import android.view.View
-import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
 import java.text.NumberFormat
