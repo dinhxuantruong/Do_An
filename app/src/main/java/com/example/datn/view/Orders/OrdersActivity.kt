@@ -13,10 +13,6 @@ class OrdersActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private lateinit var viewModel: OrderViewModel
 
-    companion object {
-        var idAddress: Int? = null
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityOrdersBinding.inflate(layoutInflater)

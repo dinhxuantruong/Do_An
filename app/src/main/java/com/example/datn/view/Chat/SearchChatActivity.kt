@@ -1,11 +1,13 @@
 package com.example.datn.view.Chat
 
+import FirebaseListenerObserver
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleObserver
 import com.example.datn.adapter.messageAdapter
 import com.example.datn.data.model.Users
 import com.example.datn.databinding.ActivitySearchChatBinding
@@ -26,12 +28,12 @@ class SearchChatActivity : AppCompatActivity() {
     private val adapter get() = _adapter!!
 
     private lateinit var list: ArrayList<Users>
-
     private var firebaseUserId: String? = null
     private var db: DatabaseReference? = null
-    private var dbListener: ValueEventListener? = null
     private var auth: FirebaseAuth? = null
     private var query: Query? = null
+    private val firebaseListeners = mutableListOf<LifecycleObserver>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivitySearchChatBinding.inflate(layoutInflater)
@@ -41,8 +43,10 @@ class SearchChatActivity : AppCompatActivity() {
         retrieveAllUser()
 
         binding.txtSearch.addTextChangedListener(searchWatcher)
+        binding.toolListProduct.setNavigationOnClickListener {
+            finish()
+        }
     }
-
 
     private val searchWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -51,16 +55,15 @@ class SearchChatActivity : AppCompatActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             searchForUsers(s.toString().lowercase(Locale.ROOT))
-
         }
 
         override fun afterTextChanged(s: Editable?) {
-
+            // Không cần thực hiện gì sau khi thay đổi
         }
     }
 
     private fun retrieveAllUser() {
-        dbListener = db!!.addValueEventListener(object : ValueEventListener {
+        val dbListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (binding.txtSearch.text.toString() == "") {
                     if (snapshot.exists()) {
@@ -73,7 +76,8 @@ class SearchChatActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        _adapter = messageAdapter(this@SearchChatActivity,
+                        _adapter = messageAdapter(
+                            this@SearchChatActivity,
                             object : messageAdapter.onClickMessage {
                                 override fun onClick(itemUser: Users) {
                                     intentActivity(itemUser)
@@ -88,9 +92,13 @@ class SearchChatActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {
                 // Xử lý khi có lỗi xảy ra
             }
+        }
+
+        db!!.addValueEventListener(dbListener)
+        firebaseListeners.add(FirebaseListenerObserver(db!!, dbListener).apply {
+            lifecycle.addObserver(this)
         })
     }
-
 
     private fun searchForUsers(str: String) {
         query = FirebaseDatabase.getInstance().reference
@@ -99,7 +107,7 @@ class SearchChatActivity : AppCompatActivity() {
             .startAt(str.toLowerCase(Locale.getDefault()))
             .endAt(str.toLowerCase(Locale.getDefault()) + "\uf8ff")
 
-        dbListener = query!!.addValueEventListener(object : ValueEventListener {
+        val queryListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 list.clear() // Xóa dữ liệu cũ
                 for (snapshot in dataSnapshot.children) {
@@ -112,7 +120,8 @@ class SearchChatActivity : AppCompatActivity() {
                         }
                     }
                 }
-                _adapter = messageAdapter(this@SearchChatActivity,
+                _adapter = messageAdapter(
+                    this@SearchChatActivity,
                     object : messageAdapter.onClickMessage {
                         override fun onClick(itemUser: Users) {
                             intentActivity(itemUser)
@@ -125,13 +134,17 @@ class SearchChatActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
                 // Xử lý khi có lỗi xảy ra
             }
+        }
+
+        query!!.addValueEventListener(queryListener)
+        firebaseListeners.add(FirebaseListenerObserver(query!!, queryListener).apply {
+            lifecycle.addObserver(this)
         })
     }
 
-    private fun intentActivity(itemUser : Users){
-        val intent = Intent(this@SearchChatActivity,ChatActivity::class.java)
-        val id = itemUser.uid
-        intent.putExtra("id",id)
+    private fun intentActivity(itemUser: Users) {
+        val intent = Intent(this@SearchChatActivity, ChatActivity::class.java)
+        intent.putExtra("id", itemUser.uid)
         startActivity(intent)
     }
 
@@ -139,20 +152,17 @@ class SearchChatActivity : AppCompatActivity() {
         list = arrayListOf()
         binding.searchRec.setHasFixedSize(true)
         auth = FirebaseAuth.getInstance()
-        firebaseUserId = auth!!.currentUser!!.uid
+        firebaseUserId = auth?.currentUser?.uid
         db = FirebaseDatabase.getInstance().reference.child("Users")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding.txtSearch.removeTextChangedListener(searchWatcher)
-        db?.removeEventListener(dbListener!!)
-        query?.removeEventListener(dbListener!!)
+        firebaseListeners.forEach { lifecycle.removeObserver(it) }
         query = null
         db = null
         _adapter = null
         _binding = null
     }
-
-
 }

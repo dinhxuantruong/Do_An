@@ -85,7 +85,7 @@
             <TextView
                 android:id="@+id/txtShowAll"
                 android:layout_width="wrap_content"
-                android:text="Xem thêm"
+                android:text="Hiển thị tất cả"
                 android:fontFamily="@font/roboto"
                 android:layout_gravity="center"
                 android:layout_height="wrap_content"/>

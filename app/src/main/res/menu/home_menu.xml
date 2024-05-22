@@ -4,8 +4,8 @@
 
 
     <item android:id="@+id/icNotifi"
-        android:title=""
-        app:showAsAction="ifRoom"
+        android:title="Notification"
+        app:showAsAction="collapseActionView"
         android:icon="@drawable/notifi"/>
 
     <item android:id="@+id/icCart"

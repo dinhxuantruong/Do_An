@@ -101,7 +101,12 @@ class AdviseActivity : AppCompatActivity() {
                 val userHashMap = HashMap<String, Any>()
                 userHashMap["uid"] = id
                 userHashMap["username"] = email
-                userHashMap["profile"] = "https://picsum.photos/200 "
+                val url = prefManager.getUrl()
+                if (url!=null){
+                    userHashMap["profile"] = url
+                }else{
+                    userHashMap["profile"] = "https://picsum.photos/200 "
+                }
                 userHashMap["status"] = "offline"
                 userHashMap["search"] = email.lowercase(Locale.ROOT)
                 refUsers.updateChildren(userHashMap).addOnCompleteListener { task ->

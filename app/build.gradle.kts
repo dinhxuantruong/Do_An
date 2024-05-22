@@ -14,12 +14,14 @@ android {
     namespace = "com.example.datn"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.example.datn"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

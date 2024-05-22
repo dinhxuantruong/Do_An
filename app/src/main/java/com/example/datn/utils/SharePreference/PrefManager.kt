@@ -64,6 +64,14 @@ class PrefManager(var context: Context) {
         editor?.commit()
     }
 
+    fun saveUrl(url: String) {
+        editor?.putString("imageUrl", url)
+        editor?.commit()
+    }
+    fun getUrl() : String? {
+        return preferen?.getString("imageUrl",null)
+    }
+
     fun savePassword(password : String){
         val encryptedPassword = CryptoHelper.encrypt(password)
         editor?.putString("password", encryptedPassword)

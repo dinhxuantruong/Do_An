@@ -265,6 +265,7 @@ class LoginFragment : Fragment() {
                         RetrofitInstance.Token = data.toString()
                     }
                     startActivity(Intent(requireActivity(), MainViewActivity::class.java))
+                    prefManager.saveEmail(it.data.user.email)
                     requireActivity().finish()
                 }
 
@@ -435,6 +436,7 @@ class LoginFragment : Fragment() {
             val authCode = account?.serverAuthCode
             if (account != null) {
                 val idToken = account.idToken
+                prefManager.saveUrl(account.photoUrl.toString())
                 if (idToken != null) {
                     Log.d("MainActivity", "Google ID Token: $idToken")
                     Log.d("MainActivity", "Google Refresh Token: $authCode")

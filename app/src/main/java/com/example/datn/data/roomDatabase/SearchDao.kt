@@ -21,12 +21,14 @@ interface SearchDao {
     suspend fun updateData(person: HistoryItemSearch.SearchHistory)
 
     @Query("select * from search_table order by id asc")
-    fun readAllData() : Flow<List<HistoryItemSearch.SearchHistory>>
-
+    fun readAllData(): Flow<List<HistoryItemSearch.SearchHistory>>
 
     @Query("delete from search_table")
     suspend fun deleteAllData()
 
     @Query("select * from search_table where searchtext like :searchString")
-    fun searchDatabase(searchString : String) : Flow<List<HistoryItemSearch.SearchHistory>>
+    fun searchDatabase(searchString: String): Flow<List<HistoryItemSearch.SearchHistory>>
+
+    @Query("SELECT * FROM search_table WHERE searchtext = :searchText LIMIT 1")
+    suspend fun getSearchHistoryByText(searchText: String): HistoryItemSearch.SearchHistory?
 }

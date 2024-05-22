@@ -30,7 +30,10 @@ class CheckoutFragment : Fragment() {
 
     private val viewModel : OrderViewModel by  activityViewModels()
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
-    private var idaddress : String? = null
+    companion object {
+        var idAddress: Int? = null
+    }
+
     private  var adapter : checkoutAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +42,10 @@ class CheckoutFragment : Fragment() {
        _binding = FragmentCheckoutBinding.inflate(inflater,container,false)
         init()
         viewModel.checkoutOrders()
-        if(OrdersActivity.idAddress == null){
+        if(idAddress == null){
             viewModel.getDefaultAddress()
         }else{
-            viewModel.getDetailAddress(OrdersActivity.idAddress.toString())
+            viewModel.getDetailAddress(idAddress.toString())
         }
         observeView()
 
@@ -82,7 +85,7 @@ class CheckoutFragment : Fragment() {
             ) {
                 requireActivity().snackBar("Chọn phương thức thanh toán.")
             } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                viewModel.createAddOrders(AddressRequest(OrdersActivity.idAddress.toString()))
+                viewModel.createAddOrders(AddressRequest(idAddress.toString()))
             }
         }
     }
@@ -94,7 +97,7 @@ class CheckoutFragment : Fragment() {
                         binding.addAddresses2.visibility = View.GONE
                         binding.addAddresses.visibility = View.VISIBLE
                         val data = result.data.default_address
-                        OrdersActivity.idAddress = data.id
+                        idAddress = data.id
                         binding.tvName.text = data.username
                         binding.tvSdt.text = " | ${data.phone}"
                         binding.tvAddress.text =
@@ -112,7 +115,7 @@ class CheckoutFragment : Fragment() {
                 when (result) {
                     is ResponseResult.Success -> {
                         val data = result.data.default_address
-                        OrdersActivity.idAddress = data.id
+                        idAddress = data.id
                         binding.tvName.text = data.username
                         binding.tvSdt.text = " | ${data.phone}"
                         binding.tvAddress.text =
@@ -181,14 +184,6 @@ class CheckoutFragment : Fragment() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(OrdersActivity.idAddress == null){
-            viewModel.getDefaultAddress()
-        }else{
-            viewModel.getDetailAddress(OrdersActivity.idAddress.toString())
-        }
-    }
 
     private fun finishView() {
         startActivity(Intent(requireActivity(), CartActivity::class.java))
@@ -197,7 +192,7 @@ class CheckoutFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        OrdersActivity.idAddress = null
+        idAddress = null
     }
 
     override fun onDestroyView() {

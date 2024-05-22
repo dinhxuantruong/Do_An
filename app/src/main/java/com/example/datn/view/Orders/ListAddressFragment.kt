@@ -29,6 +29,7 @@ private var _binding : FragmentListAddressBinding? = null
     private lateinit var viewModel: AddressesViewModel
     private lateinit var listAddress : MutableList<Addresse>
     private var adapter : adapterListAddress? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,29 +49,29 @@ private var _binding : FragmentListAddressBinding? = null
         return  binding.root
     }
 
+
     private fun observeView() {
-        viewModel.resultAll.observe(viewLifecycleOwner){result ->
-            when(result) {
+        viewModel.resultAll.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is ResponseResult.Success -> {
                     listAddress.clear()
                     val data = result.data.addresses
-                        data.forEach { item ->
-                            listAddress.add(item)
-                        }
-                        adapter = adapterListAddress(
-                            requireActivity(),
-                            object : adapterListAddress.checkBoxOnClick {
-                                override fun isCheckedItem(itemAddress: Addresse) {
-                                    OrdersActivity.idAddress = itemAddress.id
-                                    findNavController().popBackStack()
-                                }
-                            },
-                            listAddress
-                        )
-                        adapter!!.setCheckedById(OrdersActivity.idAddress!!)
-                        binding.recyclerViewCart.adapter = adapter
+                    data.forEach { item ->
+                        listAddress.add(item)
                     }
-
+                    adapter = adapterListAddress(
+                        requireActivity(),
+                        object : adapterListAddress.checkBoxOnClick {
+                            override fun isCheckedItem(itemAddress: Addresse) {
+                                CheckoutFragment.idAddress = itemAddress.id
+                                findNavController().popBackStack()
+                            }
+                        },
+                        listAddress
+                    )
+                    adapter!!.setCheckedById(CheckoutFragment.idAddress!!)
+                    binding.recyclerViewCart.adapter = adapter
+                }
                 is ResponseResult.Error -> {
                     requireActivity().snackBar(result.message)
                 }
