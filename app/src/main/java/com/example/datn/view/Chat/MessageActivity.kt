@@ -116,6 +116,7 @@ class MessageActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 // Handle error if needed
+                // Handle error if needed
             }
         }
 
