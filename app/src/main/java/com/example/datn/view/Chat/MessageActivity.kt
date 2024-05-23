@@ -9,10 +9,12 @@ import androidx.lifecycle.LifecycleObserver
 import com.example.datn.adapter.messageAdapter
 import com.example.datn.data.model.Chat
 import com.example.datn.data.model.Chatlist
+import com.example.datn.data.model.Token
 import com.example.datn.data.model.Users
 import com.example.datn.databinding.ActivityMessageBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.messaging.FirebaseMessaging
 import com.squareup.picasso.Picasso
 
 class MessageActivity : AppCompatActivity() {
@@ -112,10 +114,17 @@ class MessageActivity : AppCompatActivity() {
                     }
                 }
                 retrieveChatList()
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val refreshToken = task.result
+                            updateToken(refreshToken)
+                    } else {
+                        Log.e("FCM", "Lỗi khi lấy token", task.exception)
+                    }
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error if needed
                 // Handle error if needed
             }
         }
@@ -147,6 +156,12 @@ class MessageActivity : AppCompatActivity() {
         firebaseListeners.add(FirebaseListenerObserver(reference, referenceListener).apply {
             lifecycle.addObserver(this)
         })
+    }
+
+    private fun updateToken(refreshToken: String?) {
+        val ref = FirebaseDatabase.getInstance().reference.child("Tokens")
+        val token1 = Token(refreshToken!!)
+        ref.child(id).setValue(token1)
     }
 
     private fun setView() {

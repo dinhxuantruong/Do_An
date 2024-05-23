@@ -1,17 +1,15 @@
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 
 class FirebaseListenerObserver(
-    private val dbReference: Query,
+    private val databaseReference: Query,
     private val valueEventListener: ValueEventListener
-) : LifecycleObserver {
+) : DefaultLifecycleObserver {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        dbReference.removeEventListener(valueEventListener)
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        databaseReference.removeEventListener(valueEventListener)
     }
-
 }

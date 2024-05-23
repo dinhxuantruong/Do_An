@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,7 +15,6 @@ plugins {
 android {
     namespace = "com.example.datn"
     compileSdk = 34
-
 
     defaultConfig {
         applicationId = "com.example.datn"
@@ -45,9 +46,13 @@ android {
     buildFeatures{
         viewBinding = true
     }
+    packagingOptions {
+        exclude("META-INF/DEPENDENCIES")
+    }
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
     val lifecycle_version = "2.2.0"
 
 // LiveData
@@ -133,6 +138,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    implementation ("com.google.auth:google-auth-library-oauth2-http:1.4.0")
+
 
     implementation ("com.google.dagger:hilt-android:2.47")
     implementation ("androidx.security:security-crypto:1.1.0-alpha06")

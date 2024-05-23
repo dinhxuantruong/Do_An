@@ -1,19 +1,29 @@
 package com.example.datn.view.Chat
 
+import AccessToken
+import FCMAPIService
 import FirebaseListenerObserver
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.adapter.ChatAdapter
+import com.example.datn.data.dataresult.MyResponse
+import com.example.datn.data.model.BodyFCM.Android
+import com.example.datn.data.model.BodyFCM.Message
+import com.example.datn.data.model.BodyFCM.Notification
+import com.example.datn.data.model.BodyFCM.NotifyBody
 import com.example.datn.data.model.Chat
+import com.example.datn.data.model.Token
 import com.example.datn.data.model.Users
 import com.example.datn.databinding.ActivityChatBinding
+import com.example.datn.utils.notification.Client
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +32,12 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ChatActivity : AppCompatActivity() {
     private var _binding: ActivityChatBinding? = null
@@ -37,6 +53,9 @@ class ChatActivity : AppCompatActivity() {
     private val firebaseListeners = mutableListOf<LifecycleObserver>()
 
     private var seenListener: ValueEventListener? = null
+    private var notify = false
+    private var apiService: FCMAPIService? = null
+    private var tokenAccess = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,23 +71,32 @@ class ChatActivity : AppCompatActivity() {
             finish()
         }
         binding.btnSend.setOnClickListener {
+            notify = true
             val message = binding.txtMessage.text.toString().trim()
             if (message.isNotEmpty()) {
                 sendMessageToUser(firebaseUser!!.uid, idUser, message)
                 binding.txtMessage.text.clear()
             }
         }
-
         binding.idSendImage.setOnClickListener {
+            notify = true
             val intent = Intent().apply {
                 action = Intent.ACTION_GET_CONTENT
                 type = "image/*"
             }
             startActivityForResult(Intent.createChooser(intent, "Pick Image"), 438)
         }
+
+        apiService = Client.Client.getClient("https://fcm.googleapis.com/v1/")!!
+            .create(FCMAPIService::class.java)
     }
 
     private fun init() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val accessToken = AccessToken().getAccessToken()
+            Log.e("MAINN2", accessToken.toString())
+            tokenAccess = "Bearer $accessToken"
+        }
         idUser = intent.getStringExtra("id").toString()
         chatList = mutableListOf()
         firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -84,7 +112,7 @@ class ChatActivity : AppCompatActivity() {
                 val user = snapshot.getValue(Users::class.java)!!
                 binding.txtName.text = user.username
                 Picasso.get().load(user.profile).into(binding.image)
-                setViewMessage(firebaseUser!!.uid, idUser, user.profile)
+                setViewMessage(firebaseUser!!.uid, idUser, user.profile)//leak
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -92,9 +120,9 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         reference!!.addValueEventListener(referenceListener)
-        firebaseListeners.add(FirebaseListenerObserver(reference!!, referenceListener).apply {
-            lifecycle.addObserver(this)
-        })
+        val observer = FirebaseListenerObserver(reference!!, referenceListener)
+        firebaseListeners.add(observer)
+        lifecycle.addObserver(observer)
 
         seenMessage(idUser)
     }
@@ -122,13 +150,17 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         receiver.addValueEventListener(referenceListener)
-        firebaseListeners.add(FirebaseListenerObserver(receiver!!, referenceListener).apply {
-            lifecycle.addObserver(this)
-        })
+        val observer = FirebaseListenerObserver(receiver, referenceListener)
+        firebaseListeners.add(observer)
+        lifecycle.addObserver(observer)
     }
 
     private fun sendMessageToUser(sendID: String, receiverId: String, message: String) {
         val reference = FirebaseDatabase.getInstance().reference
+        val chatsListenReference = FirebaseDatabase.getInstance().reference
+            .child("ChatsList")
+            .child(firebaseUser!!.uid)
+            .child(idUser)
         val messageKey = reference.push().key
         val currentTimestamp = System.currentTimeMillis()
 
@@ -144,11 +176,6 @@ class ChatActivity : AppCompatActivity() {
         reference.child("Chats").child(messageKey!!).setValue(messageHasMap)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val chatsListenReference = FirebaseDatabase.getInstance().reference
-                        .child("ChatsList")
-                        .child(firebaseUser!!.uid)
-                        .child(idUser)
-
                     val referenceListener = object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (!snapshot.exists()) {
@@ -167,15 +194,11 @@ class ChatActivity : AppCompatActivity() {
                         }
                     }
                     chatsListenReference.addValueEventListener(referenceListener)
-                    firebaseListeners.add(
-                        FirebaseListenerObserver(
-                            chatsListenReference,
-                            referenceListener
-                        ).apply {
-                            lifecycle.addObserver(this)
-                        })
+                    val observer = FirebaseListenerObserver(chatsListenReference, referenceListener)
+                    firebaseListeners.add(observer)
+                    lifecycle.addObserver(observer)
 
-                    // Update timestamp and lastMessageTimestamp in ChatsList for sender
+                    // Cập nhật timestamp và lastMessageTimestamp trong ChatsList cho người gửi
                     val chatsListSenderReference = FirebaseDatabase.getInstance().reference
                         .child("ChatsList")
                         .child(sendID)
@@ -187,7 +210,7 @@ class ChatActivity : AppCompatActivity() {
 
                     chatsListSenderReference.updateChildren(timestampMapForSender)
 
-                    // Update timestamp and lastMessageTimestamp in ChatsList for receiver
+                    // Cập nhật timestamp và lastMessageTimestamp trong ChatsList cho người nhận
                     val chatsListReceiverReference = FirebaseDatabase.getInstance().reference
                         .child("ChatsList")
                         .child(receiverId)
@@ -200,8 +223,76 @@ class ChatActivity : AppCompatActivity() {
                     chatsListReceiverReference.updateChildren(timestampMapForReceiver)
                 }
             }
+        val referenceNew = FirebaseDatabase.getInstance().reference.child("Users")
+            .child(firebaseUser!!.uid)
+        val referenceListenerNew = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user = snapshot.getValue(Users::class.java)
+                if (notify) {
+                    sendNotification(receiverId, user!!.username, message,"")
+                }
+                notify = false
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle possible errors
+            }
+        }
+        referenceNew.addValueEventListener(referenceListenerNew)
+        val observer = FirebaseListenerObserver(referenceNew, referenceListenerNew)
+        firebaseListeners.add(observer)
+        lifecycle.addObserver(observer)
     }
 
+    private fun sendNotification(receiverId: String, username: String?, message: String,url : String) {
+        val ref = FirebaseDatabase.getInstance().reference.child("Tokens")
+        val query = ref.orderByKey().equalTo(receiverId)
+
+        val newQuery = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (data2 in snapshot.children) {
+                    val token2 = data2.getValue(Token::class.java)
+                    val token = token2!!.token
+                    val android = Android(
+                        Notification("$username: $message", "#1EA0DB", "siuu", "New message",url),
+                        "high"
+                    )
+                    val message  = Message(android,token)
+                    apiService!!.sendNotification(NotifyBody(message), tokenAccess)
+                        .enqueue(object : Callback<MyResponse> {
+                            override fun onResponse(
+                                call: Call<MyResponse>,
+                                response: Response<MyResponse>
+                            ) {
+                                if (response.code() == 200) {
+
+                                } else {
+                                    if (response.body()!!.success != 1) {
+                                        Toast.makeText(
+                                            this@ChatActivity,
+                                            "Failed",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<MyResponse>, t: Throwable) {
+
+                            }
+                        })
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle possible errors
+            }
+        }
+        query.addValueEventListener(newQuery)
+        val observer = FirebaseListenerObserver(query, newQuery)
+        firebaseListeners.add(observer)
+        lifecycle.addObserver(observer)
+    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -241,6 +332,34 @@ class ChatActivity : AppCompatActivity() {
                     messageHasMap["messageID"] = messageId
 
                     ref.child("Chats").child(messageId!!).setValue(messageHasMap)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val referenceNew =
+                                    FirebaseDatabase.getInstance().reference.child("Users")
+                                        .child(firebaseUser!!.uid)
+                                val referenceListenerNew = object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        val user = snapshot.getValue(Users::class.java)
+                                        if (notify) {
+                                            sendNotification(
+                                                idUser,
+                                                user!!.username,
+                                                "send you an image."
+                                            ,url)
+                                        }
+                                        notify = false
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        // Handle possible errors
+                                    }
+                                }
+                                referenceNew.addValueEventListener(referenceListenerNew)
+                                val observer = FirebaseListenerObserver(referenceNew, referenceListenerNew)
+                                firebaseListeners.add(observer)
+                                lifecycle.addObserver(observer)
+                            }
+                        }
                 } else {
                     Toast.makeText(
                         this@ChatActivity,
@@ -271,7 +390,9 @@ class ChatActivity : AppCompatActivity() {
             }
         }
         referenceChat?.addValueEventListener(seenListener!!)
-        firebaseListeners.add(FirebaseListenerObserver(referenceChat!!, seenListener!!))
+        val observer = FirebaseListenerObserver(referenceChat!!, seenListener!!)
+        firebaseListeners.add(observer)
+        lifecycle.addObserver(observer)
     }
 
     override fun onPause() {
@@ -289,3 +410,4 @@ class ChatActivity : AppCompatActivity() {
         _binding = null
     }
 }
+

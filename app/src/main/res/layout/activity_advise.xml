@@ -49,7 +49,7 @@
             app:boxBackgroundMode="none"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
             app:navigationIcon="@drawable/back"
-            app:title="Tư vấn trự tuyến"
+            app:title="Tư vấn trực tuyến"
             app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
