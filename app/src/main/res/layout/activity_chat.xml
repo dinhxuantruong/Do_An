@@ -24,24 +24,31 @@
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/white"
             app:navigationIcon="@drawable/back"
+            app:menu="@menu/chat_menu"
             android:fitsSystemWindows="false"
             app:boxBackgroundMode="none" >
 
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginRight="10dp"
                 android:id="@+id/image"
                 android:src="@drawable/bi"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
-            <TextView
+            <at.blogc.android.views.ExpandableTextView
                 android:id="@+id/txtName"
-                android:layout_width="wrap_content"
-                android:paddingLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:fontFamily="@font/robotobold"
+                android:layout_width="240dp"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/robotomedium"
+                android:maxLines="1"
+                android:text="truongxuan8322d"
+                android:textColor="@color/black"
                 android:textSize="18sp"
-                android:text="Messenger"
-                android:layout_height="wrap_content"/>
+                app:animation_duration="750" />
+
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

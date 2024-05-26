@@ -11,5 +11,6 @@ data class ProductTypeX(
     val name: String,
     val price: Int,
     val quantity : String,
-    val sold_quantity : Int
+    val sold_quantity : Int,
+    val id_category : String
 )

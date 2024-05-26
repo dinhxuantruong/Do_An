@@ -1,6 +1,7 @@
 package com.example.datn.utils.network
 
 
+import com.example.datn.service.AdminApi
 import com.example.datn.service.myApi
 import com.example.datn.utils.network.Constance.Companion.BASE_URL
 import okhttp3.OkHttpClient
@@ -40,6 +41,10 @@ object RetrofitInstance {
 
     val appApi: myApi by lazy {
         retrofit.create(myApi::class.java)
+    }
+
+    val adminApi: AdminApi by lazy {
+        retrofit.create(AdminApi::class.java)
     }
 }
 

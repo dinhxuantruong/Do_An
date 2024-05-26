@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/listAdd"
+        android:title=""
+        android:icon="@drawable/listplus"/>
+
+    <item android:id="@+id/listOder"
+        android:title=""
+        android:icon="@drawable/donhang"/>
+
+    <item android:id="@+id/listMore"
+        android:title=""
+        android:icon="@drawable/iconsetting"/>
+</menu>

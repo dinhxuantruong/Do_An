@@ -5,10 +5,15 @@ import FCMAPIService
 import FirebaseListenerObserver
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleObserver
@@ -37,6 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
+import com.example.datn.R
 import retrofit2.Response
 
 class ChatActivity : AppCompatActivity() {
@@ -66,6 +72,23 @@ class ChatActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.chat_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.btnPhone -> {
+                val numberPhone = "0373497770"
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(numberPhone)))
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun setupClickListeners() {
         binding.toolbarChatLDetails.setNavigationOnClickListener {
             finish()
@@ -92,6 +115,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        setSupportActionBar(binding.toolbarChatLDetails)
         CoroutineScope(Dispatchers.IO).launch {
             val accessToken = AccessToken().getAccessToken()
             Log.e("MAINN2", accessToken.toString())
@@ -394,6 +418,8 @@ class ChatActivity : AppCompatActivity() {
         firebaseListeners.add(observer)
         lifecycle.addObserver(observer)
     }
+
+
 
     override fun onPause() {
         super.onPause()

@@ -361,7 +361,11 @@ class HomeFragment : Fragment() {
         val menuItem  = menu.findItem(R.id.icCart)
         val actionView = menuItem.actionView
         val cartIcon = actionView!!.findViewById<TextView>(R.id.txtCartView)
-        cartIcon.text = cartQuantity.toString()
+        if (cartQuantity > 99){
+            cartIcon.text = "99"
+        }else {
+            cartIcon.text = cartQuantity.toString()
+        }
         cartIcon.visibility = if (cartQuantity == 0) View.GONE else View.VISIBLE
         actionView.setOnClickListener {
             onOptionsItemSelected(menuItem)

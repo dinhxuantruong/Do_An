@@ -8,10 +8,10 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/cart_icon"
+        android:id="@+id/chatIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/cart3" />
+        android:src="@drawable/chat22" />
 
     <TextView
         android:visibility="gone"
@@ -20,7 +20,7 @@
         android:layout_marginTop="-4dp"
         android:gravity="center"
         style="@style/TextAppearance.MaterialComponents.Caption"
-        android:id="@+id/txtCartView"
+        android:id="@+id/txtChatView"
         android:layout_width="18dp"
         android:text="99+"
         android:textColor="@color/white"

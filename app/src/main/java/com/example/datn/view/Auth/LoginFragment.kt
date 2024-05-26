@@ -27,6 +27,7 @@ import com.example.datn.utils.network.Constance.Companion.CLIENT_SECRET
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE_GOOGLE
 import com.example.datn.utils.network.RetrofitInstance
+import com.example.datn.view.Admin.MainAdminActivity
 import com.example.datn.view.MainView.MainViewActivity
 import com.example.datn.viewmodel.Auth.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -131,12 +132,14 @@ class LoginFragment : Fragment() {
                 prefManager.setLogin(true)
                 prefManager.setFlag(0)
                 saveAccount(email, password)
+                prefManager.setLoginFireBase(true)
+                val userPreferences = UserPreferences(requireContext())
+                userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
+                    RetrofitInstance.Token = it.toString()
+                }
                 if (dataResult.data.user.role == 1) {
+                    startActivityAdmin()
                 } else {
-                    val userPreferences = UserPreferences(requireContext())
-                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
-                        RetrofitInstance.Token = it.toString()
-                    }
                     startActivity(
                         Intent(requireActivity(), MainViewActivity::class.java)
                     )
@@ -153,6 +156,11 @@ class LoginFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun startActivityAdmin() {
+        startActivity(Intent(requireActivity(),MainAdminActivity::class.java))
+        requireActivity().finish()
     }
 
 
@@ -182,12 +190,18 @@ class LoginFragment : Fragment() {
             when (it) {
                 is ResponseResult.Success -> {
                     val userPreferences = UserPreferences(requireContext())
+                    prefManager.setLoginFireBase(true)
                     userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){data ->
                         RetrofitInstance.Token = data.toString()
                     }
-                    startActivity(Intent(requireActivity(), MainViewActivity::class.java))
+                    if (it.data.user.role == 1) {
+                        startActivityAdmin()
+                    } else {
+                        startActivity(Intent(requireActivity(), MainViewActivity::class.java))
+
+                        requireActivity().finish()
+                    }
                     prefManager.saveEmail(it.data.user.email)
-                    requireActivity().finish()
                 }
 
                 is ResponseResult.Error -> {
@@ -217,10 +231,14 @@ class LoginFragment : Fragment() {
                         RetrofitInstance.Token = it.toString()
                     }
                     saveAccount(email, password)
-                    val intent = Intent(requireActivity(), MainViewActivity::class.java)
-                    intent.putExtra("email", result.data.user.email)
-                    startActivity(intent)
-                    requireActivity().finish()
+                    if (result.data.user.role == 1) {
+                        startActivityAdmin()
+                    } else {
+                        val intent = Intent(requireActivity(), MainViewActivity::class.java)
+                        intent.putExtra("email", result.data.user.email)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
                 }
 
                 is ResponseResult.Error -> {

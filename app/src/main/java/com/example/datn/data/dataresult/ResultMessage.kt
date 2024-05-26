@@ -8,4 +8,5 @@ data class ResultMessage(
     val total: Int,
     val count : Int,
     val item_count : Int,
+    val id_type : String,
 )

@@ -15,6 +15,8 @@ import com.example.datn.repository.repositoryAuth
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.view.Auth.AuthActivity
 import com.example.datn.view.Chat.AdviseActivity
+import com.example.datn.view.Chat.ChatActivity
+import com.example.datn.view.Chat.MessageActivity
 import com.example.datn.viewmodel.Auth.AuthViewModel
 import com.example.datn.viewmodel.Auth.AuthViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -44,10 +46,15 @@ class MainViewActivity : AppCompatActivity() {
         val check = prefManager.isLoginFireBase()
 
         binding.fab.setOnClickListener {
-            if (!check!!){
-                register()
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                intentChat()
+            }else {
+                loginFirebase()
             }
-            startActivity(Intent(this, AdviseActivity::class.java))
+        }
+        if (check!!){
+            register()
         }
 
         viewModel.resultLogout.observe(this){
@@ -66,12 +73,28 @@ class MainViewActivity : AppCompatActivity() {
         }
     }
 
+    private fun loginFirebase() {
+        val email = prefManager.getEmail()!!
+        val password = prefManager.getEmail()!!
+        auth.signInWithEmailAndPassword(email,password)
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                   intentChat()
+                }
+            }
+    }
+
+    private fun intentChat(){
+        val intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra("id","JUSZZcvSRvZvUMca5pLxpFL811F3")
+        startActivity(intent)
+    }
     private fun register() {
         val email = prefManager.getEmail()!!
         val password = prefManager.getEmail()!!
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
-                prefManager.setLoginFireBase(true)
+                prefManager.setLoginFireBase(false)
                 Toast.makeText(
                     this@MainViewActivity,
                     "Register is successfully",
