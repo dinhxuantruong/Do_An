@@ -5,56 +5,100 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
+import com.example.datn.adapter.OrderAdapter
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.orders.Order
+import com.example.datn.databinding.FragmentBeingTransBinding
+import com.example.datn.viewmodel.Admin.AdminViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [BeingTransFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class BeingTransFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding : FragmentBeingTransBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val viewModel: AdminViewModel by activityViewModels()
+    private var adapter: OrderAdapter? = null
+    private lateinit var listOrder: MutableList<Order>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_being_trans, container, false)
+        _binding = FragmentBeingTransBinding.inflate(inflater,container,false)
+
+
+
+        init()
+        viewModel.getAllOrderShipping()
+        observeView()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BeingTransFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BeingTransFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun observeView() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+        }
+        viewModel.resultAllOrderShipping.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is ResponseResult.Success -> {
+                    listOrder.clear()
+                    val data2 = data.data.Orders
+                    data2.forEach { item ->
+                        listOrder.add(item)
+                    }
+                    if (listOrder.size == 0) {
+                        visiGoneView()
+                    } else {
+                        visiView()
+                    }
+                    adapter = OrderAdapter(requireActivity(), listOrder, true,
+                        object : OrderAdapter.buttonOnClick {
+                            override fun onClick(itemOrder: Order) {
+                            }
+                        }, 2
+                    )
+                    binding.recyclerView.adapter = adapter!!
+                }
+
+                is ResponseResult.Error -> {
+                    //
                 }
             }
+        }
+
+    }
+
+    private fun init() {
+        listOrder = mutableListOf()
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+    }
+
+    private fun visiGoneView() {
+        binding.apply {
+            txtEmpty.visibility = View.VISIBLE
+            imageView6.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllOrderShipping()
+    }
+    private fun visiView() {
+        binding.apply {
+            txtEmpty.visibility = View.GONE
+            imageView6.visibility = View.GONE
+        }
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+        _binding = null
     }
 }

@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
 import com.example.datn.adapter.OrderAdapter
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.databinding.FragmentCancelledBinding
 import com.example.datn.databinding.FragmentConfirmBinding
 import com.example.datn.repository.repositoryProduct
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.viewmodel.Orders.OrdersViewModel
 import com.example.datn.viewmodel.Orders.OrdersViewModelFactory
 
@@ -28,6 +32,7 @@ class ConfirmFragment : Fragment() {
     private val viewModel : OrdersViewModel by activityViewModels()
     private var adapter : OrderAdapter? = null
     private lateinit var listPending : MutableList<Order>
+    private var isLoggedInFirstTime  =false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +57,9 @@ class ConfirmFragment : Fragment() {
     }
 
     private fun observeView() {
-
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+        }
         viewModel.resultOrderPending.observe(viewLifecycleOwner, Observer { data ->
             when(data){
                 is ResponseResult.Success -> {
@@ -64,15 +71,47 @@ class ConfirmFragment : Fragment() {
                     if (listPending.size == 0){
                         visiGoneView()
                     }
-                    adapter = OrderAdapter(requireActivity(),listPending)
+                    adapter = OrderAdapter(requireActivity(),listPending,false,
+                        object : OrderAdapter.buttonOnClick{
+                            override fun onClick(itemOrder: Order) {
+                                viewModel.deleteOrder(itemOrder.id)
+                                if (isLoggedInFirstTime) {
+                                    viewModel.resultDeleteOrder.observeOnceAfterInit(
+                                        viewLifecycleOwner
+                                    ) { result ->
+                                        handleLoginResult(result)
+                                    }
+                                } else {
+                                    viewModel.resultDeleteOrder.observeOnce(viewLifecycleOwner) { result ->
+                                        handleLoginResult(result)
+                                        isLoggedInFirstTime = true
+                                    }
+                                }
+                            }
+                        },0)
                     binding.recyclerViewCart.adapter = adapter!!
                 }
 
                 is ResponseResult.Error -> {
-                    //
+                    viewModel.getOrderPending()
                 }
             }
         })
+    }
+
+    private fun handleLoginResult(dataResult: ResponseResult<ResultMessage>) {
+        when (dataResult) {
+            is ResponseResult.Success -> {
+                requireActivity().snackBar(dataResult.data.message)
+                viewModel.getOrderPending()
+            }
+
+            is ResponseResult.Error -> {
+                requireActivity().snackBar(dataResult.message)
+                viewModel.getOrderPending()
+            }
+
+        }
     }
 
     private fun visiGoneView() {
@@ -82,8 +121,14 @@ class ConfirmFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getOrderPending()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter = null
         _binding = null
     }
 

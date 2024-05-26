@@ -208,4 +208,34 @@ interface myApi {
     //tìm kiếm sản phẩm
     @GET("product/search/type/all")
     suspend fun getSearchProduct(@Query("name") name : String) : Response<ProductType>
+
+    //Hủy đơn hàng
+    @POST("user/canncel/order/{orderId}")
+    suspend fun deleteOrder(@Path("orderId") orderId : Int) : Response<ResultMessage>
+
+    //danh sách đơn hàng người dùng đang đóng gói
+    @GET("user/packing/orders")
+    suspend fun getAllOrderPacking() : Response<ResultOrders>
+
+    //Danh sách đơn hàng đang vận chuyển
+    @GET("user/shipping/orders")
+    suspend fun getAllOrderShipping() : Response<ResultOrders>
+
+
+    //Danh sách đơn hàng đang giao
+    @GET("user/delivering/orders")
+    suspend fun getAllOrderDelivering() : Response<ResultOrders>
+
+
+    //Danh sách đơn hàng đã nhận
+    @GET("user/received/orders")
+    suspend fun getAllOrderReceived() : Response<ResultOrders>
+
+
+    //Danh sách đơn hàng đã hủy
+    @GET(" user/cancelled/orders")
+    suspend fun getAllOrderCancelled() : Response<ResultOrders>
+
+
+
 }

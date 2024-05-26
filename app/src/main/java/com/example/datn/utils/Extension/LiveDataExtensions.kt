@@ -7,6 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 
 object LiveDataExtensions {
+
+    //Lần đầu gọi thì không the quan sát được dữ liệu, nhưng lần thứ 2 mới có thể xóa quan sátđu liệu lấy được
+    //tu lần đầu
     fun <T> LiveData<T>.observeOnceAfterInit(owner: LifecycleOwner, observer: (T) -> Unit) {
         var firstObservation = true
 
@@ -22,6 +25,7 @@ object LiveDataExtensions {
         })
     }
 
+    //lần đầu gọi quan sát được dữ liệu nhưng lần thu 2 trở đi thì không xóa được dữ liệu quan sát lần trước
     fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
         observe(lifecycleOwner, object : Observer<T> {
             override fun onChanged(value: T) {
@@ -31,4 +35,16 @@ object LiveDataExtensions {
         })
     }
 
+    fun <T> LiveData<T>.observeAndHandleOnce(owner: LifecycleOwner, handleResult: (T) -> Unit) {
+        var isFirstTime = true
+        observe(owner, object : Observer<T> {
+            override fun onChanged(value: T) {
+                if (isFirstTime) {
+                    isFirstTime = false
+                    handleResult(value)
+                    removeObserver(this)
+                }
+            }
+        })
+    }
 }

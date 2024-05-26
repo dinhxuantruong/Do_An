@@ -56,16 +56,19 @@ class ListProductFragment : Fragment() {
         super.onCreate(savedInstanceState)
         _auth = FirebaseAuth.getInstance()
         reference = FirebaseDatabase.getInstance().reference.child("Chats")
-         referenceListener = object : ValueEventListener {
+        referenceListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                countMessage = 0
+                var newCountMessage = 0
                 for (dataSnap in snapshot.children) {
                     val chat = dataSnap.getValue(Chat::class.java)
-                    if (chat?.receiver == auth.uid && chat?.isseen == false) {
-                        countMessage += 1
+                    if (chat?.receiver == _auth!!.uid && chat?.isseen == false) {
+                        newCountMessage += 1
                     }
                 }
-                requireActivity().invalidateOptionsMenu()
+                if (newCountMessage != countMessage) {
+                    countMessage = newCountMessage
+                    requireActivity().invalidateOptionsMenu()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {

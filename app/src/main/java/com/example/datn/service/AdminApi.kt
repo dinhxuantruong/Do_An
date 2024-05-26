@@ -1,6 +1,7 @@
 package com.example.datn.service
 
 import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.data.model.BodyAddSize
@@ -99,4 +100,32 @@ interface AdminApi {
     //delete product type
     @POST("product/delete/product/type/{id}")
     suspend fun deleteType(@Path("id") id : Int) : Response<ResultMessage>
+
+    //đơn hàng chờ xác nhận
+    @GET("admin/orders/pending")
+    suspend fun getAllOrderConfirm(): Response<ResultOrders>
+
+    //Xác nhận đơn hàng
+    @POST("admin/change/order/status/{idOrder}")
+    suspend fun confirmOrder(@Path("idOrder") idOrder : Int) : Response<ResultMessage>
+
+    //Lấy danh sách đơn hàng cần đóng gói
+    @GET("admin/orders/packing")
+    suspend fun getAllOrderPacking() : Response<ResultOrders>
+
+    //Lấy danh sách đơn hàng đang vận chuyển
+    @GET("admin/orders/shipping")
+    suspend fun getAllOrderShipping() : Response<ResultOrders>
+
+    //Lấy danh sách đơn hàng đang giao hàng
+    @GET("admin/orders/delivering")
+    suspend fun getAllOrderDelivery() : Response<ResultOrders>
+
+    //Danh sách đơn hàng đã hoàn thành
+    @GET("admin/orders/received")
+    suspend fun getAllOrderReceived() : Response<ResultOrders>
+
+    //Danh sách đơn hàng đã hủy
+    @GET("admin/orders/cancelled")
+    suspend fun getAllOrderCancel() : Response<ResultOrders>
 }

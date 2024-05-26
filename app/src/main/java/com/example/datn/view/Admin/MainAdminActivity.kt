@@ -47,7 +47,6 @@ class MainAdminActivity : AppCompatActivity() {
             }
             true
         }
-
     }
 
 

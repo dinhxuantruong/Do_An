@@ -2,6 +2,7 @@ package com.example.datn.repository
 
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
+import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.utils.network.RetrofitInstance
@@ -129,4 +130,33 @@ class repositoryAdmin {
     suspend fun deleteType(id : Int) : Response<ResultMessage>{
         return  RetrofitInstance.adminApi.deleteType(id)
     }
+
+    suspend fun getAllOrderConfirm() : Response<ResultOrders>{
+        return RetrofitInstance.adminApi.getAllOrderConfirm()
+    }
+
+    suspend fun confirmOrder(idOrder : Int) : Response<ResultMessage>{
+        return RetrofitInstance.adminApi.confirmOrder(idOrder)
+    }
+
+    suspend fun  getAllOrderPacking() : Response<ResultOrders> {
+        return RetrofitInstance.adminApi.getAllOrderPacking()
+    }
+
+    suspend fun  getAllOrderShipping(): Response<ResultOrders> {
+        return RetrofitInstance.adminApi.getAllOrderShipping()
+    }
+
+    suspend fun getAllOrderDelivery() :Response<ResultOrders> {
+        return RetrofitInstance.adminApi.getAllOrderDelivery()
+    }
+
+    suspend fun getAllOrderReceived() : Response<ResultOrders>{
+        return  RetrofitInstance.adminApi.getAllOrderReceived()
+    }
+
+    suspend fun getAllOrderCancel() : Response<ResultOrders>{
+        return RetrofitInstance.adminApi.getAllOrderCancel()
+    }
+
 }

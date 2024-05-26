@@ -1,60 +1,133 @@
 package com.example.datn.view.Admin.OrderManage
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.datn.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.adapter.OrderAdapter
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.orders.Order
+import com.example.datn.databinding.FragmentConfirm2Binding
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.viewmodel.Admin.AdminViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ConfirmFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ConfirmFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private var _binding: FragmentConfirm2Binding? = null
+    private val binding get() = _binding!!
+    private val viewModel: AdminViewModel by activityViewModels()
+    private var adapter: OrderAdapter? = null
+    private lateinit var listPending: MutableList<Order>
+    private var isLoggedInFirstTime = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_confirm2, container, false)
+        _binding = FragmentConfirm2Binding.inflate(inflater, container, false)
+
+        init()
+        viewModel.getAllOrderConfirm()
+        observeView()
+
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ConfirmFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ConfirmFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun observeView() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+        }
+        viewModel.resultOrderConfirm.observe(viewLifecycleOwner, Observer { data ->
+            when (data) {
+                is ResponseResult.Success -> {
+                    listPending.clear()
+                    val data2 = data.data.Orders
+                    data2.forEach { item ->
+                        listPending.add(item)
+                    }
+                    if (listPending.size == 0) {
+                        visiGoneView()
+                    }else{
+                        visiView()
+                    }
+                    adapter = OrderAdapter(requireActivity(), listPending, true,
+                        object : OrderAdapter.buttonOnClick {
+                            override fun onClick(itemOrder: Order) {
+                                viewModel.confirmOrder(itemOrder.id)
+                                if (isLoggedInFirstTime) {
+                                    viewModel.resultChangeConfirm.observeOnceAfterInit(
+                                        viewLifecycleOwner
+                                    ) { result ->
+                                        handleLoginResult(result)
+                                    }
+                                } else {
+                                    viewModel.resultChangeConfirm.observeOnce(viewLifecycleOwner) { result ->
+                                        handleLoginResult(result)
+                                        isLoggedInFirstTime = true
+                                    }
+                                }
+                            }
+                        },0)
+                    binding.recyclerView.adapter = adapter!!
+                }
+
+                is ResponseResult.Error -> {
+                    //
                 }
             }
+        })
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllOrderConfirm()
+    }
+
+    private fun handleLoginResult(dataResult: ResponseResult<ResultMessage>) {
+        when (dataResult) {
+            is ResponseResult.Success -> {
+                requireActivity().snackBar(dataResult.data.message)
+                viewModel.getAllOrderConfirm()
+            }
+
+            is ResponseResult.Error -> {
+                requireActivity().snackBar(dataResult.message)
+                viewModel.getAllOrderConfirm()
+            }
+
+        }
+    }
+
+    private fun init() {
+        listPending = mutableListOf()
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+    }
+
+    private fun visiGoneView() {
+        binding.apply {
+            txtEmpty.visibility = View.VISIBLE
+            imageView6.visibility = View.VISIBLE
+        }
+    }
+
+    private fun visiView() {
+        binding.apply {
+            txtEmpty.visibility = View.GONE
+            imageView6.visibility = View.GONE
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

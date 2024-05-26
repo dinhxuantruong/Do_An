@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.datn.view.Admin.OrderManage.AccomplishedFragment
 import com.example.datn.view.Admin.OrderManage.BeingTransFragment
 import com.example.datn.view.Admin.OrderManage.CancelFragment
+import com.example.datn.view.Admin.OrderManage.DeliFragment
 import com.example.datn.view.Admin.OrderManage.PackingFragment
 import com.example.datn.view.Orders.OrderViewPager2.CancelledFragment
 import com.example.datn.view.Orders.OrderViewPager2.ConfirmFragment
@@ -27,7 +28,7 @@ class OrderViewPageAdapterAdmin (fragment: FragmentManager, lifecycle: Lifecycle
             0 -> com.example.datn.view.Admin.OrderManage.ConfirmFragment() //Chờ xác nhận
             1 -> PackingFragment() //đang đóng gói
             2 -> BeingTransFragment() //đang vận chuyển
-            3 -> DeliveringFragment() //Đang giao hàng
+            3 -> DeliFragment() //Đang giao hàng
             4 -> AccomplishedFragment() //Đã nhận được hàng
             else -> CancelFragment() //Đã hủ
         }

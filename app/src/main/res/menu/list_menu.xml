@@ -5,7 +5,7 @@
 
     <item android:id="@+id/btnMessage"
         android:title=""
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         app:actionLayout="@layout/menu_chat_badge"
         android:icon="@drawable/chat22"/>
 </menu>

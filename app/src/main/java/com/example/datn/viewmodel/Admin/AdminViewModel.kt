@@ -13,6 +13,7 @@ import androidx.paging.liveData
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
+import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.repository.repositoryAdmin
@@ -61,9 +62,34 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultDeleteType: MutableLiveData<ResponseResult<ResultMessage>> =
         MutableLiveData()
     val resultDeleteType: LiveData<ResponseResult<ResultMessage>> get() = _resultDeleteType
-    private val _resultType: MutableLiveData<ResponseResult<resultProductTYpe>> =
-        MutableLiveData()
+
+
+    private val _resultType: MutableLiveData<ResponseResult<resultProductTYpe>> = MutableLiveData()
     val resultType: LiveData<ResponseResult<resultProductTYpe>> get() = _resultType
+
+    private val _resultOrderConfirm: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultOrderConfirm: LiveData<ResponseResult<ResultOrders>> get() = _resultOrderConfirm
+
+    private val _resultChangeConfirm: MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultChangeConfirm: LiveData<ResponseResult<ResultMessage>> get() = _resultChangeConfirm
+
+    private val _resultAllOrderPack: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultAllOrderPack: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderPack
+
+    private val _resultAllOrderShipping: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultAllOrderShipping: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderShipping
+
+
+    private val _resultAllOrderDelivery: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultAllOrderDelivery: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderDelivery
+
+    private val _resultAllOrderRe: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultAllOrderRe: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderRe
+
+    private val _resultAllOrderCancel: MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultAllOrderCancel: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderCancel
+
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
     fun getProductFavorite(): LiveData<PagingData<ProductType>> {
@@ -87,6 +113,195 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         ).liveData.cachedIn(viewModelScope)
 
         return page
+    }
+
+    fun getAllOrderCancel() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderCancel()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultAllOrderCancel.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllOrderCancel.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllOrderCancel.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllOrderCancel.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllOrderCancel.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllOrderReceived(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderReceived()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultAllOrderRe.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllOrderRe.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllOrderRe.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllOrderRe.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllOrderRe.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllOrderDelivery() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderDelivery()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultAllOrderDelivery.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllOrderDelivery.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllOrderDelivery.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllOrderDelivery.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllOrderDelivery.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllOrderShipping(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderShipping()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultAllOrderShipping.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllOrderShipping.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllOrderShipping.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllOrderShipping.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllOrderShipping.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllOrderPacking(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderPacking()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultAllOrderPack.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllOrderPack.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllOrderPack.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllOrderPack.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllOrderPack.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun confirmOrder(idOrder : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.confirmOrder(idOrder)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultChangeConfirm.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultChangeConfirm.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultChangeConfirm.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultChangeConfirm.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultChangeConfirm.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllOrderConfirm(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllOrderConfirm()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultOrderConfirm.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultOrderConfirm.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultOrderConfirm.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultOrderConfirm.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultOrderConfirm.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
     }
 
 

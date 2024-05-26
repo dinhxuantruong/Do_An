@@ -13,14 +13,20 @@ import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
-class OrderAdapter(private val activity: Activity, private val listOrder : MutableList<Order>) :
-RecyclerView.Adapter<OrderAdapter.oViewHolder>(){
+class OrderAdapter(
+    private val activity: Activity,
+    private val listOrder: MutableList<Order>,
+    private val role: Boolean,
+    private val onClick: buttonOnClick,
+    private val status: Int
+) :
+    RecyclerView.Adapter<OrderAdapter.oViewHolder>() {
 
 
-    class oViewHolder(view : View) : RecyclerView.ViewHolder(view)
+    class oViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): oViewHolder {
-        return oViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.history_item_orders,parent,false))
+        return oViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.history_item_orders, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -40,8 +46,59 @@ RecyclerView.Adapter<OrderAdapter.oViewHolder>(){
         val more = holder.itemView.findViewById<TextView>(R.id.hXemThem)
         val textCount = holder.itemView.findViewById<TextView>(R.id.hCOuntText)
         val tong = holder.itemView.findViewById<TextView>(R.id.hCountOrder)
-        val btnHuy = holder.itemView.findViewById<Button>(R.id.btnHuy)
+        val btnHuy = holder.itemView.findViewById<Button>(R.id.btnConfirm)
 
+        when (status) {
+            0 -> {
+                btnHuy.isEnabled = true
+                if (role){
+                    btnHuy.text = "Xác Nhận"
+                }else{
+                    btnHuy.text = "Hủy Đơn"
+                }
+            }
+
+            1 -> {
+                if (role) {
+                    btnHuy.text = "Chờ Lấy Hàng"
+                } else {
+                    btnHuy.isEnabled = false
+                    btnHuy.text = "Đang Đóng Gói"
+                }
+            }
+
+            2 -> {
+                btnHuy.isEnabled = false
+                btnHuy.text = "Đang Vận Chuyển"
+            }
+
+            3 -> {
+                btnHuy.isEnabled = false
+                btnHuy.text = "Đang Giao Hàng"
+            }
+
+
+            4 -> {
+                if (role) {
+                    btnHuy.text = "Xem Đơn Hàng"
+                } else {
+                    btnHuy.text = "Mua Lại"
+                }
+
+            }
+
+            else -> {
+                if (role) {
+                    btnHuy.text = "Xem Lý Do"
+                } else {
+                    btnHuy.text = "Mua Lại"
+                }
+            }
+        }
+
+        btnHuy.setOnClickListener {
+            onClick.onClick(order)
+        }
 
         textCount.text = "Tổng tiên(${order.items.size} sản phẩm)"
         Picasso.get().load(itemProduct.product.image_url).into(Image)
@@ -51,5 +108,9 @@ RecyclerView.Adapter<OrderAdapter.oViewHolder>(){
         Price.text = "${itemProduct.product.price.toVietnameseCurrency()}"
         Count.text = "x${itemProduct.quantity.toString()}"
 
+    }
+
+    interface buttonOnClick {
+        fun onClick(itemOrder: Order)
     }
 }

@@ -176,17 +176,17 @@
 
 
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnHuy"
-            android:layout_width="120dp"
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/custom_buttom"
             android:fontFamily="@font/robotomedium"
-            android:text="HỦY ĐƠN"
+            android:text="Chờ Lấy Hàng"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="16sp"

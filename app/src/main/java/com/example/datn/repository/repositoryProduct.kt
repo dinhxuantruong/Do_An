@@ -19,6 +19,7 @@ import com.example.datn.utils.network.RetrofitAddress
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
 import retrofit2.Response
+import retrofit2.http.GET
 
 class repositoryProduct() {
 
@@ -171,4 +172,39 @@ class repositoryProduct() {
     suspend fun getSearchProduct(name : String) : Response<ProductType>{
         return RetrofitInstance.appApi.getSearchProduct(name)
     }
+
+    suspend fun deleteOrder(id : Int) : Response<ResultMessage>{
+        return RetrofitInstance.appApi.deleteOrder(id)
+    }
+
+    //danh sách đơn hàng người dùng đang đóng gói
+
+    suspend fun getAllOrderPacking() : Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrderPacking()
+    }
+
+    //Danh sách đơn hàng đang vận chuyển
+
+    suspend fun getAllOrderShipping() : Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrderShipping()
+    }
+
+    //Danh sách đơn hàng đang giao
+
+    suspend fun getAllOrderDelivering(): Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrderDelivering()
+    }
+
+    //Danh sách đơn hàng đã nhận
+
+    suspend fun getAllOrderReceived() : Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrderReceived()
+    }
+
+    //Danh sách đơn hàng đã hủy
+
+    suspend fun getAllOrderCancelled() : Response<ResultOrders>{
+        return RetrofitInstance.appApi.getAllOrderCancelled()
+    }
+
 }
