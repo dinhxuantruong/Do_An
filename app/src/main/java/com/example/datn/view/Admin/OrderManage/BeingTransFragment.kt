@@ -58,6 +58,10 @@ class BeingTransFragment : Fragment() {
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+
+                            }
                         }, 2
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -66,6 +70,8 @@ class BeingTransFragment : Fragment() {
                 is ResponseResult.Error -> {
                     //
                 }
+
+
             }
         }
 

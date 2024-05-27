@@ -27,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.Detail.OrderDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.Admin.AddProductTypeActivity"
             android:exported="false" />
         <activity

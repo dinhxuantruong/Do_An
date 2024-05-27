@@ -1,6 +1,7 @@
 package com.example.datn.view.Admin.OrderManage
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -60,14 +61,19 @@ class PackingFragment : Fragment() {
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+
+                            }
                         }, 1
                     )
                     binding.recyclerView.adapter = adapter!!
                 }
 
                 is ResponseResult.Error -> {
-                    //
+
                 }
+
             }
         }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import com.example.datn.utils.network.RetrofitInstance
@@ -40,6 +41,8 @@ class OrdersViewModel(private val repositoryProduct: repositoryProduct) : ViewMo
 
     private val _resultOrderCancelled : MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
     val resultOrderCancelled : LiveData<ResponseResult<ResultOrders>> get() =  _resultOrderCancelled
+
+
 
      fun getAllOrderPacking() {
          viewModelScope.launch(Dispatchers.IO) {
@@ -146,6 +149,7 @@ class OrdersViewModel(private val repositoryProduct: repositoryProduct) : ViewMo
              }
          }
     }
+
 
 
 

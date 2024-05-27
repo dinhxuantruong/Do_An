@@ -57,6 +57,10 @@ class DeliFragment : Fragment() {
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+
+                            }
                         }, 3
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -65,6 +69,8 @@ class DeliFragment : Fragment() {
                 is ResponseResult.Error -> {
                     //
                 }
+
+
             }
         }
 

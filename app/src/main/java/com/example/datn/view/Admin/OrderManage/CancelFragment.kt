@@ -60,6 +60,10 @@ class CancelFragment : Fragment() {
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+
+                            }
                         }, 5
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -68,6 +72,8 @@ class CancelFragment : Fragment() {
                 is ResponseResult.Error -> {
                     //
                 }
+
+
             }
         }
 

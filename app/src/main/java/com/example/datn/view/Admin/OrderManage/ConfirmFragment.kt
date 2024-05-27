@@ -1,5 +1,6 @@
 package com.example.datn.view.Admin.OrderManage
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.example.datn.databinding.FragmentConfirm2Binding
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Admin.AdminViewModel
 
 
@@ -74,6 +76,12 @@ class ConfirmFragment : Fragment() {
                                     }
                                 }
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+                                val intent = Intent(requireContext(),OrderDetailsActivity::class.java)
+                                intent.putExtra("id",itemOrder.id)
+                                startActivity(intent)
+                            }
                         },0)
                     binding.recyclerView.adapter = adapter!!
                 }
@@ -81,6 +89,7 @@ class ConfirmFragment : Fragment() {
                 is ResponseResult.Error -> {
                     //
                 }
+
             }
         })
 
@@ -103,6 +112,7 @@ class ConfirmFragment : Fragment() {
                 viewModel.getAllOrderConfirm()
             }
 
+            else -> {}
         }
     }
 

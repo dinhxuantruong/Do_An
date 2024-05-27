@@ -420,6 +420,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        seenMessage(idUser)
+    }
 
     override fun onPause() {
         super.onPause()

@@ -48,6 +48,11 @@ class OrderAdapter(
         val tong = holder.itemView.findViewById<TextView>(R.id.hCountOrder)
         val btnHuy = holder.itemView.findViewById<Button>(R.id.btnConfirm)
 
+
+        more.setOnClickListener {
+            onClick.moreOnclick(order)
+        }
+
         when (status) {
             0 -> {
                 btnHuy.isEnabled = true
@@ -112,5 +117,7 @@ class OrderAdapter(
 
     interface buttonOnClick {
         fun onClick(itemOrder: Order)
+
+        fun moreOnclick(itemOrder: Order)
     }
 }

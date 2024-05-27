@@ -9,6 +9,7 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
@@ -32,7 +33,33 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
 
     private val _resultDetailAddress : MutableLiveData<ResponseResult<resultDefault>> = MutableLiveData()
     val resultDetailAddress : LiveData<ResponseResult<resultDefault>> get() =  _resultDetailAddress
+    private val _resultDetailsOrder : MutableLiveData<ResponseResult<resultOrderDetails>> = MutableLiveData()
+    val resultDetailsOrder : LiveData<ResponseResult<resultOrderDetails>> get() = _resultDetailsOrder
 
+    fun getDetailsOrder(id : Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.getDetailsOrder(id)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultDetailsOrder.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultDetailsOrder.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultDetailsOrder.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultDetailsOrder.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultDetailsOrder.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
     fun getDetailAddress(idAddress : String?){
         viewModelScope.launch(Dispatchers.IO) {
             try {

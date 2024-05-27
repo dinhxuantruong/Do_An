@@ -85,7 +85,7 @@ class CheckoutFragment : Fragment() {
             ) {
                 requireActivity().snackBar("Chọn phương thức thanh toán.")
             } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                viewModel.createAddOrders(AddressRequest(idAddress.toString()))
+                viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(),1,1))
             }
         }
     }

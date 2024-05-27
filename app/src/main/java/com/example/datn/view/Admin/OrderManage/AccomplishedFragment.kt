@@ -55,6 +55,10 @@ class AccomplishedFragment : Fragment() {
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+
+                            }
                         }, 4
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -63,6 +67,8 @@ class AccomplishedFragment : Fragment() {
                 is ResponseResult.Error -> {
                     //
                 }
+
+
             }
         }
 

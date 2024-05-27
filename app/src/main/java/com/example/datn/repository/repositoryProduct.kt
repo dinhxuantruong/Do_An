@@ -12,6 +12,7 @@ import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
@@ -205,6 +206,10 @@ class repositoryProduct() {
 
     suspend fun getAllOrderCancelled() : Response<ResultOrders>{
         return RetrofitInstance.appApi.getAllOrderCancelled()
+    }
+
+    suspend fun getDetailsOrder(id : Int) : Response<resultOrderDetails>{
+        return RetrofitInstance.appApi.getDetailsOrder(id)
     }
 
 }

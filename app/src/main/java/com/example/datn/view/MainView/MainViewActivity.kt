@@ -119,17 +119,8 @@ class MainViewActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Register update is successful", Toast.LENGTH_SHORT)
                             .show()
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "Failed to update user: ${task.exception?.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 }
-            } else {
-                Toast.makeText(this, "Register failed: ${it.exception?.message}", Toast.LENGTH_LONG)
-                    .show()
             }
         }
     }

@@ -44,11 +44,10 @@
         android:layout_height="wrap_content"
         android:elevation="0dp"
         app:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/comment"
+        android:src="@drawable/chat22"
         app:tint="@android:color/white"
         app:elevation="0dp"
         app:layout_anchor="@id/buttonAppBar" />
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,11 +1,13 @@
 package com.example.datn.view.Orders.OrderViewPager2
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +23,7 @@ import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Orders.OrdersViewModel
 import com.example.datn.viewmodel.Orders.OrdersViewModelFactory
 
@@ -88,6 +91,12 @@ class ConfirmFragment : Fragment() {
                                     }
                                 }
                             }
+
+                            override fun moreOnclick(itemOrder: Order) {
+                                val intent = Intent(requireContext(),OrderDetailsActivity::class.java)
+                                intent.putExtra("id",itemOrder.id)
+                                startActivity(intent)
+                            }
                         },0)
                     binding.recyclerViewCart.adapter = adapter!!
                 }
@@ -95,6 +104,7 @@ class ConfirmFragment : Fragment() {
                 is ResponseResult.Error -> {
                     viewModel.getOrderPending()
                 }
+
             }
         })
     }
@@ -110,6 +120,7 @@ class ConfirmFragment : Fragment() {
                 requireActivity().snackBar(dataResult.message)
                 viewModel.getOrderPending()
             }
+
 
         }
     }

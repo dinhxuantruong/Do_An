@@ -32,7 +32,6 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_marginRight="10dp"
                 android:id="@+id/image"
-                android:src="@drawable/bi"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
             <at.blogc.android.views.ExpandableTextView
@@ -44,7 +43,6 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/robotomedium"
                 android:maxLines="1"
-                android:text="truongxuan8322d"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:animation_duration="750" />
