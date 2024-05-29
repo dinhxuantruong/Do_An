@@ -2,11 +2,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-
     android:layout_height="wrap_content"
     android:elevation="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="1dp"
+    android:layout_marginBottom="10dp"
     app:cardElevation="0.1dp">
 
 
@@ -176,15 +174,17 @@
 
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConfirm"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/custom_buttom"
+            android:background="@drawable/row_back_bg2"
+            android:padding="10dp"
+            android:paddingRight="10dp"
             android:fontFamily="@font/robotomedium"
             android:text="Chờ Lấy Hàng"
             android:textAllCaps="false"

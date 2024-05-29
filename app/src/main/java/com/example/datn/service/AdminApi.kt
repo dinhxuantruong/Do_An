@@ -3,6 +3,7 @@ package com.example.datn.service
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
+import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.data.model.BodyAddSize
 import com.velmurugan.paging3android.ProductResponse
@@ -128,4 +129,11 @@ interface AdminApi {
     //Danh sách đơn hàng đã hủy
     @GET("admin/orders/cancelled")
     suspend fun getAllOrderCancel() : Response<ResultOrders>
+
+    @POST("auth/logout")
+    suspend fun logout() : Response<ResultMessage>
+
+    //Get data pie chart
+    @GET("category-sales-percentage")
+    suspend fun getPieChart() : Response<resultPieChart>
 }

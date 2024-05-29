@@ -24,7 +24,6 @@ class SuccessActivity : AppCompatActivity() {
     }
 
     private fun finishView(){
-        startActivity(Intent(this@SuccessActivity,MainViewActivity::class.java))
         finish()
     }
     override fun onBackPressed() {

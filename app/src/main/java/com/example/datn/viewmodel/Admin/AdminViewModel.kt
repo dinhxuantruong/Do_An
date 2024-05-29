@@ -15,6 +15,7 @@ import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
+import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.repository.repositoryAdmin
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
@@ -90,6 +91,12 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     val resultAllOrderCancel: LiveData<ResponseResult<ResultOrders>> get() = _resultAllOrderCancel
 
 
+    private val _resultLogout: MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultLogout: LiveData<ResponseResult<ResultMessage>> get() = _resultLogout
+
+    private val _resultPieChart : MutableLiveData<ResponseResult<resultPieChart>> = MutableLiveData()
+    val resultPieChart : LiveData<ResponseResult<resultPieChart>> get() = _resultPieChart
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
     fun getProductFavorite(): LiveData<PagingData<ProductType>> {
@@ -113,6 +120,60 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         ).liveData.cachedIn(viewModelScope)
 
         return page
+    }
+
+    fun getPieChart() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getPieChart()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultPieChart.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultPieChart.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultPieChart.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultPieChart.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultPieChart.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.logout()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultLogout.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultLogout.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultLogout.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultLogout.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultLogout.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
     }
 
     fun getAllOrderCancel() {

@@ -105,13 +105,13 @@ class OrderAdapter(
             onClick.onClick(order)
         }
 
-        textCount.text = "Tổng tiên(${order.items.size} sản phẩm)"
+        textCount.text = "Tổng tiền(${order.items.size} sản phẩm)"
         Picasso.get().load(itemProduct.product.image_url).into(Image)
         tong.text = order.total.toInt().toVietnameseCurrency()
         productName.text = order.items[0].product.type.name
         quantity.text = "Phân loại: ${itemProduct.product.size}"
         Price.text = "${itemProduct.product.price.toVietnameseCurrency()}"
-        Count.text = "x${itemProduct.quantity.toString()}"
+        Count.text = "x${itemProduct.quantity}"
 
     }
 

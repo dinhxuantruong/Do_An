@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.orderstatistics
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
@@ -42,7 +43,34 @@ class OrdersViewModel(private val repositoryProduct: repositoryProduct) : ViewMo
     private val _resultOrderCancelled : MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
     val resultOrderCancelled : LiveData<ResponseResult<ResultOrders>> get() =  _resultOrderCancelled
 
+    private val _resultOrderStatistics : MutableLiveData<ResponseResult<orderstatistics>> = MutableLiveData()
+    val resultOrderStatistics  : LiveData<ResponseResult<orderstatistics>> get() =   _resultOrderStatistics
 
+
+    fun getOrderStatistics() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.getOrderStatistics()
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultOrderStatistics.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultOrderStatistics.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultOrderStatistics.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultOrderStatistics.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultOrderStatistics.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
 
      fun getAllOrderPacking() {
          viewModelScope.launch(Dispatchers.IO) {

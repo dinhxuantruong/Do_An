@@ -4,13 +4,14 @@ import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.Result_slideimages
-import com.example.datn.data.dataresult.apiAddress.Addresse
+import com.example.datn.data.dataresult.UserX
 import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.orderstatistics
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
@@ -19,8 +20,9 @@ import com.example.datn.data.model.addCart
 import com.example.datn.utils.network.RetrofitAddress
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.GET
 
 class repositoryProduct() {
 
@@ -204,12 +206,33 @@ class repositoryProduct() {
 
     //Danh sách đơn hàng đã hủy
 
-    suspend fun getAllOrderCancelled() : Response<ResultOrders>{
+    suspend fun getAllOrderCancelled(): Response<ResultOrders> {
         return RetrofitInstance.appApi.getAllOrderCancelled()
     }
 
-    suspend fun getDetailsOrder(id : Int) : Response<resultOrderDetails>{
+    suspend fun getDetailsOrder(id: Int): Response<resultOrderDetails> {
         return RetrofitInstance.appApi.getDetailsOrder(id)
+    }
+
+    suspend fun logout(): Response<ResultMessage> {
+        return RetrofitInstance.appApi.logout()
+    }
+
+    suspend fun getProfileUser(): Response<UserX> {
+        return RetrofitInstance.appApi.getProfileUser()
+    }
+
+    suspend fun updateProFile(
+        name: RequestBody,
+        profession: RequestBody,
+        phone: RequestBody,
+        profile_photo: MultipartBody.Part?
+    ): Response<ResultMessage> {
+        return RetrofitInstance.appApi.updateProFileUser(name,profession,phone,profile_photo)
+    }
+
+    suspend fun getOrderStatistics() : Response<orderstatistics>{
+        return RetrofitInstance.appApi.getOrderStatistics()
     }
 
 }

@@ -4,6 +4,7 @@ import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.resultCategory
+import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
@@ -13,6 +14,7 @@ import retrofit2.Response
 import retrofit2.http.Part
 
 class repositoryAdmin {
+
 
     suspend fun getListProduct(page: Int): Response<ProductResponse> {
         return RetrofitInstance.adminApi.getProductsFavorite(page)
@@ -159,4 +161,11 @@ class repositoryAdmin {
         return RetrofitInstance.adminApi.getAllOrderCancel()
     }
 
+    suspend fun logout() : Response<ResultMessage>{
+        return RetrofitInstance.adminApi.logout()
+    }
+
+    suspend fun getPieChart(): Response<resultPieChart>{
+        return RetrofitInstance.adminApi.getPieChart()
+    }
 }

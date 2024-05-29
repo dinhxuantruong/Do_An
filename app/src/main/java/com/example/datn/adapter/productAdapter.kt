@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
 
 import com.example.datn.data.dataresult.ProductTypeX
+import com.example.datn.utils.Extension.NumberExtensions
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
 
@@ -57,6 +58,11 @@ class productAdapter(
         val imageProduct = holder.itemView.findViewById<ImageView>(R.id.imageProduct)
         val name = holder.itemView.findViewById<TextView>(R.id.txtNameProduct)
         val price = holder.itemView.findViewById<TextView>(R.id.txtPriceProduct)
+        val countFavo = holder.itemView.findViewById<TextView>(R.id.txtCountFav)
+        val countSold = holder.itemView.findViewById<TextView>(R.id.txtCountSold)
+
+        countSold.text = "Đã bán " + NumberExtensions.formatNumber(products.sold_quantity)
+        countFavo.text = products.productlikes_count.toString()
 
         Picasso.get().load(products.image_url).into(imageProduct)
 //        Glide.with(activity).load(products.image_url).into(imageProduct)

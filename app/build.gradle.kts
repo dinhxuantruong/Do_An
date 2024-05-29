@@ -150,6 +150,8 @@ dependencies {
     implementation ("androidx.security:security-crypto:1.1.0-alpha06")
     //kapt cuối cùng
     kapt ("com.google.dagger:hilt-compiler:2.47")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 }
 
 hilt {

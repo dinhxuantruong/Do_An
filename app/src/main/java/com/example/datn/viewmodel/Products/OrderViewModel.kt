@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.UserX
 import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultOrderDetails
@@ -15,6 +16,8 @@ import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -35,6 +38,94 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
     val resultDetailAddress : LiveData<ResponseResult<resultDefault>> get() =  _resultDetailAddress
     private val _resultDetailsOrder : MutableLiveData<ResponseResult<resultOrderDetails>> = MutableLiveData()
     val resultDetailsOrder : LiveData<ResponseResult<resultOrderDetails>> get() = _resultDetailsOrder
+
+    private val _resultLogout : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultLogout : LiveData<ResponseResult<ResultMessage>> get() = _resultLogout
+
+    private val _resultProfile :MutableLiveData<ResponseResult<UserX>> = MutableLiveData()
+    val resultProfile : LiveData<ResponseResult<UserX>> get() = _resultProfile
+
+    private val _resultUpdateProfile : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultUpdateProfile : LiveData<ResponseResult<ResultMessage>> get() = _resultUpdateProfile
+
+    fun updateProFileUser(
+        name: RequestBody,
+        profession: RequestBody,
+        phone: RequestBody,
+        profile_photo: MultipartBody.Part?
+        ){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.updateProFile(name,profession,phone,profile_photo)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultUpdateProfile.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultUpdateProfile.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultUpdateProfile.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultUpdateProfile.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultUpdateProfile.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+    fun  getProfileUser(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.getProfileUser()
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultProfile.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultProfile.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultProfile.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultProfile.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultProfile.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.logout()
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultLogout.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultLogout.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultLogout.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultLogout.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultLogout.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
 
     fun getDetailsOrder(id : Int){
         viewModelScope.launch(Dispatchers.IO) {

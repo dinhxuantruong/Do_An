@@ -3,23 +3,23 @@ package com.example.datn.service
 import com.example.datn.data.dataresult.ProductType
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
+import com.example.datn.data.dataresult.Result_slideimages
 import com.example.datn.data.dataresult.Resutl_RefreshToken
 import com.example.datn.data.dataresult.User
-import com.example.datn.data.model.AcceptOTP
-import com.example.datn.data.model.Auth
-import com.example.datn.data.model.ForgetPass
-import com.example.datn.data.dataresult.Result_slideimages
-import com.example.datn.data.dataresult.apiAddress.Addresse
+import com.example.datn.data.dataresult.UserX
 import com.example.datn.data.dataresult.apiAddress.resultDefault
 import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.orderstatistics
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultOrderDetails
+import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.AddressRequest
-
+import com.example.datn.data.model.Auth
+import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.Register
 import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
@@ -27,11 +27,14 @@ import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.data.model.sendOTP
 import com.velmurugan.paging3android.ProductResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Field
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -235,11 +238,34 @@ interface myApi {
 
     //Danh sách đơn hàng đã hủy
     @GET(" user/cancelled/orders")
-    suspend fun getAllOrderCancelled() : Response<ResultOrders>
+    suspend fun getAllOrderCancelled(): Response<ResultOrders>
 
     //Chi tiết đơn hàng
     @GET("user/details/orders/{orderId}")
-    suspend fun getDetailsOrder(@Path("orderId") orderId : Int) : Response<resultOrderDetails>
+    suspend fun getDetailsOrder(@Path("orderId") orderId: Int): Response<resultOrderDetails>
 
 
+    //Logout
+    @POST("auth/logout")
+    suspend fun logout(): Response<ResultMessage>
+
+
+    //Lấy thông tin người dùng
+    @GET("profile/user/details")
+    suspend fun getProfileUser(): Response<UserX>
+
+
+    @Multipart
+    @POST("auth/user/profile/new")
+    suspend fun updateProFileUser(
+        @Part("name") name: RequestBody,
+        @Part("profession") profession: RequestBody,
+        @Part("phone") phone: RequestBody,
+        @Part profile_photo: MultipartBody.Part?
+    ): Response<ResultMessage>
+
+    //order-statistics
+    @GET("order-statistics")
+    suspend fun getOrderStatistics() : Response<orderstatistics>
 }
+

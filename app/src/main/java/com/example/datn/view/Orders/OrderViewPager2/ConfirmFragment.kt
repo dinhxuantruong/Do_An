@@ -2,30 +2,23 @@ package com.example.datn.view.Orders.OrderViewPager2
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datn.R
 import com.example.datn.adapter.OrderAdapter
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.Order
-import com.example.datn.databinding.FragmentCancelledBinding
 import com.example.datn.databinding.FragmentConfirmBinding
-import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Orders.OrdersViewModel
-import com.example.datn.viewmodel.Orders.OrdersViewModelFactory
 
 
 class ConfirmFragment : Fragment() {
@@ -63,19 +56,21 @@ class ConfirmFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
-        viewModel.resultOrderPending.observe(viewLifecycleOwner, Observer { data ->
-            when(data){
+        viewModel.resultOrderPending.observe(viewLifecycleOwner) { data ->
+            when (data) {
                 is ResponseResult.Success -> {
                     listPending.clear()
                     val data2 = data.data.Orders
                     data2.forEach { item ->
                         listPending.add(item)
                     }
-                    if (listPending.size == 0){
+                    if (listPending.size == 0) {
                         visiGoneView()
+                    }else{
+                        visiView()
                     }
-                    adapter = OrderAdapter(requireActivity(),listPending,false,
-                        object : OrderAdapter.buttonOnClick{
+                    adapter = OrderAdapter(requireActivity(), listPending, false,
+                        object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
                                 viewModel.deleteOrder(itemOrder.id)
                                 if (isLoggedInFirstTime) {
@@ -93,11 +88,13 @@ class ConfirmFragment : Fragment() {
                             }
 
                             override fun moreOnclick(itemOrder: Order) {
-                                val intent = Intent(requireContext(),OrderDetailsActivity::class.java)
-                                intent.putExtra("id",itemOrder.id)
+                                val intent =
+                                    Intent(requireContext(), OrderDetailsActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
                                 startActivity(intent)
                             }
-                        },0)
+                        }, 0
+                    )
                     binding.recyclerViewCart.adapter = adapter!!
                 }
 
@@ -106,12 +103,14 @@ class ConfirmFragment : Fragment() {
                 }
 
             }
-        })
+        }
     }
 
     private fun handleLoginResult(dataResult: ResponseResult<ResultMessage>) {
         when (dataResult) {
             is ResponseResult.Success -> {
+                visiView()
+                viewModel.getOrderPending()
                 requireActivity().snackBar(dataResult.data.message)
                 viewModel.getOrderPending()
             }
@@ -122,6 +121,13 @@ class ConfirmFragment : Fragment() {
             }
 
 
+        }
+    }
+
+    private fun visiView() {
+        binding.apply {
+            txtEmpty.visibility = View.GONE
+            imageView6.visibility = View.GONE
         }
     }
 

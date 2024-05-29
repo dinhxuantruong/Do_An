@@ -221,7 +221,6 @@ class AddProductTypeActivity : AppCompatActivity() {
         val newIdType = idType.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         newIdCate = idCate.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val newIdCateOld = idCateNew.toString().toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        Toast.makeText(this@AddProductTypeActivity, idCateNew.toString(), Toast.LENGTH_SHORT).show()
         val newSize = size.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val newName = name.toRequestBody("multipart/form-data".toMediaTypeOrNull())
         val newBrand = brand.toRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -236,7 +235,6 @@ class AddProductTypeActivity : AppCompatActivity() {
         val newDescription = description.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
         if (check) {
-            Toast.makeText(this@AddProductTypeActivity, "True", Toast.LENGTH_SHORT).show()
             viewModel.addProductType(
                 newIdCate,
                 newName,

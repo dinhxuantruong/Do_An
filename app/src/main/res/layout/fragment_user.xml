@@ -14,8 +14,17 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:src="@drawable/back"
+        android:padding="16dp"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:src="@drawable/save"
+        android:layout_alignParentEnd="true"
         android:padding="16dp"
         android:layout_height="wrap_content"/>
 
@@ -42,32 +51,35 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/bi"/>
+                android:layout_marginTop="10dp" />
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/roboto"
-                android:text="Đinh Xuân Trường"
+                android:text=""
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/txtPhone"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:text="0373497770"
+                android:text=""
                 android:fontFamily="@font/roboto"
                 android:textSize="16sp"
                 android:layout_height="wrap_content"/>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnChooseImage"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
@@ -114,6 +126,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/btnProfile"
                         android:layout_width="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/more2"
@@ -287,6 +300,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/btnTk"
                         android:layout_width="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/more2"
@@ -366,6 +380,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/btnLogout"
                         android:layout_width="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/more2"

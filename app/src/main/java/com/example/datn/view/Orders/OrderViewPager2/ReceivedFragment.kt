@@ -70,7 +70,7 @@ class ReceivedFragment : Fragment() {
                 }
 
                 is ResponseResult.Error -> {
-                    //
+                   // Toast.makeText(requireContext(),, Toast.LENGTH_SHORT).show()
                 }
 
 
