@@ -1,14 +1,11 @@
 package com.example.datn.view.Detail
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.AttributeSet
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -25,8 +22,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.datn.R
 import com.example.datn.adapter.productAdapter
+import com.example.datn.adapter.ratingAdapter
 import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.Review
 import com.example.datn.databinding.ActivityProductBinding
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.NumberExtensions.formatNumber
@@ -42,13 +41,14 @@ class ProductActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private lateinit var viewModel: ViewModelDetailProduct
     private lateinit var listProductSame: MutableList<ProductTypeX>
-    private  var adapter: productAdapter? = null
+    private lateinit var listRating: MutableList<Review>
+    private var adapter: productAdapter? = null
+    private var adapterRate: ratingAdapter? = null
     private var id = 0
     private var cartQuantity : Int = 0
     companion object {
         var isLoggedInFirstTime = false
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,23 +57,73 @@ class ProductActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
-        id = intent.getIntExtra("id", 0)
+        callViewModel()
+        observeView()
+        onClickButton()
+
+
+    }
+
+    private fun onClickButton() {
         binding.btnCart.setOnClickListener {
             NewTaskSheet().show(supportFragmentManager, "New Task Sheet")
         }
+
+
+
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+        binding.txtMore.setOnClickListener {
+            if (binding.expandableTextView.isExpanded) {
+                binding.expandableTextView.collapse()
+                binding.txtMore.text = "Xem thêm"
+            } else {
+                binding.expandableTextView.expand()
+                binding.txtMore.text = "Thu gọn"
+            }
+        }
+
+        binding.btnFavorite.setOnClickListener {
+            viewModel.addFavorite(id)
+        }
+    }
+
+    private fun callViewModel() {
         viewModel.getCartCount()
+        viewModel.getDetailProduct(id)
+    }
+
+    private fun observeView() {
+        viewModel.resultAddFavorite.observe(this) {
+            when (it) {
+                is ResponseResult.Success -> {
+                    val status = it.data.status
+                    val countFav = it.data.productlikes_count
+                    setFavoriteView(status, countFav)
+                    this@ProductActivity.snackBar(it.data.message)
+                }
+
+                is ResponseResult.Error -> {
+                    this@ProductActivity.snackBar(it.message)
+                }
+            }
+        }
+
         viewModel.resultGetCartCount.observe(this@ProductActivity) { result ->
             when (result) {
                 is ResponseResult.Success -> {
                     cartQuantity = result.data.item_count
                     this@ProductActivity.invalidateOptionsMenu()  // Yêu cầu cập nhật lại menu
                 }
+
                 is ResponseResult.Error -> {
                     // Xử lý lỗi
                 }
             }
         }
-        viewModel.getDetailProduct(id)
+
         viewModel.resultDetail.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
@@ -94,7 +144,22 @@ class ProductActivity : AppCompatActivity() {
 
                     val like = productType.liked_by_current_user
                     val countFav = productType.productlikes_count
-                    setFavoriteView(like,countFav)
+                    setFavoriteView(like, countFav)
+                    listRating.clear()
+                    val data = it.data.ProductType.reviews
+                    if (data.isNotEmpty()) {
+                        binding.layoutRate.visibility = View.VISIBLE
+                        data.forEach { item ->
+                            listRating.add(item)
+                        }
+                        adapterRate = ratingAdapter(this@ProductActivity, listRating)
+                        binding.recylerRating.adapter = adapterRate
+                        binding.listitemrating.rating = it.data.ProductType.average_rating.toFloat()
+                        binding.txtTextCount.text = "Đánh giá(${it.data.ProductType.count_rating}): "
+                    }
+                    else{
+                        binding.layoutRate.visibility = View.GONE
+                    }
                 }
 
                 is ResponseResult.Error -> {
@@ -102,39 +167,6 @@ class ProductActivity : AppCompatActivity() {
                 }
 
                 else -> {}
-            }
-        }
-
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
-
-        binding.txtMore.setOnClickListener {
-            if (binding.expandableTextView.isExpanded) {
-                binding.expandableTextView.collapse()
-                binding.txtMore.text = "Xem thêm"
-            } else {
-                binding.expandableTextView.expand()
-                binding.txtMore.text = "Thu gọn"
-            }
-        }
-
-        binding.btnFavorite.setOnClickListener {
-            viewModel.addFavorite(id)
-        }
-
-        viewModel.resultAddFavorite.observe(this) {
-            when (it) {
-                is ResponseResult.Success -> {
-                    val status = it.data.status
-                    val countFav = it.data.productlikes_count
-                    setFavoriteView(status, countFav)
-                    this@ProductActivity.snackBar(it.data.message)
-                }
-
-                is ResponseResult.Error -> {
-                   this@ProductActivity.snackBar(it.message)
-                }
             }
         }
 
@@ -205,10 +237,16 @@ class ProductActivity : AppCompatActivity() {
         }
     }
     private fun init() {
+        listRating = mutableListOf()
+        id = intent.getIntExtra("id", 0)
         setSupportActionBar(binding.toolbar)
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(this, vmFactory)[ViewModelDetailProduct::class.java]
+
+        binding.recylerRating.setHasFixedSize(true)
+        binding.recylerRating.layoutManager = LinearLayoutManager(this)
+        binding.recylerRating.isNestedScrollingEnabled = false
 
         listProductSame = mutableListOf()
         binding.reSame.setHasFixedSize(true)
@@ -283,6 +321,7 @@ class ProductActivity : AppCompatActivity() {
         super.onDestroy()
         isLoggedInFirstTime = false
         adapter = null
+        adapterRate = null
         _binding = null
     }
 }

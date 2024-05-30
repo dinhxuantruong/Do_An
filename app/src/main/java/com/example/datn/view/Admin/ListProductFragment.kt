@@ -119,11 +119,12 @@ class ListProductFragment : Fragment() {
         viewModel.resultDeleteType.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseResult.Success -> {
-                    requireActivity().snackBar(it.data.message)
+                    //requireActivity().snackBar(it.data.message)
                     setViewData()
                 }
+
                 is ResponseResult.Error -> {
-                    requireActivity().snackBar(it.message)
+                   // requireActivity().snackBar(it.message)
                 }
             }
         }

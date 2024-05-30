@@ -62,6 +62,10 @@ class CancelledFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
                                     Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 5
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -78,7 +82,7 @@ class CancelledFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllOrderPacking()
+        viewModel.getAllOrderCancelled()
     }
 
     private fun init() {

@@ -17,6 +17,7 @@ import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
+import com.example.datn.data.model.ratingBody
 import com.example.datn.utils.network.RetrofitAddress
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
@@ -234,5 +235,11 @@ class repositoryProduct() {
     suspend fun getOrderStatistics() : Response<orderstatistics>{
         return RetrofitInstance.appApi.getOrderStatistics()
     }
+
+    suspend fun getRatingOrder(id : Int, ratingBody : ratingBody): Response<ResultMessage>{
+        return RetrofitInstance.appApi.getRatingOrder(id,ratingBody)
+    }
+
+
 
 }

@@ -143,11 +143,11 @@ class UserFragment : Fragment() {
         viewModel.resultProfile.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseResult.Success -> {
-                    Picasso.get().load(it.data.profile_photo.toString()).into(binding.imageView)
-                    if (it.data.phone.toString().isEmpty()) {
+                    Picasso.get().load(it.data.profile_photo).into(binding.imageView)
+                    if (it.data.phone.isNullOrEmpty()) {
                         binding.txtPhone.visibility = View.GONE
                     } else {
-                        binding.txtPhone.text = it.data.phone.toString()
+                        binding.txtPhone.text = it.data.phone
                         binding.txtPhone.visibility = View.VISIBLE
                     }
                     binding.name.text = it.data.name

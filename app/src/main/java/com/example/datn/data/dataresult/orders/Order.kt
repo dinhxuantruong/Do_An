@@ -5,5 +5,6 @@ data class Order(
     val items: List<Item>,
     val orders_address_id: Int,
     val total: Double,
-    val user_id: Int
+    val user_id: Int,
+    val review_status : Int,
 )

@@ -47,7 +47,7 @@ class OrderAdapter(
         val textCount = holder.itemView.findViewById<TextView>(R.id.hCOuntText)
         val tong = holder.itemView.findViewById<TextView>(R.id.hCountOrder)
         val btnHuy = holder.itemView.findViewById<Button>(R.id.btnConfirm)
-
+        val btnRating = holder.itemView.findViewById<Button>(R.id.btnRating)
 
         more.setOnClickListener {
             onClick.moreOnclick(order)
@@ -88,6 +88,12 @@ class OrderAdapter(
                     btnHuy.text = "Xem Đơn Hàng"
                 } else {
                     btnHuy.text = "Mua Lại"
+                    if (order.review_status == 0){
+                        btnRating.visibility = View.VISIBLE
+                    }else{
+                        btnRating.isEnabled = false
+                        btnRating.text = "Đã đánh giá sản phẩm"
+                    }
                 }
 
             }
@@ -105,6 +111,10 @@ class OrderAdapter(
             onClick.onClick(order)
         }
 
+        btnRating.setOnClickListener {
+            onClick.onRating(order)
+        }
+
         textCount.text = "Tổng tiền(${order.items.size} sản phẩm)"
         Picasso.get().load(itemProduct.product.image_url).into(Image)
         tong.text = order.total.toInt().toVietnameseCurrency()
@@ -119,5 +129,7 @@ class OrderAdapter(
         fun onClick(itemOrder: Order)
 
         fun moreOnclick(itemOrder: Order)
+
+        fun onRating(itemOrder: Order)
     }
 }

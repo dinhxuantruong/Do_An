@@ -65,6 +65,10 @@ class PackingFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
 
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 1
                     )
                     binding.recyclerView.adapter = adapter!!

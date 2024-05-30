@@ -1,20 +1,19 @@
 package com.example.datn.view.Orders.OrderViewPager2
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datn.R
 import com.example.datn.adapter.OrderAdapter
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.orders.Order
-import com.example.datn.databinding.FragmentPackageBinding
 import com.example.datn.databinding.FragmentReceivedBinding
-import com.example.datn.databinding.FragmentRegisterBinding
+import com.example.datn.view.Admin.OrderManage.RatingActivity
 import com.example.datn.viewmodel.Orders.OrdersViewModel
 
 
@@ -38,6 +37,7 @@ class ReceivedFragment : Fragment() {
 
         return binding.root
     }
+
 
     private fun observeView() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -64,6 +64,12 @@ class ReceivedFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
                                 Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                val intent = Intent(requireActivity(), RatingActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
+                                startActivity(intent)
+                            }
                         }, 4
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -81,7 +87,7 @@ class ReceivedFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllOrderPacking()
+        viewModel.getAllOrderReceived()
     }
     private fun init() {
         listPending = mutableListOf()

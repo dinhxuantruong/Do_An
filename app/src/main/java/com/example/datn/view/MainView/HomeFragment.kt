@@ -35,6 +35,7 @@ import com.example.datn.data.model.categoryfilter
 import com.example.datn.databinding.FragmentHomeBinding
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.view.Admin.OrderManage.RatingActivity
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.view.Detail.ListActivity
 import com.example.datn.view.Detail.ProductActivity
@@ -384,7 +385,7 @@ class HomeFragment : Fragment() {
 
             R.id.icNotifi -> {
                 // Xử lý khi người dùng click vào menu item 2
-                showToast("Menu item 2 clicked")
+                startActivity(Intent(requireActivity(),RatingActivity::class.java))
                 true
             }
 

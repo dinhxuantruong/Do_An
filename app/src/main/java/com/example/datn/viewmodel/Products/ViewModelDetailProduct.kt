@@ -37,6 +37,8 @@ class ViewModelDetailProduct(private val repositoryProduct: repositoryProduct) :
     private val _resultGetCartCount : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultGetCartCount : LiveData<ResponseResult<ResultMessage>> get() =  _resultGetCartCount
 
+
+
     fun getCartCount(){
         viewModelScope.launch(Dispatchers.IO) {
             try {

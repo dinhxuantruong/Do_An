@@ -85,6 +85,10 @@ class ConfirmFragment : Fragment() {
                                 intent.putExtra("id",itemOrder.id)
                                 startActivity(intent)
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         },0)
                     binding.recyclerView.adapter = adapter!!
                 }

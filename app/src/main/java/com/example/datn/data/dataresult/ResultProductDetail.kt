@@ -17,6 +17,7 @@ data class ProductTypeDetail(
     val image_url: String,
     val ingredient: String,
     val liked_by_current_user: Boolean,
+    val count_rating : Int,
     val lowest_price: Int,
     val made: String,
     val name: String,
@@ -28,5 +29,30 @@ data class ProductTypeDetail(
     val sold_quantity: Int,
     val trademark: String,
     val updated_at: String,
-    val weight: String
+    val weight: String,
+    val average_rating: Double, // Thêm thuộc tính này
+    val reviews: List<Review>   // Thêm thuộc tính này
+)
+
+data class Review(
+    val id: Int,
+    val user_id: Int,
+    val product_type_id: Int,
+    val order_id: Int,
+    val rating: Double,
+    val comment: String?,
+    val created_at: String,
+    val updated_at: String,
+    val user: UserNew,
+    val human_readable_createAt: String,
+)
+
+data class UserNew(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val role: Int,
+    val profession: String,
+    val phone: String,
+    val image_url: String
 )

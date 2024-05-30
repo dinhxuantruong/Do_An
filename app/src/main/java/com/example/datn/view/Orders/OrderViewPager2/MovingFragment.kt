@@ -63,6 +63,10 @@ class MovingFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
                                 Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 3
                     )
                     binding.recyclerView.adapter = adapter!!
@@ -80,7 +84,7 @@ class MovingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getAllOrderPacking()
+        viewModel.getAllOrderShipping()
     }
     private fun init() {
         listPending = mutableListOf()

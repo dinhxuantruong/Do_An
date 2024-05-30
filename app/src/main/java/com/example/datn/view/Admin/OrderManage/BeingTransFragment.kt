@@ -62,6 +62,10 @@ class BeingTransFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
 
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 2
                     )
                     binding.recyclerView.adapter = adapter!!

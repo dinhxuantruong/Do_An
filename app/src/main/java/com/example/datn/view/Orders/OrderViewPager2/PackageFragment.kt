@@ -66,6 +66,10 @@ class PackageFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
                                 Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 1
                     )
                     binding.recyclerView.adapter = adapter!!

@@ -25,6 +25,7 @@ import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
+import com.example.datn.data.model.ratingBody
 import com.example.datn.data.model.sendOTP
 import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
@@ -210,7 +211,7 @@ interface myApi {
     suspend fun getCartCount() : Response<ResultMessage>
 
     //tìm kiếm sản phẩm
-    @GET("product/search/type/all")
+    @GET("user/search/type/all")
     suspend fun getSearchProduct(@Query("name") name : String) : Response<ProductType>
 
     //Hủy đơn hàng
@@ -267,5 +268,12 @@ interface myApi {
     //order-statistics
     @GET("order-statistics")
     suspend fun getOrderStatistics() : Response<orderstatistics>
+
+    //Đánh giá sản phẩm
+    @POST("user/rate/order/{id}")
+    suspend fun getRatingOrder(@Path("id") id : Int,
+                               @Body ratingBody : ratingBody
+    ) : Response<ResultMessage>
+
 }
 

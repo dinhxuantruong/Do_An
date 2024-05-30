@@ -64,6 +64,10 @@ class CancelFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
 
                             }
+
+                            override fun onRating(itemOrder: Order) {
+                                TODO("Not yet implemented")
+                            }
                         }, 5
                     )
                     binding.recyclerView.adapter = adapter!!

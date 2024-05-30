@@ -59,6 +59,10 @@ class AccomplishedFragment : Fragment() {
                             override fun moreOnclick(itemOrder: Order) {
 
                             }
+
+                            override fun onRating(itemOrder: Order) {
+
+                            }
                         }, 4
                     )
                     binding.recyclerView.adapter = adapter!!
