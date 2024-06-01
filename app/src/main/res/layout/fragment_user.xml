@@ -159,6 +159,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/btnHisoryView"
                         android:layout_width="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/more2"
@@ -190,6 +191,7 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:id="@+id/btnRate"
                         android:layout_width="wrap_content"
                         android:layout_centerVertical="true"
                         android:src="@drawable/more2"

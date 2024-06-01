@@ -32,6 +32,8 @@ import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.UploadRequestBody
 import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.view.Auth.AuthActivity
+import com.example.datn.view.Detail.HistoryRateActivity
+import com.example.datn.view.Detail.HistoryViewActivity
 import com.example.datn.view.Detail.OrderStatisActivity
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
@@ -79,6 +81,12 @@ class UserFragment : Fragment() {
     }
 
     private fun onClickButton() {
+        binding.btnRate.setOnClickListener {
+            startActivity(Intent(requireActivity(),HistoryRateActivity::class.java))
+        }
+        binding.btnHisoryView.setOnClickListener {
+            startActivity(Intent(requireActivity(),HistoryViewActivity::class.java))
+        }
         binding.btnLogout.setOnClickListener {
             logout()
         }

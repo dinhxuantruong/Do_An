@@ -34,6 +34,7 @@ class PieChartActivity : AppCompatActivity() {
         val vmFactory = AdminViewModelFactory(repository)
         viewModel = ViewModelProvider(this, vmFactory)[AdminViewModel::class.java]
 
+        //binding.pieChart.setDrawSliceText(false)
         viewModel.getPieChart()
         observeView()
 

@@ -2,9 +2,11 @@ package com.example.datn.service
 
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.data.model.BodyAddSize
 import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
@@ -136,4 +138,12 @@ interface AdminApi {
     //Get data pie chart
     @GET("category-sales-percentage")
     suspend fun getPieChart() : Response<resultPieChart>
+
+    //get data chart
+    @GET("orders/monthly-revenue")
+    suspend fun getBarChart() : Response<resultBarrChart>
+
+    //Thống kê tổng doanh thu
+    @GET("admin/total-revenue")
+    suspend fun getAllTotal() : Response<resultTotalDate>
 }

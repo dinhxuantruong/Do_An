@@ -19,6 +19,7 @@ import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.example.datn.R
 import com.example.datn.adapter.productAdapter

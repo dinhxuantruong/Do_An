@@ -20,7 +20,6 @@
             android:id="@+id/imageProduct"
             android:src="@drawable/same"
             android:layout_gravity="center"
-            android:scaleType="centerInside"
             android:layout_width="160dp"
             android:layout_height="170dp" />
 
@@ -47,12 +46,51 @@
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:fontFamily="@font/robotobold"
             android:maxLines="2"
             android:text="@string/_120_000_chai"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtCountFav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" 30"
+                android:drawableStart="@drawable/love2"
+                android:fontFamily="@font/roboto"
+                android:textSize="14sp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:text="|"
+                android:paddingLeft="5dp"
+                android:fontFamily="@font/roboto"
+                android:paddingRight="5dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtCountSold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đã bán 100"
+                android:fontFamily="@font/roboto"
+                android:textSize="14sp"
+                android:layout_marginBottom="10dp" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

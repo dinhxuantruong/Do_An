@@ -31,6 +31,10 @@ class MainViewModelFactory(private val repositoryProduct: repositoryProduct) : V
                 SearchViewModel(repositoryProduct) as T
             }
 
+            modelClass.isAssignableFrom(ViewModelHistory::class.java) -> {
+                ViewModelHistory(repositoryProduct) as T
+            }
+
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

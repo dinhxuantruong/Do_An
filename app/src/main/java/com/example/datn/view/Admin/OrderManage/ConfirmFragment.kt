@@ -110,7 +110,6 @@ class ConfirmFragment : Fragment() {
     private fun handleLoginResult(dataResult: ResponseResult<ResultMessage>) {
         when (dataResult) {
             is ResponseResult.Success -> {
-                visiGoneView()
                 requireActivity().snackBar(dataResult.data.message)
                 viewModel.getAllOrderConfirm()
             }

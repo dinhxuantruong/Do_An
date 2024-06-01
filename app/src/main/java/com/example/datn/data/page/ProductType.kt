@@ -7,4 +7,6 @@ data class ProductType(
     val price: Int,
     val quantity: String,
     val id_category : String,
+    val sold_quantity : Int,
+    val favorites_count : Int
 )

@@ -35,7 +35,7 @@ class OrderAdapter(
 
     override fun onBindViewHolder(holder: oViewHolder, position: Int) {
         val order = listOrder[position]
-        val itemProduct = order.items[0]
+        val itemProduct = order.items[position]
 
 
         val Image = holder.itemView.findViewById<ImageView>(R.id.hImage)
@@ -91,6 +91,7 @@ class OrderAdapter(
                     if (order.review_status == 0){
                         btnRating.visibility = View.VISIBLE
                     }else{
+                        btnRating.visibility = View.VISIBLE
                         btnRating.isEnabled = false
                         btnRating.text = "Đã đánh giá sản phẩm"
                     }

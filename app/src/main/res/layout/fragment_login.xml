@@ -28,6 +28,7 @@
             android:elevation="100dp"
             android:indeterminate="true" />
 
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -153,6 +154,13 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="Đăng nhập bằng Google" />
+
+            <Button
+                android:id="@+id/btnSdt"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:text="Đăng nhập số điện thoại" />
         </LinearLayout>
 
 

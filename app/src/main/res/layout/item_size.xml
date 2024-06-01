@@ -15,6 +15,8 @@
 
         <ImageView
             android:id="@+id/imageSize"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@color/colorPrimary" />

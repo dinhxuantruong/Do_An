@@ -37,6 +37,7 @@ import com.example.datn.repository.repositoryProduct
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.view.Admin.OrderManage.RatingActivity
 import com.example.datn.view.Detail.CartActivity
+import com.example.datn.view.Detail.HistoryViewActivity
 import com.example.datn.view.Detail.ListActivity
 import com.example.datn.view.Detail.ProductActivity
 import com.example.datn.view.Search.ListSearchActivity
@@ -222,16 +223,21 @@ class HomeFragment : Fragment() {
         binding.recyViewcategory.setHasFixedSize(true)
         binding.recyViewcategory.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-        listGrid.add(categoryfilter(R.drawable.wig, "Hair"))
-        listGrid.add(categoryfilter(R.drawable.nounlipstick, "Lipstick"))
-        listGrid.add(categoryfilter(R.drawable.eyelash, "Eyelash"))
-        listGrid.add(categoryfilter(R.drawable.nightcream, "Cream"))
-        listGrid.add(categoryfilter(R.drawable.nounlotion, "Cleanser"))
-        listGrid.add(categoryfilter(R.drawable.nounserum, "Serum"))
+        listGrid.add(categoryfilter(1,R.drawable.wig, "Hair"))
+        listGrid.add(categoryfilter(2,R.drawable.nounlipstick, "Lipstick"))
+        listGrid.add(categoryfilter(3,R.drawable.eyelash, "Eyelash"))
+        listGrid.add(categoryfilter(4,R.drawable.nightcream, "Cream"))
+        listGrid.add(categoryfilter(5,R.drawable.nounlotion, "Cleanser"))
+        listGrid.add(categoryfilter(6,R.drawable.nounserum, "Serum"))
 
         categoryAdapter = categoryAdapter(object : categoryAdapter.ClickListener {
-            override fun onClickedItem(itemBlog: categoryfilter) {
-                startActivity(Intent(requireActivity(), ListActivity::class.java))
+            override fun onClickedItem(itemCategory: categoryfilter) {
+                //startActivity(Intent(requireActivity(), ListActivity::class.java))
+                val idCategory = itemCategory.id
+                val intent = Intent(requireActivity(),HistoryViewActivity::class.java)
+                intent.putExtra("idCategory",idCategory)
+                intent.putExtra("name",itemCategory.textImage)
+                startActivity(intent)
             }
         }, requireActivity(), listGrid)
         binding.recyViewcategory.adapter = categoryAdapter
@@ -345,7 +351,7 @@ class HomeFragment : Fragment() {
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(requireActivity(), vmFactory)[HomeViewModel::class.java]
-        viewModel.getImageSlideAndAllProductsType()
+        viewModel.getImageSlideAndAllProductsType(0)
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
     }
@@ -376,6 +382,7 @@ class HomeFragment : Fragment() {
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.icCart -> {

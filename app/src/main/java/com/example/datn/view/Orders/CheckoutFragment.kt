@@ -80,12 +80,16 @@ class CheckoutFragment : Fragment() {
         }
 
         binding.btnMua.setOnClickListener {
-            if (!binding.bankCheckBox.isChecked && !binding.codCheckBox.isChecked ||
-                binding.bankCheckBox.isChecked && binding.codCheckBox.isChecked
-            ) {
-                requireActivity().snackBar("Chọn phương thức thanh toán.")
-            } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(),1,1))
+            if (idAddress != null) {
+                if (!binding.bankCheckBox.isChecked && !binding.codCheckBox.isChecked ||
+                    binding.bankCheckBox.isChecked && binding.codCheckBox.isChecked
+                ) {
+                    requireActivity().snackBar("Chọn phương thức thanh toán.")
+                } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
+                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1))
+                }
+            }else{
+                Toast.makeText(requireContext(), "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -183,6 +187,14 @@ class CheckoutFragment : Fragment() {
         }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (idAddress==null){
+            viewModel.getDefaultAddress()
+        }
+    }
+
 
 
     private fun finishView() {

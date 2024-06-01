@@ -27,6 +27,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.Detail.HistoryRateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.HistoryViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.chart.TotalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Auth.OtpPhoneActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.Admin.OrderManage.RatingActivity"
             android:exported="false" />
         <activity
@@ -142,6 +154,9 @@
             android:theme="@style/Theme.Datn" />
         <activity
             android:name=".view.MainView.MainViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Auth.PhoneActivity"
             android:exported="false" />
         <activity
             android:name=".view.Auth.AuthActivity"
