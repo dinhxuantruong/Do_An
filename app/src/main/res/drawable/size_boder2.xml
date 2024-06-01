@@ -1,0 +1,8 @@
+<!-- res/drawable/red_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <stroke
+        android:width="0.6dp"
+        android:color="#DFDADA" /> <!-- Màu viền đỏ -->
+</shape>

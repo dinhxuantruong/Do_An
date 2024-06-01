@@ -48,7 +48,7 @@
             android:backgroundTint="@color/white"
             app:boxBackgroundMode="none"
             app:elevation="0dp"
-            app:navigationIcon="@drawable/res" />
+            app:navigationIcon="@drawable/back" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Text View for OTP Title -->

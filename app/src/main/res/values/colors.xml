@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_20">#BEDD47</color>
+    <color name="darktransparent">#C6000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#1EA0DB</color>
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#87FC34</color>
-    <color name="shimmer_color">#C2C2C2</color>
+    <color name="shimmer_color">#03A9F4</color>
+    <color name="size">#FBFBFB</color>
+    <color name="isCheckFailed">#958D8D</color>
+    <color name="colorPrimary2">#272727</color>
+    <color name="colorPrimaryDark2">#000000</color>
+    <color name="colorAccent2">#FD4945</color>
+
+    <color name="primary" >#1B023B</color>
+    <color name="secondary">#FF03DAC5</color>
+    <color name="night_mode">#6124B1</color>
+    <color name="notification">#13B2C3</color>
+    <color name="private_account">#FFC107</color>
+    <color name="security">#FF8F6B</color>
+
 </resources>

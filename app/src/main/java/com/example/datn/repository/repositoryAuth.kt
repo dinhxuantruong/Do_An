@@ -1,9 +1,9 @@
 package com.example.datn.repository
 
 import android.content.Context
-import com.example.datn.data.ResultMessage
-import com.example.datn.data.Resutl_RefreshToken
-import com.example.datn.data.User
+import com.example.datn.data.dataresult.ResultMessage
+import com.example.datn.data.dataresult.Resutl_RefreshToken
+import com.example.datn.data.dataresult.User
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.ForgetPass

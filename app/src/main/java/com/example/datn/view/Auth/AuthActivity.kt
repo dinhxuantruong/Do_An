@@ -3,11 +3,10 @@ package com.example.datn.view.Auth
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.datn.R
 import com.example.datn.databinding.ActivityAuthBinding
 import com.example.datn.repository.repositoryAuth
-import com.example.datn.viewmodel.AuthViewModel
-import com.example.datn.viewmodel.AuthViewModelFactory
+import com.example.datn.viewmodel.Auth.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModelFactory
 
 class AuthActivity : AppCompatActivity() {
     private lateinit var viewModel: AuthViewModel

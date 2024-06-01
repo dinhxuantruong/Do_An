@@ -1,0 +1,117 @@
+package com.example.datn.view.Orders.OrderViewPager2
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.adapter.OrderAdapter
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.orders.Order
+import com.example.datn.databinding.FragmentReceivedBinding
+import com.example.datn.view.Admin.OrderManage.RatingActivity
+import com.example.datn.viewmodel.Orders.OrdersViewModel
+
+
+class ReceivedFragment : Fragment() {
+
+    private var _binding : FragmentReceivedBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel: OrdersViewModel by activityViewModels()
+    private var adapter: OrderAdapter? = null
+    private lateinit var listPending: MutableList<Order>
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        _binding = FragmentReceivedBinding.inflate(inflater,container,false)
+
+        init()
+        viewModel.getAllOrderReceived()
+        observeView()
+
+        return binding.root
+    }
+
+
+    private fun observeView() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+        }
+        viewModel.resultOrderReceived.observe(viewLifecycleOwner) { data ->
+            when (data) {
+                is ResponseResult.Success -> {
+                    listPending.clear()
+                    val data2 = data.data.Orders
+                    data2.forEach { item ->
+                        listPending.add(item)
+                    }
+                    if (listPending.size == 0) {
+                        visiGoneView()
+                    } else {
+                        visiView()
+                    }
+                    adapter = OrderAdapter(requireActivity(), listPending, false,
+                        object : OrderAdapter.buttonOnClick {
+                            override fun onClick(itemOrder: Order) {
+                            }
+
+                            override fun moreOnclick(itemOrder: Order) {
+                                Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
+                            }
+
+                            override fun onRating(itemOrder: Order) {
+                                val intent = Intent(requireActivity(), RatingActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
+                                startActivity(intent)
+                            }
+                        }, 4
+                    )
+                    binding.recyclerView.adapter = adapter!!
+                }
+
+                is ResponseResult.Error -> {
+                   // Toast.makeText(requireContext(),, Toast.LENGTH_SHORT).show()
+                }
+
+
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllOrderReceived()
+    }
+    private fun init() {
+        listPending = mutableListOf()
+        binding.recyclerView.setHasFixedSize(true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+    }
+
+    private fun visiGoneView() {
+        binding.apply {
+            txtEmpty.visibility = View.VISIBLE
+            imageView6.visibility = View.VISIBLE
+        }
+    }
+
+    private fun visiView() {
+        binding.apply {
+            txtEmpty.visibility = View.GONE
+            imageView6.visibility = View.GONE
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+        _binding = null
+    }
+}

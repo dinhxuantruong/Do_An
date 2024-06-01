@@ -1,44 +1,48 @@
 package com.example.datn.view.Auth
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.util.Patterns
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
+import com.example.datn.data.dataresult.User
 import com.example.datn.data.model.Auth
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.databinding.FragmentLoginBinding
-import com.example.datn.utils.DataResult
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.SharePreference.PrefManager
+import com.example.datn.utils.SharePreference.UserPreferences
 import com.example.datn.utils.network.Constance.Companion.CLIENT_ID
 import com.example.datn.utils.network.Constance.Companion.CLIENT_SECRET
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE
 import com.example.datn.utils.network.Constance.Companion.GRANT_TYPE_GOOGLE
+import com.example.datn.utils.network.RetrofitInstance
+import com.example.datn.view.Admin.MainAdminActivity
 import com.example.datn.view.MainView.MainViewActivity
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.viewmodel.Auth.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import java.util.Locale
 
 @Suppress("DEPRECATION")
-class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
-    View.OnFocusChangeListener {
+class LoginFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -46,11 +50,14 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     private val prefManager get() = _prefManager!!
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private val RC_SIGN_IN = 9001 //
+    private var isLoggedInFirstTime = false
     private var gso: GoogleSignInOptions? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
 
@@ -75,15 +82,6 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
             observeView()
         }
 
-
-
-        binding.emailEdt.onFocusChangeListener = this
-        binding.passwordEdt.onFocusChangeListener = this
-        binding.emailEdt.onFocusChangeListener = this
-        binding.passwordEdt.onFocusChangeListener = this
-
-        binding.emailEdt.addTextChangedListener(emailWatcher)
-        binding.passwordEdt.addTextChangedListener(passwordWatcher)
         binding.btnForgotPass.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_forgotFragment)
         }
@@ -108,54 +106,63 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 // Gọi hàm đăng nhập từ ViewModel
                 viewModel.login(Auth(email, password))
-                viewModel.loginResult.observe(viewLifecycleOwner) { result ->
-                    when (result) {
-                        is DataResult.Success -> {
-                            // Xử lý khi đăng nhập thành công
-                            prefManager.setLogin(true)
-                            prefManager.setFlag(0)
-                            saveAccount(email, password)
-                            if (result.data.user.role == 1) {
-//                        startActivity(Intent(requireActivity(), AdminActivity::class.java))
-//                        requireActivity().finish()
-                            } else {
-                                startActivity(
-                                    Intent(
-                                        requireActivity(),
-                                        MainViewActivity::class.java
-                                    )
-                                )
-                                requireActivity().finish()
-                            }
-//                    val intent = Intent(requireActivity(), HomeActivity::class.java)
-//                    startActivity(intent)
-//                    requireActivity().finish()
-                        }
 
-                        is DataResult.Error -> {
-                            // Xử lý khi đăng nhập thất bại
-                            val errorMessage = result.message
-                            prefManager.setLogin(false)
-                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-
-                        else -> {}
+                if (isLoggedInFirstTime) {
+                    viewModel.loginResult.observeOnceAfterInit(viewLifecycleOwner) { result ->
+                        handleLoginResult(result, email, password)
+                    }
+                } else {
+                    viewModel.loginResult.observeOnce(viewLifecycleOwner) { result ->
+                        handleLoginResult(result, email, password)
+                        isLoggedInFirstTime = true
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Vui lòng nhập đủ thông tin đăng nhập",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                Toast.makeText(requireContext(), "Vui lòng nhập đủ thông tin đăng nhập", Toast.LENGTH_SHORT).show()
             }
         }
 
-
         return binding.root
     }
+
+    private fun handleLoginResult(dataResult: ResponseResult<User>, email: String, password: String) {
+        when (dataResult) {
+            is ResponseResult.Success -> {
+                // Xử lý khi đăng nhập thành công
+                prefManager.setLogin(true)
+                prefManager.setFlag(0)
+                saveAccount(email, password)
+                prefManager.setLoginFireBase(true)
+                val userPreferences = UserPreferences(requireContext())
+                userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
+                    RetrofitInstance.Token = it.toString()
+                }
+                if (dataResult.data.user.role == 1) {
+                    startActivityAdmin()
+                } else {
+                    startActivity(
+                        Intent(requireActivity(), MainViewActivity::class.java)
+                    )
+                    requireActivity().finish()
+                }
+            }
+
+            is ResponseResult.Error -> {
+                // Xử lý khi đăng nhập thất bại
+                val errorMessage = dataResult.message
+                prefManager.setLogin(false)
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+    }
+
+    private fun startActivityAdmin() {
+        startActivity(Intent(requireActivity(),MainAdminActivity::class.java))
+        requireActivity().finish()
+    }
+
 
     private fun checkLogin() {
         if (prefManager.isLogin()!!) {
@@ -181,12 +188,23 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
         )
         viewModel.loginWithGoogle.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
-                    startActivity(Intent(requireActivity(), MainViewActivity::class.java))
-                    requireActivity().finish()
+                is ResponseResult.Success -> {
+                    val userPreferences = UserPreferences(requireContext())
+                    prefManager.setLoginFireBase(true)
+                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){data ->
+                        RetrofitInstance.Token = data.toString()
+                    }
+                    if (it.data.user.role == 1) {
+                        startActivityAdmin()
+                    } else {
+                        startActivity(Intent(requireActivity(), MainViewActivity::class.java))
+
+                        requireActivity().finish()
+                    }
+                    prefManager.saveEmail(it.data.user.email)
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     //prefManager.removeDate()
                 }
             }
@@ -207,15 +225,23 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
         viewModel.login(Auth(email, password))
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
+                    val userPreferences = UserPreferences(requireContext())
+                    userPreferences.authToken.asLiveData().observe(viewLifecycleOwner){
+                        RetrofitInstance.Token = it.toString()
+                    }
                     saveAccount(email, password)
-                    val intent = Intent(requireActivity(), MainViewActivity::class.java)
-                    intent.putExtra("email", result.data.user.email)
-                    startActivity(intent)
-                    requireActivity().finish()
+                    if (result.data.user.role == 1) {
+                        startActivityAdmin()
+                    } else {
+                        val intent = Intent(requireActivity(), MainViewActivity::class.java)
+                        intent.putExtra("email", result.data.user.email)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     // Handle error
                 }
             }
@@ -226,7 +252,8 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     private fun observeView() {
         viewModel.googleResult.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
+                    RetrofitInstance.Token = it.data.access_token
                     prefManager.setLogin(true)
                     prefManager.setFlag(1)
                     prefManager.saveGoogleRefreshToken(it.data.refresh_token)
@@ -235,63 +262,12 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
                     //startActivity(Intent(requireActivity(), MainViewActivity::class.java))
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     //
                 }
             }
         }
     }
-
-    private val emailWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        override fun afterTextChanged(s: Editable?) {
-            val email = s.toString()
-
-            if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                // Email đúng định dạng, thực hiện các xử lý tương ứng
-                binding.emailTil.apply {
-                    isErrorEnabled = false
-                }
-            } else {
-                // Email không đúng định dạng, hiển thị lỗi và xóa icon check
-                binding.emailTil.apply {
-                    isErrorEnabled = true
-                    error = "Invalid email format"
-                    startIconDrawable = null
-                }
-            }
-        }
-    }
-
-    private val passwordWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-        override fun afterTextChanged(s: Editable?) {
-            val password = s.toString()
-            if (password.length in 6..15) {
-                // Độ dài mật khẩu hợp lệ, thực hiện các xử lý tương ứng
-                binding.passwordTil.apply {
-                    isErrorEnabled = false
-                    setStartIconDrawable(R.drawable.baseline_check_24)
-                    setStartIconTintList(ColorStateList.valueOf(Color.GREEN))
-                }
-            } else {
-                // Độ dài mật khẩu không hợp lệ, hiển thị lỗi và xóa icon check
-                binding.passwordTil.apply {
-                    isErrorEnabled = true
-                    error = "Password must be between 6 and 15 characters long"
-                    startIconDrawable = null
-                }
-            }
-        }
-    }
-
-
 
     private fun saveAccount(email: String, password: String) {
         prefManager.saveEmail(email)
@@ -303,25 +279,12 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         gso = null
         mGoogleSignInClient = null
-        binding.emailEdt.removeTextChangedListener(emailWatcher)
-        binding.passwordEdt.removeTextChangedListener(passwordWatcher)
         _binding = null
+        super.onDestroyView()
     }
 
-    override fun onFocusChange(v: View?, hasFocus: Boolean) {
-
-    }
-
-    override fun onClick(v: View?) {
-
-    }
-
-    override fun onKey(view: View?, keyCode: Int, event: KeyEvent?): Boolean {
-        return false
-    }
 
     private fun signInWithGoogle() {
         val signInIntent = mGoogleSignInClient?.signInIntent
@@ -345,6 +308,7 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
             val authCode = account?.serverAuthCode
             if (account != null) {
                 val idToken = account.idToken
+                prefManager.saveUrl(account.photoUrl.toString())
                 if (idToken != null) {
                     Log.d("MainActivity", "Google ID Token: $idToken")
                     Log.d("MainActivity", "Google Refresh Token: $authCode")
@@ -373,22 +337,4 @@ class LoginFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
                 .show()
         }
     }
-
-    // Example function to refresh access token using serverAuthCode
-//    private fun refreshAccessToken(authCode: String?) {
-//        // Your logic to use authCode to refresh access token from server
-//        // For example, make a network request to your server endpoint with authCode
-//        // and get the new access token and refresh token
-//        // Update your UI or handle the new tokens accordingly
-//    }
-
-//    private fun logout() {
-//        mGoogleSignInClient.signOut()
-//            .addOnCompleteListener(requireActivity()) {
-//                // Handle logout success
-//                Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
-//                // Update UI or navigate to another login screen if needed
-//            }
-//    }
-
 }

@@ -1,7 +1,6 @@
 package com.example.datn.view.Auth
 
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,15 +15,13 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.datn.R
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.sendOTP
 import com.example.datn.databinding.FragmentOtpBinding
-import com.example.datn.utils.DataResult
-import com.example.datn.utils.EmailType
-import com.example.datn.view.MainView.MainViewActivity
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.utils.Extension.EmailType
+import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
 class OtpFragment : Fragment() {
@@ -86,11 +83,11 @@ class OtpFragment : Fragment() {
 
         viewModel.resultOTP?.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
 
@@ -120,7 +117,7 @@ class OtpFragment : Fragment() {
     private  fun observeRegister(){
         viewModel.acceptResult.observe(viewLifecycleOwner) {
             when (it) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     clearEmail()
                     Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
                     while (findNavController().navigateUp()){findNavController().popBackStack()}
@@ -128,7 +125,7 @@ class OtpFragment : Fragment() {
     //                    requireActivity().finish()
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
 
@@ -143,14 +140,14 @@ class OtpFragment : Fragment() {
     private fun observeForgot(){
         viewModel.resultForget?.observe(viewLifecycleOwner){
             when(it){
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     clearEmail()
                     val message = it.data.message
                     Toast.makeText(requireContext(),message , Toast.LENGTH_SHORT).show()
                     while (findNavController().navigateUp()){findNavController().popBackStack()}
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     val message = it.message
                     Toast.makeText(requireContext(),message, Toast.LENGTH_SHORT).show()
                 }
