@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:layout_marginBottom="10dp"
+    app:cardElevation="0.1dp">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:elevation="5dp"
+            app:cardElevation="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/hImage"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/same"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:paddingRight="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/hImage"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <at.blogc.android.views.ExpandableTextView
+                            android:id="@+id/hName"
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/robotomedium"
+                            android:maxLines="2"
+                            android:text="@string/name_product_test"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:animation_duration="750"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <at.blogc.android.views.ExpandableTextView
+                            android:id="@+id/hPhanLoai"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/roboto"
+                            android:maxLength="30"
+                            android:maxLines="1"
+                            android:text="Phân loại: 500ml"
+                            app:animation_duration="750"
+                            app:layout_constraintBottom_toTopOf="@+id/hPrice"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/hName" />
+
+                        <TextView
+                            android:id="@+id/hPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/robotoregular"
+                            android:gravity="bottom"
+                            android:text="131.000 đ"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/hPhanLoai" />
+
+                        <TextView
+                            android:id="@+id/hCount2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginTop="10dp"
+                            android:gravity="bottom"
+                            android:text="Số lượng 10"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/hPhanLoai" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:elevation="50dp"
+            app:cardElevation="1dp"
+            android:layout_marginBottom="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:paddingBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/hCOuntText"
+        android:paddingStart="16dp"
+        android:layout_width="wrap_content"
+        android:text="Tổng tiền(2 sản phẩm)"
+        android:gravity="start"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/roboto"
+        android:textSize="18sp"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/hCountOrder"
+        android:paddingStart="16dp"
+       android:paddingRight="16dp"
+        android:layout_width="match_parent"
+        android:text="131.000 đ"
+        android:gravity="end"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/robotomedium"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
+
+                <TextView
+                    android:id="@+id/hXemThem"
+                    android:layout_width="match_parent"
+                    android:fontFamily="@font/roboto"
+                    android:textSize="13dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="Xem chi tiết"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+          android:gravity="center|end"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRating"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/custom_buttom"
+            android:fontFamily="@font/robotomedium"
+            android:padding="12dp"
+            android:text="Đánh giá sản phẩm"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConfirm"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/row_back_bg2"
+            android:padding="10dp"
+            android:paddingRight="10dp"
+            android:fontFamily="@font/robotomedium"
+            android:text="Chờ Lấy Hàng"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

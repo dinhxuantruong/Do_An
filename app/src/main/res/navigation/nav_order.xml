@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_order"
+    app:startDestination="@id/checkoutFragment">
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.example.datn.view.Orders.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" >
+
+        <action
+            android:id="@+id/action_checkoutFragment_to_paymentsFragment"
+            app:destination="@id/paymentsFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_listAddressFragment"
+            app:destination="@id/listAddressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentsFragment"
+        android:name="com.example.datn.view.Orders.PaymentsFragment"
+        android:label="fragment_payments"
+        tools:layout="@layout/fragment_payments" />
+    <fragment
+        android:id="@+id/listAddressFragment"
+        android:name="com.example.datn.view.Orders.ListAddressFragment"
+        android:label="fragment_list_address"
+        tools:layout="@layout/fragment_list_address" />
+</navigation>

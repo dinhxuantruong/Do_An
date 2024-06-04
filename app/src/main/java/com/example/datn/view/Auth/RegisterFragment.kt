@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -19,9 +18,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.datn.R
 import com.example.datn.data.model.Register
 import com.example.datn.databinding.FragmentRegisterBinding
-import com.example.datn.utils.DataResult
-import com.example.datn.utils.EmailType
-import com.example.datn.viewmodel.AuthViewModel
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.utils.Extension.EmailType
+import com.example.datn.viewmodel.Auth.AuthViewModel
 
 
 class RegisterFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
@@ -90,7 +89,7 @@ class RegisterFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
     private fun observeView() {
         viewModel.registerResult?.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is DataResult.Success -> {
+                is ResponseResult.Success -> {
                     val email = result.data.email
                     EmailType.REGISTER = email
                     val bundle = Bundle()
@@ -98,7 +97,7 @@ class RegisterFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
                     findNavController().navigate(R.id.action_registerFragment_to_otpFragment, bundle)
                 }
 
-                is DataResult.Error -> {
+                is ResponseResult.Error -> {
                     // Xử lý khi đăng nhập thất bại
                     val errorMessage = result.message
                     Toast.makeText(requireActivity(), errorMessage, Toast.LENGTH_SHORT).show()

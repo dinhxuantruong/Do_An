@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
-
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <application
-        android:usesCleartextTraffic="true"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,15 +24,148 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Datn"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.Admin.DescriptionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.HistoryRateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.HistoryViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.chart.TotalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Auth.OtpPhoneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.OrderManage.RatingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Orders.PaymentResultActivity"
+            android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="payment-result"
+                    android:scheme="com.example.datn" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.Detail.OrderStatisActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.chart.PieChartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.chart.BarChartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.OrderDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.AddProductTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.AddProductSizeActivity"
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".view.Admin.AddPRoductSizeActivity" -->
+        <!-- android:exported="false" /> -->
+        <activity
+            android:name=".view.Admin.ListTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Admin.MainAdminActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@android:drawable/ic_lock_idle_alarm" />
+
+        <service
+            android:name=".utils.notification.MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".utils.notification.MyFirebaseInstanceId"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".view.Search.ListProductSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Search.ListSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Orders.AddressesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".view.Orders.SuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Orders.OrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Chat.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Chat.SearchChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Chat.MessageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Chat.AdviseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Detail.ListActivity"
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".view.Detail.MainActivity4" -->
+        <!-- android:exported="false" /> -->
+        <!-- <activity -->
+        <!-- android:name=".view.Detail.ListProductTypeActivity" -->
+        <!-- android:exported="false" /> -->
+        <!-- <activity -->
+        <!-- android:name=".view.Detail.ListProductActivity" -->
+        <!-- android:exported="false" /> -->
+        <activity
+            android:name=".view.Detail.ProductActivity"
+            android:exported="false"
+            android:label="@string/title_activity_details_product"
+            android:theme="@style/Theme.Datn" />
+        <activity
             android:name=".view.MainView.MainViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Auth.PhoneActivity"
             android:exported="false" />
         <activity
             android:name=".view.Auth.AuthActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

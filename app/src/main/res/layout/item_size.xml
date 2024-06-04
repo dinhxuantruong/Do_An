@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:id="@+id/cardView"
+    android:elevation="10dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageSize"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/txtPriceSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/robotoregular"
+            android:text="131.000 đ/Chai" />
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

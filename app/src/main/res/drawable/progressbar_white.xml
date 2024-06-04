@@ -1,0 +1,11 @@
+<!-- res/drawable/progressbar_white.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="ring">
+            <size
+                android:width="3dp"
+                android:height="3dp" />
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
+</layer-list>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:elevation="10dp"
+    android:layout_marginBottom="1dp"
+    app:cardElevation="0.1dp">
+
+    <LinearLayout
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageCheckout"
+                android:layout_width="90dp"
+                android:src="@drawable/same"
+                android:layout_height="90dp"
+                android:scaleType="centerInside" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="11dp"
+            android:orientation="vertical">
+
+            <at.blogc.android.views.ExpandableTextView
+                android:id="@+id/ckName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/robotomedium"
+                android:maxLines="2"
+                android:text="@string/name_product_test"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:animation_duration="750" />
+
+            <at.blogc.android.views.ExpandableTextView
+                android:id="@+id/ckPhanLoai"
+                android:maxLines="1"
+                android:maxLength="30"
+                android:ellipsize="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:animation_duration="750"
+                android:fontFamily="@font/roboto"
+                android:text="Phân loại: 500ml" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/robotoregular"
+                    android:gravity="bottom"
+                    android:id="@+id/ckPrice"
+                    android:text="131.000 đ"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:enabled="false" />
+
+        <TextView
+            android:id="@+id/ckCount"
+            android:layout_width="wrap_content"
+            android:text="Số lượng 10"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:layout_height="match_parent"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
