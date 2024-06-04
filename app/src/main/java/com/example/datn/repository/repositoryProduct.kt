@@ -41,8 +41,11 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.authLogout()
     }
 
-    suspend fun allProductsTypeMax(check : Int) : Response<ProductType>{
-        return RetrofitInstance.appApi.allProductsTypeMax(check)
+    suspend fun allProductsTypeMax() : Response<ProductType>{
+        return RetrofitInstance.appApi.allProductsTypeMax()
+    }
+    suspend fun allProductsTypeMaxPage(page : Int) : Response<ProductResponse>{
+        return RetrofitInstance.appApi.allProductsTypeMax2(page)
     }
     suspend fun allProductsType() : Response<ProductType>{
         return RetrofitInstance.appApi.allProductsTypeLimit()
@@ -52,8 +55,12 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.allProductsType()
     }
 
-      suspend fun allProductsTypeTime(check : Int) : Response<ProductType>{
-        return RetrofitInstance.appApi.allProductsTypeTime(check)
+    suspend fun allProductsTypeTimePage(page : Int) : Response<ProductResponse>{
+        return RetrofitInstance.appApi.allProductsTypeTimePage(page)
+    }
+
+      suspend fun allProductsTypeTime() : Response<ProductType>{
+        return RetrofitInstance.appApi.allProductsTypeTime()
     }
 
     //get detail product
@@ -74,6 +81,14 @@ class repositoryProduct() {
     //get page product
     suspend fun getProductsPage(page : Int) : Response<ProductResponse>{
         return RetrofitInstance.appApi.getProductsPage(page)
+    }
+
+    suspend fun getProductsPageDesc(page : Int) : Response<ProductResponse>{
+        return RetrofitInstance.appApi.getProductsPageDesc(page)
+    }
+
+    suspend fun getProductsPageAsc(page : Int) : Response<ProductResponse>{
+        return RetrofitInstance.appApi.getProductsPageAsc(page)
     }
 
     //get all favorite

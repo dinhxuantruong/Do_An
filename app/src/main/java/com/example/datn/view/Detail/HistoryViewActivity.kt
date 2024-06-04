@@ -89,7 +89,14 @@ class HistoryViewActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this@HistoryViewActivity,vmFactory)[ViewModelHistory::class.java]
         if (idCategory in 1..6){
             getDataCate()
-        }else{
+        }else if (idCategory == 8){
+            getAllDataMax()
+            binding.toolBarCart.title = "Sản phẩm bán chạy"
+        }else if (idCategory == 9){
+            getAllDataTime()
+            binding.toolBarCart.title = "Sản phẩm mới"
+        }
+        else{
             getData()
         }
         if (nameCate!=null){
@@ -106,6 +113,26 @@ class HistoryViewActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    private fun getAllDataMax(){
+        lifecycleScope.launch {
+            viewModel.getProductTypeMax().observe(this@HistoryViewActivity) {
+                it?.let {
+                    adapter.submitData(lifecycle, it)
+                }
+            }
+        }
+    }
+
+    private fun getAllDataTime(){
+        lifecycleScope.launch {
+            viewModel.getProductTypeTime().observe(this@HistoryViewActivity) {
+                it?.let {
+                    adapter.submitData(lifecycle, it)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

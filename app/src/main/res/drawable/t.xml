@@ -2,7 +2,12 @@
     android:viewportHeight="24" android:viewportWidth="24"
     android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="#00000000"
-        android:pathData="M4.5,10.5 L12,3m0,0 l7.5,7.5M12,3v18"
-        android:strokeColor="@color/black" android:strokeLineCap="round"
+        android:pathData="M4.5,10.5 L12,3m0,0 l7.5,7.5M12,3v15"
+        android:strokeColor="@color/colorPrimary" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="1.5"/>
+    <!-- Thêm gạch ngang bằng với chiều rộng của mũi tên -->
+    <path android:fillColor="#00000000"
+        android:pathData="M4.5,2 h15"
+    android:strokeColor="@color/colorPrimary" android:strokeLineCap="round"
+    android:strokeLineJoin="round" android:strokeWidth="1.5"/>
 </vector>

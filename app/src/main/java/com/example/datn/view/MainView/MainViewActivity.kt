@@ -8,6 +8,7 @@ import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.datn.MyApplication
 import com.example.datn.R
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.databinding.ActivityMainViewBinding
@@ -71,7 +72,26 @@ class MainViewActivity : AppCompatActivity() {
                 else -> {}
             }
         }
+        //updateStatus("online")
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        updateStatus("online")
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        updateStatus("offline")
+//    }
+//
+//
+//      private fun updateStatus(status : String){
+//        val ref = FirebaseDatabase.getInstance().reference.child("Users").child(auth.uid!!)
+//        val hashMap = HashMap<String,Any>()
+//        hashMap["status"]   = status
+//        ref.updateChildren(hashMap)
+//    }
 
     private fun loginFirebase() {
         val email = prefManager.getEmail()!!
@@ -86,7 +106,7 @@ class MainViewActivity : AppCompatActivity() {
 
     private fun intentChat(){
         val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra("id","JUSZZcvSRvZvUMca5pLxpFL811F3")
+        intent.putExtra("id","MYtAsgE9pOS3rF4qBpWLoDlaR9x2")
         startActivity(intent)
     }
     private fun register() {

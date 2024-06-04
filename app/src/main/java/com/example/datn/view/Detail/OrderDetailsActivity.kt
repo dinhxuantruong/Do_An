@@ -48,11 +48,13 @@ class OrderDetailsActivity : AppCompatActivity() {
                     binding.txtThanhToan.text = dataUser.payment_method
                     binding.txtTotalFinal.text = "${dataUser.total.toInt().toVietnameseCurrency()}"
                     binding.txtCreateAt.text = dataUser.created_at
+                    binding.txtUuid.text =dataUser.uuid
                     listProduct.clear()
                     val data = dataUser.items
                     data.forEach { item ->
                         listProduct.add(item)
                     }
+                    val uuid = dataUser.uuid
                     adapter = adapterOrderDetails(this@OrderDetailsActivity, listProduct)
                     binding.recyclerViewCart.adapter = adapter
                 }

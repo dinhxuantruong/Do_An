@@ -1,10 +1,12 @@
 package com.velmurugan.paging3android.Adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.LOGGER
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -39,11 +41,21 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         val image = holder.itemView.findViewById<ImageView>(R.id.imageProduct)
         val countFav = holder.itemView.findViewById<TextView>(R.id.txtCountFav)
         val txtCountSold = holder.itemView.findViewById<TextView>(R.id.txtCountSold)
+        val txtNg = holder.itemView.findViewById<TextView>(R.id.txtNg)
+
+        if (product.status == 0) {
+            txtNg.visibility = View.VISIBLE
+            price.visibility = View.GONE
+        } else {
+            txtNg.visibility = View.GONE
+            price.visibility = View.VISIBLE
+            price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
+        }
 
         countFav.text = " " + product.favorites_count.toString()
         txtCountSold.text = "Đã bán " + product.sold_quantity.toString()
         text.text = product.name
-        price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
+
 
         Picasso.get().load(product.image_url).into(image)
 

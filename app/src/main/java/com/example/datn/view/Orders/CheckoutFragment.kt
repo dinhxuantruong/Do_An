@@ -22,6 +22,7 @@ import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.viewmodel.Products.OrderViewModel
+import java.util.UUID
 
 class CheckoutFragment : Fragment() {
 
@@ -29,6 +30,8 @@ class CheckoutFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel : OrderViewModel by  activityViewModels()
+
+    private var uuid : String = ""
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
     companion object {
         var idAddress: Int? = null
@@ -86,7 +89,7 @@ class CheckoutFragment : Fragment() {
                 ) {
                     requireActivity().snackBar("Chọn phương thức thanh toán.")
                 } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1))
+                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1,uuid))
                 }
             }else{
                 Toast.makeText(requireContext(), "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
@@ -185,7 +188,7 @@ class CheckoutFragment : Fragment() {
         binding.toolListProduct.setNavigationOnClickListener {
             finishView()
         }
-
+        uuid = UUID.randomUUID().toString()
     }
 
     override fun onResume() {

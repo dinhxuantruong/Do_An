@@ -39,6 +39,7 @@
             android:textSize="18sp" />
 
 
+
         <TextView
             android:id="@+id/txtPriceProduct"
             android:layout_width="160dp"

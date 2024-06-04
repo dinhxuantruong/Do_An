@@ -17,7 +17,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 class ChatAdapter(
     private val activity: Activity,
     private val mChatList: List<Chat>,
-    private val imageUrl: String
+    private val imageUrl: String,
 ) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -34,6 +34,7 @@ class ChatAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setIsRecyclable(false)
         val chat = mChatList[position]
+
 
         val profileImage = holder.itemView.findViewById<CircleImageView>(R.id.profile_image)
         val showTextMessage = holder.itemView.findViewById<TextView>(R.id.show_text_message)

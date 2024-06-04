@@ -65,6 +65,7 @@ class ProductActivity : AppCompatActivity() {
 
     }
 
+
     private fun onClickButton() {
         binding.btnCart.setOnClickListener {
             NewTaskSheet().show(supportFragmentManager, "New Task Sheet")
@@ -97,6 +98,10 @@ class ProductActivity : AppCompatActivity() {
     }
 
     private fun observeView() {
+        viewModel.isLoading.observe(this) { isLoading ->
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+        }
+
         viewModel.resultAddFavorite.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
@@ -128,9 +133,12 @@ class ProductActivity : AppCompatActivity() {
         viewModel.resultDetail.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
-                    Log.e("Main", it.data.ProductType.products.size.toString())
                     val productType = it.data.ProductType
                     val listImages = it.data.Images
+                    if (productType.status == 0){
+                        binding.btnCart.text = "Sản phẩm ngừng kinh doanh"
+                        binding.btnCart.isEnabled = false
+                    }
                     listImages.forEach { image ->
                         listImageProduct.add(SlideModel(image))
                     }

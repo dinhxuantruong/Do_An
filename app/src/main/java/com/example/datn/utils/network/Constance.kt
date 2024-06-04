@@ -17,4 +17,4 @@ class Constance {
 
         const val NETWORK_PAGE_SIZE = 6
     }
-}//hoant@eaut.edu.vn
+}

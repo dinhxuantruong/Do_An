@@ -16,6 +16,7 @@ data class ProductTypeDetail(
     val id_category: Int,
     val image_url: String,
     val ingredient: String,
+    val status : Int,
     val liked_by_current_user: Boolean,
     val count_rating : Int,
     val lowest_price: Int,
