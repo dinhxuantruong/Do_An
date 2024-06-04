@@ -278,7 +278,7 @@
 
                     <TextView
                         android:id="@+id/txtRatingMore"
-                        android:text="Xem thêm"
+                        android:text="Xem tất cả"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:fontFamily="@font/roboto"
@@ -375,17 +375,18 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
             android:layout_weight="1"
-            android:background="@drawable/custom_buttom"
+            android:background="@color/colorPrimary"
             android:fontFamily="@font/robotomedium"
             android:text="Thêm vào giỏ"
             android:textAllCaps="false"
-            android:textColor="#202020"
+            android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSubmit"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/colorPrimary"

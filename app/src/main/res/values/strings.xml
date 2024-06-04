@@ -65,4 +65,5 @@
     <string name="count">Tổng cộng</string>
     <string name="zero">0 đ</string>
     <string name="vui_l_ng_ch_n_m_t_h_nh_th_c_tr_c_tuy_n_b_n_d_i">Vui lòng chọn một hình thức trực tuyến ở bên dưới.</string>
+    <string name="title_activity_phone_number">PhoneNumberActivity</string>
 </resources>

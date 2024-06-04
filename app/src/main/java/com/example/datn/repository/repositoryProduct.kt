@@ -13,6 +13,7 @@ import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.orderstatistics
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.dataresult.resultHistoryRating
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.data.model.addAddress
@@ -40,8 +41,8 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.authLogout()
     }
 
-    suspend fun allProductsTypeMax() : Response<ProductType>{
-        return RetrofitInstance.appApi.allProductsTypeMax()
+    suspend fun allProductsTypeMax(check : Int) : Response<ProductType>{
+        return RetrofitInstance.appApi.allProductsTypeMax(check)
     }
     suspend fun allProductsType() : Response<ProductType>{
         return RetrofitInstance.appApi.allProductsTypeLimit()
@@ -51,8 +52,8 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.allProductsType()
     }
 
-      suspend fun allProductsTypeTime() : Response<ProductType>{
-        return RetrofitInstance.appApi.allProductsTypeTime()
+      suspend fun allProductsTypeTime(check : Int) : Response<ProductType>{
+        return RetrofitInstance.appApi.allProductsTypeTime(check)
     }
 
     //get detail product
@@ -240,6 +241,16 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.getRatingOrder(id,ratingBody)
     }
 
+    suspend fun getViewHistory(page: Int): Response<ProductResponse> {
+        return RetrofitInstance.appApi.getViewHistory(page)
+    }
 
+    suspend fun getProductTypeCate(id : Int, page : Int) : Response<ProductResponse>{
+        return RetrofitInstance.appApi.getProductTypeCate(id, page)
+    }
+
+    suspend fun getHistoryRating() : Response<resultHistoryRating>{
+        return RetrofitInstance.appApi.getHistoryRating()
+    }
 
 }

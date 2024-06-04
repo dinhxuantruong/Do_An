@@ -3,9 +3,11 @@ package com.example.datn.repository
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
@@ -167,5 +169,13 @@ class repositoryAdmin {
 
     suspend fun getPieChart(): Response<resultPieChart>{
         return RetrofitInstance.adminApi.getPieChart()
+    }
+
+    suspend fun getBarChart(): Response<resultBarrChart> {
+        return RetrofitInstance.adminApi.getBarChart()
+    }
+
+    suspend fun getAllTotal() : Response<resultTotalDate>{
+        return RetrofitInstance.adminApi.getAllTotal()
     }
 }

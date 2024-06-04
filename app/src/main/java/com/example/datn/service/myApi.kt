@@ -15,6 +15,7 @@ import com.example.datn.data.dataresult.apiAddress.resultXa
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.orderstatistics
 import com.example.datn.data.dataresult.resultCart
+import com.example.datn.data.dataresult.resultHistoryRating
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.AddressRequest
@@ -82,8 +83,8 @@ interface myApi {
     suspend fun getImageSlide(): Response<Result_slideimages>
 
     //all product max
-    @GET("product/all/product/type/max")
-    suspend fun allProductsTypeMax(): Response<ProductType>
+    @GET("product/all/product/type/max/{check}")
+    suspend fun allProductsTypeMax(@Path("check") check : Int): Response<ProductType>
 
     //all productype limit
     @GET("product/all/product/type/limit")
@@ -95,8 +96,8 @@ interface myApi {
 
 
     //Sản phẩm mới
-    @GET("product/all/product/type/time")
-    suspend fun allProductsTypeTime(): Response<ProductType>
+    @GET("product/all/product/type/time/{check}")
+    suspend fun allProductsTypeTime(@Path("check") check : Int): Response<ProductType>
 
     //get all image out
     @GET("get/slide/images/out")
@@ -275,5 +276,19 @@ interface myApi {
                                @Body ratingBody : ratingBody
     ) : Response<ResultMessage>
 
+    //Danh sách lịch sử xem
+    @GET("product/history/view/type")
+    suspend fun getViewHistory(
+        @Query("page") page: Int,
+    ): Response<ProductResponse>
+
+    //Lấy danh sachsc type theo mã category
+    @GET("product/all/by/category/{categoryId}")
+    suspend fun getProductTypeCate(@Path("categoryId") id : Int,
+                                   @Query("page") page: Int) : Response<ProductResponse>
+
+    //lấy danh sách lịch sử đáng giá
+    @GET("get/all/reviewed/products")
+    suspend fun getHistoryRating() : Response<resultHistoryRating>
 }
 

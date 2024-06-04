@@ -121,11 +121,11 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
 
         return page
     }
-    fun getImageSlideAndAllProductsType() {
+    fun getImageSlideAndAllProductsType(check : Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val slideDeferred = async { repositoryProduct.getImageSlide() }
-                val productsDeferred = async { repositoryProduct.allProductsTypeMax() }
+                val productsDeferred = async { repositoryProduct.allProductsTypeMax(check) }
 
                 val slideResponse = slideDeferred.await()
                 if (slideResponse.isSuccessful) {
@@ -142,7 +142,7 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
                 }
 
                 // Gọi các hàm tiếp theo mà không quan tâm đến kết quả trả về
-                getAllProductTime()
+                getAllProductTime(0)
                 getAlImageOut()
                 getAlIProductType()
             } catch (e: Exception) {
@@ -153,9 +153,9 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
 
 
 
-    private suspend fun getAllProductTime() {
+    private suspend fun getAllProductTime(check : Int) {
         try {
-            val response = repositoryProduct.allProductsTypeTime()
+            val response = repositoryProduct.allProductsTypeTime(check)
             if (response.isSuccessful) {
                 _resultAllprTime.postValue(ResponseResult.Success(response.body()!!))
             } else {

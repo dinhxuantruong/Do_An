@@ -42,7 +42,7 @@
                     android:fitsSystemWindows="true"
                     app:iss_auto_cycle="true"
                     app:iss_delay="888"
-                    app:iss_period="1000"
+                    app:iss_period="2000"
                     app:iss_text_align="CENTER"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

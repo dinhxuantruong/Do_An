@@ -1,50 +1,77 @@
 package com.example.datn.view.Admin.chart
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.datn.R
+import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.resultBarrChartItem
 import com.example.datn.databinding.ActivityBarChartBinding
+import com.example.datn.repository.repositoryAdmin
+import com.example.datn.viewmodel.Admin.AdminViewModel
+import com.example.datn.viewmodel.Admin.AdminViewModelFactory
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlin.random.Random
 
 class BarChartActivity : AppCompatActivity() {
-    private var _binding : ActivityBarChartBinding?= null
+    private var _binding: ActivityBarChartBinding? = null
     private val binding get() = _binding!!
     private lateinit var barChart: BarChart
+    private lateinit var viewModel: AdminViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityBarChartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolBarCart)
+
+        val repository = repositoryAdmin()
+        val vmFactory = AdminViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, vmFactory)[AdminViewModel::class.java]
+
         barChart = findViewById(R.id.bar_chart)
 
-        val listColor: ArrayList<BarEntry> = ArrayList()
-        // Tạo dữ liệu cho 12 tháng
-        for (i in 0 until 12) {
-            listColor.add(BarEntry(i.toFloat(), Random.nextFloat() * 100))  // Random doanh thu
+        viewModel.getBarChart()
+
+        viewModel.resultBarChart.observe(this@BarChartActivity) { response ->
+            when (response) {
+                is ResponseResult.Success -> {
+                    val revenueData = response.data
+                    updateBarChart(revenueData)
+                }
+                is ResponseResult.Error -> {
+                    // Toast.makeText(this, "Error: ${response.exception.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
+        binding.toolBarCart.setNavigationOnClickListener {
+            finish()
+        }
+    }
 
-        // Danh sách các mục BarEntry cho 12 tháng
+    private fun updateBarChart(revenueData: List<resultBarrChartItem>) {
+        val revenueMap = mutableMapOf<Int, Float>()
+        for (data in revenueData) {
+            revenueMap[data.month] = data.total_revenue.toFloat() / 1_000_000  // Chia để đơn giản hóa đơn vị triệu
+        }
+
         val list: ArrayList<BarEntry> = ArrayList()
-        list.add(BarEntry(0f, 10f))  // Tháng 1
-        list.add(BarEntry(1f, 20.4f))  // Tháng 2
-        list.add(BarEntry(2f, 15f))  // Tháng 3
-        list.add(BarEntry(3f, 30f))  // Tháng 4
-        list.add(BarEntry(4f, 25f))  // Tháng 5
-        list.add(BarEntry(5f, 66f))  // Tháng 6
-        list.add(BarEntry(6f, 0f))  // Tháng 7
-        list.add(BarEntry(7f, 0f))  // Tháng 8
-        list.add(BarEntry(8f, 0f))  // Tháng 9
-        list.add(BarEntry(9f, 0f))  // Tháng 10
-        list.add(BarEntry(10f, 0f)) // Tháng 11
-        list.add(BarEntry(11f, 0f)) // Tháng 12
+        for (i in 1..12) {
+            list.add(BarEntry(i.toFloat() - 1, revenueMap[i] ?: 0f)) // months start from 1 to 12, entries start from 0
+        }
 
         val barDataSet = BarDataSet(list, "Doanh thu (triệu VNĐ)")
         barDataSet.colors = generateRandomColors(list.size)
@@ -53,20 +80,24 @@ class BarChartActivity : AppCompatActivity() {
         val barData = BarData(barDataSet)
         barChart.data = barData
 
-        // Đặt tên các tháng cho trục X
-        val months = arrayOf("T1", "T2", "T3", "T4", "T5", "T6",
-            "T7", "T8", "T9", "T10", "T11", "T12")
+        val months = arrayOf("T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12")
         barChart.xAxis.valueFormatter = IndexAxisValueFormatter(months)
-        barChart.xAxis.granularity = 1f  // Đảm bảo mỗi tháng được hiển thị
+        barChart.xAxis.granularity = 1f
         barChart.xAxis.labelCount = months.size
+
+        // Sử dụng formatter để hiển thị giá trị theo triệu
+        barChart.axisLeft.valueFormatter = object : ValueFormatter() {
+            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                return value.toInt().toString()
+            }
+        }
+
+        barChart.axisRight.valueFormatter = barChart.axisLeft.valueFormatter
 
         barChart.setFitBars(true)
         barChart.description.text = "Thống kê doanh thu theo tháng"
         barChart.animateY(1000)
-
-        binding.toolBarCart.setNavigationOnClickListener {
-            finish()
-        }
+        barChart.invalidate() // Refresh the chart
     }
 
     private fun generateRandomColors(number: Int): ArrayList<Int> {
@@ -79,6 +110,23 @@ class BarChartActivity : AppCompatActivity() {
         }
         return colors
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.user_menu2,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.usrSetting -> {
+                startActivity(Intent(this@BarChartActivity,TotalActivity::class.java))
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

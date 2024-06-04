@@ -14,9 +14,11 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.repository.repositoryAdmin
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import com.example.datn.utils.network.Constance
@@ -97,6 +99,14 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultPieChart : MutableLiveData<ResponseResult<resultPieChart>> = MutableLiveData()
     val resultPieChart : LiveData<ResponseResult<resultPieChart>> get() = _resultPieChart
 
+
+    private val _resultBarChart : MutableLiveData<ResponseResult<resultBarrChart>> = MutableLiveData()
+    val resultBarChart : LiveData<ResponseResult<resultBarrChart>> get() = _resultBarChart
+
+
+    private val _resultTotalAll : MutableLiveData<ResponseResult<resultTotalDate>> = MutableLiveData()
+    val resultTotalAll : LiveData<ResponseResult<resultTotalDate>> get() = _resultTotalAll
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
     fun getProductFavorite(): LiveData<PagingData<ProductType>> {
@@ -120,6 +130,60 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         ).liveData.cachedIn(viewModelScope)
 
         return page
+    }
+
+    fun getAllTotal() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllTotal()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultTotalAll.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultTotalAll.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultTotalAll.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultTotalAll.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultTotalAll.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getBarChart(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getBarChart()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    Log.e("MAIN", resultBody.toString())
+                    _resultBarChart.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultBarChart.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultBarChart.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultBarChart.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultBarChart.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
     }
 
     fun getPieChart() {

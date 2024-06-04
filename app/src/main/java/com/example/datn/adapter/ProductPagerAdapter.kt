@@ -37,6 +37,11 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         val text = holder.itemView.findViewById<TextView>(R.id.txtNameProduct)
         val price = holder.itemView.findViewById<TextView>(R.id.txtPriceProduct)
         val image = holder.itemView.findViewById<ImageView>(R.id.imageProduct)
+        val countFav = holder.itemView.findViewById<TextView>(R.id.txtCountFav)
+        val txtCountSold = holder.itemView.findViewById<TextView>(R.id.txtCountSold)
+
+        countFav.text = " " + product.favorites_count.toString()
+        txtCountSold.text = "Đã bán " + product.sold_quantity.toString()
         text.text = product.name
         price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
 
