@@ -26,10 +26,62 @@ class ViewModelHistory(private val repositoryProduct: repositoryProduct) : ViewM
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _resultRating : MutableLiveData<ResponseResult<resultHistoryRating>> = MutableLiveData()
-    val resultHistoryRating : LiveData<ResponseResult<resultHistoryRating>> get() = _resultRating
+    private val _resultRating: MutableLiveData<ResponseResult<resultHistoryRating>> =
+        MutableLiveData()
+    val resultHistoryRating: LiveData<ResponseResult<resultHistoryRating>> get() = _resultRating
+
 
     val errorMessage = MutableLiveData<String>()
+
+
+    fun getProductTypeMax(): LiveData<PagingData<ProductType>> {
+        val page = Pager(
+            config = PagingConfig(
+                pageSize = Constance.NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = 2
+            ),
+            pagingSourceFactory = {
+                CustomPagingSource { page ->
+                    try {
+                        val response = repositoryProduct.allProductsTypeMaxPage(page)
+                        response.body()?.ProductTypes ?: emptyList()
+                    } catch (e: Exception) {
+                        throw IOException("Network connection error!", e)
+                    }
+
+                }
+            }
+        ).liveData.cachedIn(viewModelScope)
+
+        return page
+    }
+
+    fun getProductTypeTime(): LiveData<PagingData<ProductType>> {
+        val page = Pager(
+            config = PagingConfig(
+                pageSize = Constance.NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = 2
+            ),
+            pagingSourceFactory = {
+                CustomPagingSource { page ->
+                    try {
+                        val response = repositoryProduct.allProductsTypeTimePage(page)
+                        response.body()?.ProductTypes ?: emptyList()
+                    } catch (e: Exception) {
+                        throw IOException("Network connection error!", e)
+                    }
+
+                }
+            }
+        ).liveData.cachedIn(viewModelScope)
+
+        return page
+    }
+
+
+
     fun getViewHistory(): LiveData<PagingData<ProductType>> {
         val page = Pager(
             config = PagingConfig(
@@ -54,7 +106,7 @@ class ViewModelHistory(private val repositoryProduct: repositoryProduct) : ViewM
     }
 
 
-    fun getTypeCategory(id : Int): LiveData<PagingData<ProductType>> {
+    fun getTypeCategory(id: Int): LiveData<PagingData<ProductType>> {
         val page = Pager(
             config = PagingConfig(
                 pageSize = Constance.NETWORK_PAGE_SIZE,
@@ -64,7 +116,7 @@ class ViewModelHistory(private val repositoryProduct: repositoryProduct) : ViewM
             pagingSourceFactory = {
                 CustomPagingSource { page ->
                     try {
-                        val response = repositoryProduct.getProductTypeCate(id,page)
+                        val response = repositoryProduct.getProductTypeCate(id, page)
                         response.body()?.ProductTypes ?: emptyList()
                     } catch (e: Exception) {
                         throw IOException("Network connection error!", e)
@@ -87,7 +139,8 @@ class ViewModelHistory(private val repositoryProduct: repositoryProduct) : ViewM
                     _resultRating.postValue(ResponseResult.Success(resultMessage))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
-                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
                     _resultRating.postValue(ResponseResult.Error(finalErrorMessage))
                 }
             } catch (e: IOException) {
@@ -96,11 +149,10 @@ class ViewModelHistory(private val repositoryProduct: repositoryProduct) : ViewM
                 _resultRating.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
             } catch (e: Exception) {
                 _resultRating.postValue(ResponseResult.Error("An unknown error has occurred!"))
-            }finally {
+            } finally {
                 _isLoading.postValue(false)
             }
         }
     }
-
 
 }

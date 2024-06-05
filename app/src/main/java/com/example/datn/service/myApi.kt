@@ -83,8 +83,10 @@ interface myApi {
     suspend fun getImageSlide(): Response<Result_slideimages>
 
     //all product max
-    @GET("product/all/product/type/max/{check}")
-    suspend fun allProductsTypeMax(@Path("check") check : Int): Response<ProductType>
+    @GET("product/all/product/type/max")
+    suspend fun allProductsTypeMax(): Response<ProductType>
+    @GET("product/all/product/type/max/page")
+    suspend fun allProductsTypeMax2(@Query("page") page: Int): Response<ProductResponse>
 
     //all productype limit
     @GET("product/all/product/type/limit")
@@ -96,8 +98,11 @@ interface myApi {
 
 
     //Sản phẩm mới
-    @GET("product/all/product/type/time/{check}")
-    suspend fun allProductsTypeTime(@Path("check") check : Int): Response<ProductType>
+    @GET("product/all/product/type/time")
+    suspend fun allProductsTypeTime(): Response<ProductType>
+
+    @GET("product/all/product/type/time/page")
+    suspend fun allProductsTypeTimePage(@Query("page") page: Int): Response<ProductResponse>
 
     //get all image out
     @GET("get/slide/images/out")
@@ -120,6 +125,19 @@ interface myApi {
     suspend fun getProductsPage(
         @Query("page") page: Int,
     ): Response<ProductResponse>
+
+
+    @GET("product/page/desc")
+    suspend fun getProductsPageDesc(
+        @Query("page") page: Int,
+    ): Response<ProductResponse>
+
+    @GET("product/page/asc")
+    suspend fun getProductsPageAsc(
+        @Query("page") page: Int,
+    ): Response<ProductResponse>
+
+
 
     //get all product favorite
     @GET("product/details/favorite/like")
@@ -291,4 +309,3 @@ interface myApi {
     @GET("get/all/reviewed/products")
     suspend fun getHistoryRating() : Response<resultHistoryRating>
 }
-

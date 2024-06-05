@@ -9,6 +9,10 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="android">"Hệ điều hành Android là gì? Tất tần tật những điều cần biết về Android
+
+        Android là hệ điều hành được phát triển bởi Tổng công ty Android, với sự hỗ trợ tài chính từ Google. Mãi đến năm 2005, được chính Google mua lại và cho ra mắt vào năm 2007. Android là hệ điều hành nguồn mở dựa trên nền tảng Linux, chủ yếu dành cho các thiết bị có màn hình cảm ứng như điện thoại, máy tính bảng.
+        "</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="testText">Enter the email address with your account and we\'ll send an email with confirmation to reset your password</string>

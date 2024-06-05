@@ -68,6 +68,16 @@ class PrefManager(var context: Context) {
         editor?.putString("imageUrl", url)
         editor?.commit()
     }
+
+    fun saveText(text : String){
+        editor?.putString("text",text)
+        editor?.commit()
+    }
+
+    fun getText() : String?{
+        return preferen?.getString("text","")
+    }
+
     fun getUrl() : String? {
         return preferen?.getString("imageUrl",null)
     }

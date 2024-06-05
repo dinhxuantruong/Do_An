@@ -34,6 +34,7 @@ import java.io.IOException
 class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel() {
     val errorMessage = MutableLiveData<String>()
 
+
     private val _resultDetail: MutableLiveData<ResponseResult<ResultProductDetail>> =
         MutableLiveData()
     val resultDetail: LiveData<ResponseResult<ResultProductDetail>> get() = _resultDetail

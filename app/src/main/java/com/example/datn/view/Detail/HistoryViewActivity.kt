@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class HistoryViewActivity : AppCompatActivity() {
     private var _binding : ActivityHistoryViewBinding? = null
     private val binding get() = _binding!!
-     private var _adapter: ProductPagerAdapter? = null
+    private var _adapter: ProductPagerAdapter? = null
     private val adapter get() = _adapter!!
 
     private lateinit var viewModel : ViewModelHistory
@@ -89,7 +89,14 @@ class HistoryViewActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this@HistoryViewActivity,vmFactory)[ViewModelHistory::class.java]
         if (idCategory in 1..6){
             getDataCate()
-        }else{
+        }else if (idCategory == 8){
+            getAllDataMax()
+            binding.toolBarCart.title = "Sản phẩm bán chạy"
+        }else if (idCategory == 9){
+            getAllDataTime()
+            binding.toolBarCart.title = "Sản phẩm mới"
+        }
+        else{
             getData()
         }
         if (nameCate!=null){
@@ -97,7 +104,7 @@ class HistoryViewActivity : AppCompatActivity() {
         }
         _adapter = ProductPagerAdapter(object : ProductPagerAdapter.ClickListener {
             override fun onClickedItem(itemProduct: ProductType) {
-
+                val intent = Intent(this@HistoryViewActivity, ProductActivity::class.java)
                 intent.putExtra("id", itemProduct.id)
                 startActivity(intent)
             }
@@ -106,6 +113,26 @@ class HistoryViewActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    private fun getAllDataMax(){
+        lifecycleScope.launch {
+            viewModel.getProductTypeMax().observe(this@HistoryViewActivity) {
+                it?.let {
+                    adapter.submitData(lifecycle, it)
+                }
+            }
+        }
+    }
+
+    private fun getAllDataTime(){
+        lifecycleScope.launch {
+            viewModel.getProductTypeTime().observe(this@HistoryViewActivity) {
+                it?.let {
+                    adapter.submitData(lifecycle, it)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

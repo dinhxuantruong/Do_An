@@ -43,13 +43,15 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import com.example.datn.R
+import com.example.datn.data.model.Chatlist
+import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Response
 
 class ChatActivity : AppCompatActivity() {
     private var _binding: ActivityChatBinding? = null
     private val binding get() = _binding!!
     private var idUser = ""
-
+    private var auth: FirebaseAuth? = null
     private var firebaseUser: FirebaseUser? = null
     private var _chatAdapter: ChatAdapter? = null
     private val adapter get() = _chatAdapter!!
@@ -62,6 +64,7 @@ class ChatActivity : AppCompatActivity() {
     private var notify = false
     private var apiService: FCMAPIService? = null
     private var tokenAccess = ""
+    private var id = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +124,30 @@ class ChatActivity : AppCompatActivity() {
             Log.e("MAINN2", accessToken.toString())
             tokenAccess = "Bearer $accessToken"
         }
+        auth = FirebaseAuth.getInstance()
+        id = auth?.currentUser?.uid ?: ""
+        val refListChat = FirebaseDatabase.getInstance().reference.child("ChatsList").child(id)
+        val refListChatListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val refreshToken = task.result.toString()
+                        updateToken(refreshToken)
+                    } else {
+                        Log.e("FCM", "Lỗi khi lấy token", task.exception)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error if needed
+            }
+        }
+
+        refListChat.addValueEventListener(refListChatListener)
+        firebaseListeners.add(FirebaseListenerObserver(refListChat, refListChatListener).apply {
+            lifecycle.addObserver(this)
+        })
         idUser = intent.getStringExtra("id").toString()
         chatList = mutableListOf()
         firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -149,8 +176,13 @@ class ChatActivity : AppCompatActivity() {
         lifecycle.addObserver(observer)
 
         seenMessage(idUser)
+        updateStatus("online")
     }
-
+    private fun updateToken(refreshToken: String?) {
+        val ref = FirebaseDatabase.getInstance().reference.child("Tokens")
+        val token1 = Token(refreshToken!!)
+        ref.child(id).setValue(token1)
+    }
     private fun setViewMessage(senderId: String, receiverID: String, imageUrl: String?) {
         val receiver = FirebaseDatabase.getInstance().reference.child("Chats")
 
@@ -417,6 +449,15 @@ class ChatActivity : AppCompatActivity() {
         val observer = FirebaseListenerObserver(referenceChat!!, seenListener!!)
         firebaseListeners.add(observer)
         lifecycle.addObserver(observer)
+    }
+
+
+
+    private fun updateStatus(status : String){
+        val ref = FirebaseDatabase.getInstance().reference.child("Users").child(id)
+        val hashMap = HashMap<String,Any>()
+        hashMap["status"]   = status
+        ref.updateChildren(hashMap)
     }
 
 

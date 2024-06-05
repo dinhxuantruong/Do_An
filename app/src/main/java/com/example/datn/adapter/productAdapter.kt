@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
-
 import com.example.datn.data.dataresult.ProductTypeX
 import com.example.datn.utils.Extension.NumberExtensions
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
@@ -61,13 +61,19 @@ class productAdapter(
         val countFavo = holder.itemView.findViewById<TextView>(R.id.txtCountFav)
         val countSold = holder.itemView.findViewById<TextView>(R.id.txtCountSold)
 
+        if (products.status == 0){
+            price.setTextColor(ContextCompat.getColor(activity, R.color.black))
+            price.text = "Ngừng kinh doanh"
+        }else {
+            price.text = "${products.price.toVietnameseCurrency()}/${products.quantity}"
+        }
         countSold.text = "Đã bán " + NumberExtensions.formatNumber(products.sold_quantity)
         countFavo.text = products.productlikes_count.toString()
 
         Picasso.get().load(products.image_url).into(imageProduct)
 //        Glide.with(activity).load(products.image_url).into(imageProduct)
         name.text = products.name
-        price.text = "${products.price.toVietnameseCurrency()}/${products.quantity}"
+
 
         holder.itemView.setOnClickListener {
             onClick.onClickedItem(differ.currentList[position])

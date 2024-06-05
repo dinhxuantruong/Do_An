@@ -79,6 +79,20 @@ class HomeFragment : Fragment() {
 
 
        init()
+
+        binding.txtAllType.setOnClickListener {
+            startActivity(Intent(requireActivity(),ListActivity::class.java))
+        }
+        binding.txtMorePrice.setOnClickListener {
+            val intent = Intent(requireActivity(),HistoryViewActivity::class.java)
+            intent.putExtra("idCategory",8)
+            startActivity(intent)
+        }
+        binding.txtMoreNew.setOnClickListener {
+            val intent = Intent(requireActivity(),HistoryViewActivity::class.java)
+            intent.putExtra("idCategory",9)
+            startActivity(intent)
+        }
         viewModel.getCartCount()
         viewModel.resultGetCartCount.observe(viewLifecycleOwner) { result ->
             when (result) {

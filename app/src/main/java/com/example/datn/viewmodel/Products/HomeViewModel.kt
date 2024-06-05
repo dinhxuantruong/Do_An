@@ -25,7 +25,6 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewModel() {
-
     private val _resultImageSlide: MutableLiveData<ResponseResult<Result_slideimages>> =
         MutableLiveData()
     val resultImage: LiveData<ResponseResult<Result_slideimages>> get() = _resultImageSlide
@@ -99,7 +98,7 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
     private val _resultProductAll : MutableLiveData<ResponseResult<ProductType>> = MutableLiveData()
     val resultProductTypeAll : LiveData<ResponseResult<ProductType>> get() =  _resultProductAll
 
-    fun getMovieList2(): LiveData<PagingData<com.velmurugan.paging3android.ProductType>> {
+    fun getProductTypePage(): LiveData<PagingData<com.velmurugan.paging3android.ProductType>> {
         val page = Pager(
             config = PagingConfig(
                 pageSize = NETWORK_PAGE_SIZE,
@@ -121,11 +120,60 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
 
         return page
     }
-    fun getImageSlideAndAllProductsType(check : Int) {
+
+    fun getProductTypeAsc(): LiveData<PagingData<com.velmurugan.paging3android.ProductType>> {
+        val page = Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = 2
+            ),
+            pagingSourceFactory = {
+                CustomPagingSource { page ->
+                    try {
+                        val response = repositoryProduct.getProductsPageAsc(page)
+                        response.body()?.ProductTypes ?: emptyList()
+                    } catch (e: Exception) {
+                        throw IOException("Network connection error!", e)
+                    }
+
+                }
+            }
+        ).liveData.cachedIn(viewModelScope)
+
+        return page
+    }
+    fun getProductTypeDesc(): LiveData<PagingData<com.velmurugan.paging3android.ProductType>> {
+        val page = Pager(
+            config = PagingConfig(
+                pageSize = NETWORK_PAGE_SIZE,
+                enablePlaceholders = false,
+                initialLoadSize = 2
+            ),
+            pagingSourceFactory = {
+                CustomPagingSource { page ->
+                    try {
+                        val response = repositoryProduct.getProductsPageDesc(page)
+                        response.body()?.ProductTypes ?: emptyList()
+                    } catch (e: Exception) {
+                        throw IOException("Network connection error!", e)
+                    }
+
+                }
+            }
+        ).liveData.cachedIn(viewModelScope)
+
+        return page
+    }
+
+
+
+
+    fun getImageSlideAndAllProductsType() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val slideDeferred = async { repositoryProduct.getImageSlide() }
-                val productsDeferred = async { repositoryProduct.allProductsTypeMax(check) }
+                val productsDeferred = async { repositoryProduct.allProductsTypeMax() }
 
                 val slideResponse = slideDeferred.await()
                 if (slideResponse.isSuccessful) {
@@ -142,7 +190,7 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
                 }
 
                 // Gọi các hàm tiếp theo mà không quan tâm đến kết quả trả về
-                getAllProductTime(0)
+                getAllProductTime()
                 getAlImageOut()
                 getAlIProductType()
             } catch (e: Exception) {
@@ -153,9 +201,9 @@ class HomeViewModel( private val repositoryProduct: repositoryProduct) : ViewMod
 
 
 
-    private suspend fun getAllProductTime(check : Int) {
+    private suspend fun getAllProductTime() {
         try {
-            val response = repositoryProduct.allProductsTypeTime(check)
+            val response = repositoryProduct.allProductsTypeTime()
             if (response.isSuccessful) {
                 _resultAllprTime.postValue(ResponseResult.Success(response.body()!!))
             } else {

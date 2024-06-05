@@ -265,7 +265,7 @@ class LoginFragment : Fragment() {
                 }
 
                 is ResponseResult.Error -> {
-                    //
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -282,7 +282,7 @@ class LoginFragment : Fragment() {
 
     override fun onDestroyView() {
         gso = null
-        mGoogleSignInClient = null
+       // mGoogleSignInClient = null
         _binding = null
         super.onDestroyView()
     }

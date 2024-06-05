@@ -91,9 +91,6 @@ class MessageActivity : AppCompatActivity() {
         binding.listMessage.adapter = adapter
     }
 
-
-
-
     private fun init() {
         list = arrayListOf()
         userChatList = arrayListOf()
@@ -116,8 +113,8 @@ class MessageActivity : AppCompatActivity() {
                 retrieveChatList()
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val refreshToken = task.result
-                            updateToken(refreshToken)
+                        val refreshToken = task.result.toString()
+                        updateToken(refreshToken)
                     } else {
                         Log.e("FCM", "Lỗi khi lấy token", task.exception)
                     }
@@ -154,6 +151,24 @@ class MessageActivity : AppCompatActivity() {
 
         reference.addValueEventListener(referenceListener)
         firebaseListeners.add(FirebaseListenerObserver(reference, referenceListener).apply {
+            lifecycle.addObserver(this)
+        })
+
+        // Listener cho trạng thái của người dùng
+        val usersRef = FirebaseDatabase.getInstance().reference.child("Users")
+        val userStatusListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Trạng thái của người dùng đã thay đổi, cập nhật lại danh sách chat
+                retrieveChatList()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error if needed
+            }
+        }
+
+        usersRef.addValueEventListener(userStatusListener)
+        firebaseListeners.add(FirebaseListenerObserver(usersRef, userStatusListener).apply {
             lifecycle.addObserver(this)
         })
     }

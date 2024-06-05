@@ -144,7 +144,7 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/xt"
+                        android:id="@+id/txtMorePrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
@@ -194,7 +194,7 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/xt2"
+                        android:id="@+id/txtMoreNew"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
@@ -292,7 +292,7 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/txtCm"
+                        android:id="@+id/txtAllType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"

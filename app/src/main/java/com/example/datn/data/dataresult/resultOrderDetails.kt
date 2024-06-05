@@ -2,6 +2,7 @@ package com.example.datn.data.dataresult
 
 data class resultOrderDetails(
     val address: String,
+    val uuid : String,
     val bank_transaction_id: Any,
     val created_at: String,
     val district: String,

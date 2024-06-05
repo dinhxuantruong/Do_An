@@ -38,7 +38,19 @@
             android:text="@string/name_product_test"
             android:textSize="18sp" />
 
-
+        <TextView
+            android:id="@+id/txtNg"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/roboto"
+            android:maxLines="2"
+            android:paddingBottom="10dp"
+            android:text="Sản phẩm ngừng kinh doanh"
+            android:textSize="13sp" />
         <TextView
             android:id="@+id/txtPriceProduct"
             android:layout_width="match_parent"

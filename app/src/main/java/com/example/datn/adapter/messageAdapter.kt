@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
 import com.example.datn.data.model.Users
@@ -15,7 +16,7 @@ class messageAdapter(
     private val activity: Activity,
     private val onClick: onClickMessage,
     private val listMes: MutableList<Users>,
-    private val isOnline: Boolean
+    private val isChatCheck: Boolean
 ) : RecyclerView.Adapter<messageAdapter.MessageHolder>() {
 
     class MessageHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -32,6 +33,10 @@ class messageAdapter(
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
         val item = listMes[position]
+
+
+
+
         val image = holder.itemView.findViewById<ImageView>(R.id.profile_image)
         val name = holder.itemView.findViewById<TextView>(R.id.username)
         val isOnline = holder.itemView.findViewById<ImageView>(R.id.online_indicator)
@@ -41,6 +46,24 @@ class messageAdapter(
 
         holder.itemView.setOnClickListener {
             onClick.onClick(item)
+        }
+
+        if (isChatCheck) {
+            if (item.status == "online") {
+                isOnline.setColorFilter(
+                    ContextCompat.getColor(
+                        holder.itemView.context,
+                        R.color.colorAccent
+                    )
+                )
+            } else {
+                isOnline.setColorFilter(
+                    ContextCompat.getColor(
+                        holder.itemView.context,
+                        R.color.isCheckFailed
+                    )
+                )
+            }
         }
     }
 

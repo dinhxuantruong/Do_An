@@ -22,6 +22,7 @@ import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.viewmodel.Products.OrderViewModel
+import java.util.UUID
 
 class CheckoutFragment : Fragment() {
 
@@ -29,6 +30,8 @@ class CheckoutFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel : OrderViewModel by  activityViewModels()
+
+    private var uuid : String = ""
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
     companion object {
         var idAddress: Int? = null
@@ -39,7 +42,7 @@ class CheckoutFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-       _binding = FragmentCheckoutBinding.inflate(inflater,container,false)
+        _binding = FragmentCheckoutBinding.inflate(inflater,container,false)
         init()
         viewModel.checkoutOrders()
         if(idAddress == null){
@@ -67,7 +70,7 @@ class CheckoutFragment : Fragment() {
             findNavController().navigate(R.id.action_checkoutFragment_to_listAddressFragment)
         }
         binding.addAddresses2.setOnClickListener {
-          startActivity(Intent(requireActivity(),AddressesActivity::class.java))
+            startActivity(Intent(requireActivity(),AddressesActivity::class.java))
         }
 
         binding.codCheckBox.setOnCheckedChangeListener{_, isChecked ->
@@ -86,7 +89,7 @@ class CheckoutFragment : Fragment() {
                 ) {
                     requireActivity().snackBar("Chọn phương thức thanh toán.")
                 } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1))
+                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1,uuid))
                 }
             }else{
                 Toast.makeText(requireContext(), "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
@@ -95,41 +98,41 @@ class CheckoutFragment : Fragment() {
     }
 
     private fun observeView() {
-            viewModel.resultDefaultAddress.observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is ResponseResult.Success -> {
-                        binding.addAddresses2.visibility = View.GONE
-                        binding.addAddresses.visibility = View.VISIBLE
-                        val data = result.data.default_address
-                        idAddress = data.id
-                        binding.tvName.text = data.username
-                        binding.tvSdt.text = " | ${data.phone}"
-                        binding.tvAddress.text =
-                            "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
-                    }
-
-                    is ResponseResult.Error -> {
-                        binding.addAddresses2.visibility = View.VISIBLE
-                        binding.addAddresses.visibility = View.GONE
-                    }
+        viewModel.resultDefaultAddress.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResponseResult.Success -> {
+                    binding.addAddresses2.visibility = View.GONE
+                    binding.addAddresses.visibility = View.VISIBLE
+                    val data = result.data.default_address
+                    idAddress = data.id
+                    binding.tvName.text = data.username
+                    binding.tvSdt.text = " | ${data.phone}"
+                    binding.tvAddress.text =
+                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
                 }
+
+                is ResponseResult.Error -> {
+                    binding.addAddresses2.visibility = View.VISIBLE
+                    binding.addAddresses.visibility = View.GONE
+                }
+            }
 
         }
-            viewModel.resultDetailAddress.observe(viewLifecycleOwner) { result ->
-                when (result) {
-                    is ResponseResult.Success -> {
-                        val data = result.data.default_address
-                        idAddress = data.id
-                        binding.tvName.text = data.username
-                        binding.tvSdt.text = " | ${data.phone}"
-                        binding.tvAddress.text =
-                            "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
-                    }
-
-                    is ResponseResult.Error -> {
-                        //
-                    }
+        viewModel.resultDetailAddress.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResponseResult.Success -> {
+                    val data = result.data.default_address
+                    idAddress = data.id
+                    binding.tvName.text = data.username
+                    binding.tvSdt.text = " | ${data.phone}"
+                    binding.tvAddress.text =
+                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
                 }
+
+                is ResponseResult.Error -> {
+                    //
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -185,7 +188,7 @@ class CheckoutFragment : Fragment() {
         binding.toolListProduct.setNavigationOnClickListener {
             finishView()
         }
-
+        uuid = UUID.randomUUID().toString()
     }
 
     override fun onResume() {

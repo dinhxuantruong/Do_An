@@ -20,6 +20,7 @@ import com.example.datn.repository.repositoryAdmin
 import com.example.datn.utils.Extension.NumberExtensions.getFileName
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.UploadRequestBody
+import com.example.datn.utils.SharePreference.PrefManager
 import com.example.datn.viewmodel.Admin.AdminViewModel
 import com.example.datn.viewmodel.Admin.AdminViewModelFactory
 import com.squareup.picasso.Picasso
@@ -43,6 +44,9 @@ class AddProductTypeActivity : AppCompatActivity() {
     private var idType = 0
     private var check = false
     private lateinit var newIdCate: RequestBody
+
+    private var _prefManager: PrefManager? = null
+    private val prefManager get() = _prefManager!!
     companion object{
         var checkAddSize = false
     }
@@ -128,6 +132,8 @@ class AddProductTypeActivity : AppCompatActivity() {
                 }
             }
         }
+
+
     }
 
     private fun setAutoCompleteAdapter(
@@ -145,6 +151,12 @@ class AddProductTypeActivity : AppCompatActivity() {
 
         binding.btnAdd.setOnClickListener {
             uploadImages()
+        }
+
+        binding.txtDess.setOnClickListener {
+           val intent = Intent(this@AddProductTypeActivity,DescriptionActivity::class.java)
+            intent.putExtra("desc",binding.txtDess.text.toString())
+            startActivity(intent)
         }
     }
 
@@ -285,6 +297,7 @@ class AddProductTypeActivity : AppCompatActivity() {
             idCateNew = intent.getIntExtra("idCate", 0)
             viewModel.getProductType(idType)
         }
+        _prefManager = PrefManager(this)
         setImageView()
         listCate = mutableListOf()
         viewModel.getAllCategory()
@@ -322,6 +335,9 @@ class AddProductTypeActivity : AppCompatActivity() {
         if (checkAddSize){
             ListProductFragment.update = true
             finish()
+        }
+        if (prefManager.getText()!!.isNotEmpty()){
+            binding.txtDess.setText(prefManager.getText())
         }
     }
 

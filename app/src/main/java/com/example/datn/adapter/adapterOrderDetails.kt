@@ -42,13 +42,11 @@ class adapterOrderDetails(
 
 
 
-
         productName.text = ckItem.product.type.name
         quantity.text = "Thể loại: ${ckItem.product.size}"
         Picasso.get().load(ckItem.product.image_url).into(Image)
         Price.text = "${ckItem.product.price.toVietnameseCurrency()}"
         Count.text = "Số lượng: ${ckItem.quantity}"
-
     }
     
 
