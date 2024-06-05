@@ -82,8 +82,6 @@ class HistoryViewActivity : AppCompatActivity() {
     }
 
     private fun init(){
-        //New Update
-        Toast.makeText(this@HistoryViewActivity, "New Update", Toast.LENGTH_SHORT).show()
         idCategory = intent.getIntExtra("idCategory",0)
         nameCate = intent.getStringExtra("name")
         val repositoryProduct = repositoryProduct()

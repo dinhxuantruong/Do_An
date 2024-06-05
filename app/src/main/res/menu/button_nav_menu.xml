@@ -4,20 +4,20 @@
 
     <item android:id="@+id/homeFragment"
         android:title="Trang chủ"
-        android:icon="@drawable/iconhome"/>
+        android:icon="@drawable/ic_home"/>
 
     <item android:id="@+id/favoriteFragment"
         android:title="Yêu thích"
-        android:icon="@drawable/unsave"/>
+        android:icon="@drawable/ic_save"/>
 
     <item android:id="@+id/placholder"
         android:title=""/>
 
     <item android:id="@+id/oderFragment"
         android:title="Đơn hàng"
-        android:icon="@drawable/more"/>
+        android:icon="@drawable/ic_dh"/>
 
     <item android:id="@+id/userFragment"
         android:title="Tôi"
-        android:icon="@drawable/iconuser"/>
+        android:icon="@drawable/ic_profile"/>
 </menu>

@@ -33,6 +33,7 @@ class FavoriteFragment : Fragment() {
     private val adapter get() = _adapter!!
 
     private lateinit var viewModel: FavoriteViewModel
+    private var check = 0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,11 +74,11 @@ class FavoriteFragment : Fragment() {
         binding.recyclerviewFavo.adapter = adapter
 
 
-        viewModel.resultAddFavorite.observe(viewLifecycleOwner){
-            when(it){
+        viewModel.resultAddFavorite.observe(viewLifecycleOwner) {
+            when (it) {
                 is ResponseResult.Success -> {
                     lifecycleScope.launch {
-                        viewModel.getProductFavorite().observe(viewLifecycleOwner) {data ->
+                        viewModel.getProductFavorite().observe(viewLifecycleOwner) { data ->
                             data?.let {
                                 adapter.submitData(lifecycle, data)
                             }
@@ -85,6 +86,7 @@ class FavoriteFragment : Fragment() {
                     }
                     adapter.notifyDataSetChanged()
                 }
+
                 is ResponseResult.Error -> {
                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
@@ -95,14 +97,18 @@ class FavoriteFragment : Fragment() {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
 
+
         adapter.addLoadStateListener { loadState ->
             // show empty list
-            if (loadState.refresh is LoadState.Loading ||
-                loadState.append is LoadState.Loading
-            )
-                binding.progressDialog.isVisible = true
-            else {
-                binding.progressDialog.isVisible = false
+            if (loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading) {
+                if (check == 0) {
+                    binding.swipeRefreshLayout.isRefreshing = true
+                    check = 1
+                }
+                //binding.progressDialog.isVisible = true
+            } else {
+                binding.swipeRefreshLayout.isRefreshing = false
+              //  binding.progressDialog.isVisible = false
                 // If we have an error, show a toast
                 val errorState = when {
                     loadState.append is LoadState.Error -> loadState.append as LoadState.Error
@@ -116,17 +122,25 @@ class FavoriteFragment : Fragment() {
 
             }
         }
-
-        // Sử dụng lifecycleScope để chạy coroutine và thu thập dữ liệu
-        lifecycleScope.launch {
-            viewModel.getProductFavorite().observe(viewLifecycleOwner) {
-                Log.e("MAIN",it.toString())
-                it?.let {
-                    adapter.submitData(lifecycle, it)
-                }
+        refreshData()
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+            adapter.addLoadStateListener { loadState ->
+                binding.swipeRefreshLayout.isRefreshing =
+                    loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading
             }
         }
         return binding.root
+    }
+
+    private fun refreshData() {
+        lifecycleScope.launch {
+            viewModel.getProductFavorite().observe(viewLifecycleOwner) { newData ->
+                newData?.let {
+                    adapter.submitData(lifecycle, newData)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -134,5 +148,4 @@ class FavoriteFragment : Fragment() {
         _adapter = null
         _binding = null
     }
-
 }

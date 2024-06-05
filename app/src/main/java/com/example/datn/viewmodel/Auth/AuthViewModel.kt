@@ -109,8 +109,9 @@ class AuthViewModel(private val repositoryAuth: repositoryAuth) : ViewModel() {
                     val resultMessage = response.body()!!
                     _resultOTP.postValue(ResponseResult.Success(resultMessage))
                 } else {
-                    val errorMessage = "Registration failed OTP: ${response.message()}"
-                    _resultOTP.postValue(ResponseResult.Error(errorMessage))
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultOTP.postValue(ResponseResult.Error(finalErrorMessage))
                 }
             } catch (e: IOException) {
                 _resultOTP.postValue(ResponseResult.Error("Network connection error!"))
@@ -134,8 +135,9 @@ class AuthViewModel(private val repositoryAuth: repositoryAuth) : ViewModel() {
                     val resultMessage = response.body()!!
                     _resultForgetPass.postValue(ResponseResult.Success(resultMessage))
                 } else {
-                    val errorMessage = "Password change failed: ${response.message()}"
-                    _resultForgetPass.postValue(ResponseResult.Error(errorMessage))
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultForgetPass.postValue(ResponseResult.Error(finalErrorMessage))
                 }
             } catch (e: IOException) {
                 _resultForgetPass.postValue(ResponseResult.Error("Network connection error!"))

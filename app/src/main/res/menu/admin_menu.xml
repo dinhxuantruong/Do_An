@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/listAdd"
-        android:title=""
-        android:icon="@drawable/listplus"/>
+        android:title="Sản phẩm"
+        android:icon="@drawable/ic_list"/>
 
     <item android:id="@+id/listOder"
-        android:title=""
-        android:icon="@drawable/donhang"/>
+        android:title="Đơn hàng"
+        android:icon="@drawable/ic_donhang"/>
 
     <item android:id="@+id/listMore"
-        android:title=""
-        android:icon="@drawable/iconsetting"/>
+        android:title="Cài đặt"
+        android:icon="@drawable/ic_setting"/>
 </menu>

@@ -60,9 +60,6 @@ class LoginFragment : Fragment() {
 
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        binding.btnSdt!!.setOnClickListener {
-            startActivity(Intent(requireActivity(),PhoneActivity::class.java))
-        }
         init()
         checkLogin()
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.adapter.OrderAdapter
 import com.example.datn.data.dataresult.ResponseResult
@@ -29,6 +30,7 @@ class ConfirmFragment : Fragment() {
     private var adapter : OrderAdapter? = null
     private lateinit var listPending : MutableList<Order>
     private var isLoggedInFirstTime  =false
+    private var check = 1
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,6 +44,10 @@ class ConfirmFragment : Fragment() {
 
  viewModel.getOrderPending()
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            check = 0
+            viewModel.getOrderPending()
+        }
 
         return binding.root
     }
@@ -54,7 +60,17 @@ class ConfirmFragment : Fragment() {
 
     private fun observeView() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+            if (isLoading){
+                if (check == 0) {
+                    binding.swipeRefreshLayout.isRefreshing = true
+                    check = 1
+                }else{
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+            }else{
+                binding.swipeRefreshLayout.isRefreshing = false
+                binding.progressBar.visibility = View.GONE
+            }
         }
         viewModel.resultOrderPending.observe(viewLifecycleOwner) { data ->
             when (data) {

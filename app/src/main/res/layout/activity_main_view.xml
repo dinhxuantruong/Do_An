@@ -45,7 +45,7 @@
         android:elevation="0dp"
         app:backgroundTint="@color/colorPrimary"
         android:src="@drawable/chat22"
-        app:tint="@android:color/white"
+        app:tint="#FFFFFF"
         app:elevation="0dp"
         app:layout_anchor="@id/buttonAppBar" />
 

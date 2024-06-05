@@ -27,14 +27,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-<<<<<<< HEAD
-=======
-            android:name=".view.Admin.DescriptionActivity"
-            android:exported="false" />
+        android:name=".view.Admin.DescriptionActivity"
+        android:exported="false" />
         <activity
->>>>>>> 755236335fd7061ed8e7b26094c87da935d37fc9
-            android:name=".view.Detail.HistoryRateActivity"
-            android:exported="false" />
+        android:name=".view.Detail.HistoryRateActivity"
+        android:exported="false" />
         <activity
             android:name=".view.Detail.HistoryViewActivity"
             android:exported="false" />

@@ -237,11 +237,11 @@ class HomeFragment : Fragment() {
         binding.recyViewcategory.setHasFixedSize(true)
         binding.recyViewcategory.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-        listGrid.add(categoryfilter(1,R.drawable.wig, "Hair"))
-        listGrid.add(categoryfilter(2,R.drawable.nounlipstick, "Lipstick"))
-        listGrid.add(categoryfilter(3,R.drawable.eyelash, "Eyelash"))
-        listGrid.add(categoryfilter(4,R.drawable.nightcream, "Cream"))
-        listGrid.add(categoryfilter(5,R.drawable.nounlotion, "Cleanser"))
+        listGrid.add(categoryfilter(1,R.drawable.wig, "Tóc"))
+        listGrid.add(categoryfilter(2,R.drawable.nounlipstick, "Son"))
+        listGrid.add(categoryfilter(3,R.drawable.eyelash, "Mi"))
+        listGrid.add(categoryfilter(4,R.drawable.nightcream, "Kem"))
+        listGrid.add(categoryfilter(5,R.drawable.nounlotion, "Da mặt"))
         listGrid.add(categoryfilter(6,R.drawable.nounserum, "Serum"))
 
         categoryAdapter = categoryAdapter(object : categoryAdapter.ClickListener {
@@ -365,7 +365,7 @@ class HomeFragment : Fragment() {
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(requireActivity(), vmFactory)[HomeViewModel::class.java]
-        viewModel.getImageSlideAndAllProductsType(0)
+        viewModel.getImageSlideAndAllProductsType()
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
     }

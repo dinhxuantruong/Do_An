@@ -35,7 +35,7 @@ class OrderAdapter(
 
     override fun onBindViewHolder(holder: oViewHolder, position: Int) {
         val order = listOrder[position]
-        val itemProduct = order.items[position]
+        val itemProduct = order.items[0]
 
 
         val Image = holder.itemView.findViewById<ImageView>(R.id.hImage)

@@ -1,7 +1,7 @@
 package com.example.datn.view.Auth
 
-
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.datn.R
 import com.example.datn.data.model.AcceptOTP
 import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.sendOTP
@@ -23,25 +24,33 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.utils.Extension.EmailType
 import com.example.datn.viewmodel.Auth.AuthViewModel
 
-
 class OtpFragment : Fragment() {
-    private var _binding : FragmentOtpBinding? = null
+    private var _binding: FragmentOtpBinding? = null
     private val binding get() = _binding!!
-    private  var _editTextList: List<EditText>? = null
-    private  val editTextList get() = _editTextList!!
+    private var _editTextList: List<EditText>? = null
+    private val editTextList get() = _editTextList!!
+    private lateinit var countDownTimer: CountDownTimer
+    private val otpTimeout = 1 * 60 * 1000L
     private val viewModel: AuthViewModel by activityViewModels()
     var email: String? = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentOtpBinding.inflate(inflater,container,false)
-        // Inflate the layout for this fragment
-
+        _binding = FragmentOtpBinding.inflate(inflater, container, false)
         email = arguments?.getString("email")
-        Log.e("MainActivity",email.toString())
         val pass = arguments?.getString("pass")
         val confPass = arguments?.getString("conf pass")
+
+        when(email){
+            EmailType.REGISTER -> {
+                binding.toolRegisterOTP.title = "Đăng ký tài khoản"
+            }
+            EmailType.FORGOT -> {
+                binding.toolRegisterOTP.title = "Quên mật khẩu"
+            }
+        }
 
         binding.toolRegisterOTP.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -52,11 +61,13 @@ class OtpFragment : Fragment() {
             if (otp.length == 6) {
                 when(email){
                     EmailType.REGISTER -> {
-                        viewModel.authAcceptRegister(AcceptOTP(EmailType.REGISTER,otp))
+                        binding.toolRegisterOTP.title = "Register Account"
+                        viewModel.authAcceptRegister(AcceptOTP(EmailType.REGISTER, otp))
                         observeRegister()
                     }
                     EmailType.FORGOT -> {
-                        viewModel.authForgetPassword(ForgetPass(EmailType.FORGOT,otp,pass!!,confPass!!))
+                        binding.toolRegisterOTP.title = "Forgot Password"
+                        viewModel.authForgetPassword(ForgetPass(EmailType.FORGOT, otp, pass!!, confPass!!))
                         observeForgot()
                     }
                 }
@@ -69,32 +80,13 @@ class OtpFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-
         val modifiedEmail = modifyString(email!!)
         binding.emailView.text = modifiedEmail
-        //Khoi tao view model
+
+        // Khoi tao view model
         viewModel.isLoading.observe(viewLifecycleOwner) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
-
-        binding.tvSendOTP.setOnClickListener {
-            viewModel.authSendOTP(sendOTP(email!!))
-        }
-
-        viewModel.resultOTP?.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResponseResult.Success -> {
-                    Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                }
-
-                is ResponseResult.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-
-                else -> {}
-            }
-        }
-
 
         // Initialize the list of EditTexts
         _editTextList = listOf(
@@ -109,47 +101,53 @@ class OtpFragment : Fragment() {
         // Add TextWatcher and OnKeyListener to handle backspace/delete key press
         setupEditTextListeners()
 
-
-
         return binding.root
     }
 
-    private  fun observeRegister(){
-        viewModel.acceptResult.observe(viewLifecycleOwner) {
-            when (it) {
-                is ResponseResult.Success -> {
-                    clearEmail()
-                    Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
-                    while (findNavController().navigateUp()){findNavController().popBackStack()}
-    //                    startActivity(Intent(requireActivity(),MainViewActivity::class.java))
-    //                    requireActivity().finish()
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-                is ResponseResult.Error -> {
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
+        startOtpCountdown()
 
-                else -> {
-                    Toast.makeText(requireContext(), "Đăng ký tài khoản không thành công", Toast.LENGTH_SHORT)
-                        .show()
-                }
+        binding.tvSendOTP.setOnClickListener {
+            if (binding.tvSendOTP.isEnabled) {
+                viewModel.authSendOTP(sendOTP(email!!))
             }
         }
+
+        observeOTP()
     }
 
-    private fun observeForgot(){
-        viewModel.resultForget?.observe(viewLifecycleOwner){
-            when(it){
+    private fun startOtpCountdown() {
+        countDownTimer = object : CountDownTimer(otpTimeout, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = millisUntilFinished / 60000
+                val seconds = (millisUntilFinished % 60000) / 1000
+                val time = String.format("%02d:%02d", minutes, seconds)
+                binding.tvSendOTP.text = "Gửi lại OTP sau $time"
+            }
+
+            override fun onFinish() {
+                binding.tvSendOTP.text = "Gửi lại"
+                binding.tvSendOTP.isEnabled = true
+                binding.tvSendOTP.isClickable = true
+                Toast.makeText(context, "Thời gian OTP đã hết hạn, vui lòng gửi lại OTP", Toast.LENGTH_SHORT).show()
+            }
+        }
+        countDownTimer.start()
+        binding.tvSendOTP.isEnabled = false
+        binding.tvSendOTP.isClickable = false
+    }
+
+    private fun observeOTP() {
+        viewModel.resultOTP.observe(viewLifecycleOwner) {
+            when (it) {
                 is ResponseResult.Success -> {
-                    clearEmail()
-                    val message = it.data.message
-                    Toast.makeText(requireContext(),message , Toast.LENGTH_SHORT).show()
-                    while (findNavController().navigateUp()){findNavController().popBackStack()}
+                    startOtpCountdown()
                 }
 
                 is ResponseResult.Error -> {
-                    val message = it.message
-                    Toast.makeText(requireContext(),message, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
 
                 else -> {}
@@ -157,7 +155,51 @@ class OtpFragment : Fragment() {
         }
     }
 
-    private fun clearEmail(){
+    private fun observeRegister() {
+        viewModel.acceptResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResponseResult.Success -> {
+                    clearEmail()
+                    Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
+                    while (findNavController().navigateUp()) {
+                        findNavController().popBackStack()
+                    }
+                }
+
+                is ResponseResult.Error -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {
+                    Toast.makeText(requireContext(), "Đăng ký tài khoản không thành công", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun observeForgot() {
+        viewModel.resultForget?.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResponseResult.Success -> {
+                    clearEmail()
+                    val message = it.data.message
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    while (findNavController().navigateUp()) {
+                        findNavController().popBackStack()
+                    }
+                }
+
+                is ResponseResult.Error -> {
+                    val message = it.message
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun clearEmail() {
         EmailType.REGISTER = ""
         EmailType.FORGOT = ""
     }
@@ -172,7 +214,6 @@ class OtpFragment : Fragment() {
         }
         return originalString // Trả về chuỗi ban đầu nếu không có ký tự '@' hoặc không đủ ký tự trước '@'
     }
-
 
     private fun getOtpFromEditText(): String {
         val stringBuilder = StringBuilder()
@@ -207,7 +248,6 @@ class OtpFragment : Fragment() {
         }
     }
 
-
     private fun setOnBackspaceListener(editText: EditText, prevEditText: EditText?) {
         editText.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN && editText.text.isEmpty() && prevEditText != null) {
@@ -220,18 +260,10 @@ class OtpFragment : Fragment() {
         }
     }
 
-//    override fun onResume() {
-//        viewModel.clear()
-//        super.onResume()
-//    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("MainActivity","aaaaa")
+        countDownTimer.cancel()
         _editTextList = null
         _binding = null
     }
-
-
-
 }

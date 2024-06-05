@@ -153,6 +153,10 @@ dependencies {
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation ("io.github.yahiaangelo.markdownedittext:markdownedittext:1.1.3")
+
+    dependencies {
+        implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    }
 }
 
 hilt {

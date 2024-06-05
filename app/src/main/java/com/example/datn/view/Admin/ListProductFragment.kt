@@ -283,7 +283,6 @@ class ListProductFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Toast.makeText(requireContext(), "DESTROY", Toast.LENGTH_SHORT).show()
         firebaseListeners.forEach { lifecycle.removeObserver(it) }
         firebaseListeners.clear()
         _auth = null
