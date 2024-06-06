@@ -66,7 +66,7 @@ class AddProductSizeActivity : AppCompatActivity() {
                 is ResponseResult.Success -> {
                     this.snackBar(result.data.message)
                     AddProductTypeActivity.checkAddSize = true
-                    ListProductFragment.update = false
+                    AdminProductTypeActivity.update = false
                     finish()
                 }
                 is ResponseResult.Error -> {
@@ -170,7 +170,7 @@ class AddProductSizeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         AddProductTypeActivity.checkAddSize = false
-        ListProductFragment.update = false
+        AdminProductTypeActivity.update = false
         _binding = null
     }
 }

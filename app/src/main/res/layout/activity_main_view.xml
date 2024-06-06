@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".view.MainView.MainViewActivity">
 
-
     <fragment
         android:id="@+id/fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -15,7 +14,6 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_main"
         />
-
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/buttonAppBar"
         android:layout_width="match_parent"

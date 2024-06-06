@@ -35,7 +35,6 @@ class MainAdminActivity : AppCompatActivity() {
         val repository = repositoryAdmin()
         val vmFactory = AdminViewModelFactory(repository)
         viewModel = ViewModelProvider(this,vmFactory)[AdminViewModel::class.java]
-
         replaceFragment(ListProductFragment())
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){

@@ -187,6 +187,7 @@ class UserFragment : Fragment() {
                     prefManager.removeDate()
                     stopFirebaseNotification()
                     removeFirebaseListeners()
+                    clearFCMToken()
                     startActivity(Intent(requireActivity(), AuthActivity::class.java))
                     requireActivity().finish()
                 }
@@ -196,6 +197,39 @@ class UserFragment : Fragment() {
                 }
             }
         }
+    }
+    private fun clearFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                deleteTokenFromDatabase(token) // Xóa token từ cơ sở dữ liệu
+                FirebaseMessaging.getInstance().deleteToken()
+                    .addOnCompleteListener { deleteTask ->
+                        if (deleteTask.isSuccessful) {
+                            Log.d("FCM", "Token deleted successfully")
+                        } else {
+                            Log.e("FCM", "Failed to delete token")
+                        }
+                    }
+            } else {
+                Log.e("FCM", "Failed to get token")
+            }
+        }
+    }
+
+    private fun deleteTokenFromDatabase(token: String) {
+        val database = FirebaseDatabase.getInstance().reference.child("Tokens")
+        database.orderByChild("token").equalTo(token).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (childSnapshot in snapshot.children) {
+                    childSnapshot.ref.removeValue()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Database", "Failed to delete token: ${error.message}")
+            }
+        })
     }
 
     private fun handleLoginResult(result: ResponseResult<ResultMessage>) {

@@ -101,10 +101,11 @@ class ListTypeActivity : AppCompatActivity() {
         viewModel.resultDeleteSize.observe(this@ListTypeActivity){
             when(it){
                 is ResponseResult.Success -> {
+                    AdminProductTypeActivity.update = true
                     this.snackBar(it.data.message)
                     listData.removeAt(position)
                     if (listData.isEmpty()){
-                        ListProductFragment.update = true
+                        AdminProductTypeActivity.update = true
                         finish()
                     }
                     viewModel.getDetailProduct(id)

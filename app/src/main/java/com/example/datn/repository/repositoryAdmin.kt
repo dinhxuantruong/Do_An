@@ -7,6 +7,7 @@ import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
@@ -177,5 +178,9 @@ class repositoryAdmin {
 
     suspend fun getAllTotal() : Response<resultTotalDate>{
         return RetrofitInstance.adminApi.getAllTotal()
+    }
+
+    suspend fun getStatistic() : Response<resultStatistic>{
+        return RetrofitInstance.adminApi.getStatistic()
     }
 }

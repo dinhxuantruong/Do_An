@@ -13,6 +13,7 @@ import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.utils.network.Constance
+import com.example.datn.utils.network.Constance.Companion.NETWORK_PAGE_SIZE
 import com.velmurugan.paging3android.Adapter.CustomPagingSource
 import com.velmurugan.paging3android.ProductType
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +27,7 @@ class FavoriteViewModel(private val repositoryProduct: repositoryProduct) : View
     fun getProductFavorite(): LiveData<PagingData<ProductType>> {
         val page = Pager(
             config = PagingConfig(
-                pageSize = Constance.NETWORK_PAGE_SIZE,
+                pageSize = NETWORK_PAGE_SIZE,
                 enablePlaceholders = false,
                 initialLoadSize = 2
             ),

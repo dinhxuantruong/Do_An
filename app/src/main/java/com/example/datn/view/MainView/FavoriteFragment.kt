@@ -143,6 +143,11 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _adapter = null

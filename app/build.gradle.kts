@@ -17,6 +17,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        applicationId = "com.velmurugan.paging3android"
         applicationId = "com.example.datn"
         minSdk = 24
         targetSdk = 34
@@ -57,6 +58,7 @@ android {
 
 dependencies {
     implementation("com.google.firebase:firebase-messaging:24.0.0")
+//    implementation("androidx.paging:paging-common-android:3.3.0")
     val lifecycle_version = "2.2.0"
 
 // LiveData

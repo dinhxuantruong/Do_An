@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.paging.LOGGER
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.squareup.picasso.Picasso
@@ -26,7 +26,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
 
     object ProductComparator : DiffUtil.ItemCallback<ProductType>() {
         override fun areItemsTheSame(oldItem: ProductType, newItem: ProductType): Boolean {
-            return oldItem.image_url == newItem.image_url
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: ProductType, newItem: ProductType): Boolean {
@@ -49,13 +49,12 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         } else {
             txtNg.visibility = View.GONE
             price.visibility = View.VISIBLE
-            price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
+            price.text = "${product.price}/${product.quantity}"
         }
 
         countFav.text = " " + product.favorites_count.toString()
         txtCountSold.text = "Đã bán " + product.sold_quantity.toString()
         text.text = product.name
-
 
         Picasso.get().load(product.image_url).into(image)
 
@@ -78,7 +77,5 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         fun onClickedItem(itemProduct: ProductType)
         fun onLongItemClick(itemProduct: ProductType)
     }
-
-
 
 }

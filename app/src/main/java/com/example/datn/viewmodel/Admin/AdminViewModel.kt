@@ -1,5 +1,6 @@
 package com.example.datn.viewmodel.Admin
 
+
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,6 +19,7 @@ import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.repository.repositoryAdmin
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
@@ -108,9 +110,14 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultTotalAll : MutableLiveData<ResponseResult<resultTotalDate>> = MutableLiveData()
     val resultTotalAll : LiveData<ResponseResult<resultTotalDate>> get() = _resultTotalAll
 
+    private val _resultStatistic : MutableLiveData<ResponseResult<resultStatistic>> = MutableLiveData()
+    val resultStatistic : LiveData<ResponseResult<resultStatistic>> get() = _resultStatistic
+
+
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
-    fun getProductFavorite(): LiveData<PagingData<ProductType>> {
+    fun getProductAllType(): LiveData<PagingData<ProductType>> {
         val page = Pager(
             config = PagingConfig(
                 pageSize = Constance.NETWORK_PAGE_SIZE,
@@ -132,6 +139,36 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
 
         return page
     }
+
+    fun getStatistic(){
+        Log.e("MAINN","START")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getStatistic()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultStatistic.postValue(ResponseResult.Success(resultBody))
+                    Log.e("MAINN",_resultStatistic.toString())
+                } else {
+                    Log.e("MAINN","ERROR")
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultStatistic.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultStatistic.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultStatistic.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultStatistic.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
 
     fun getAllTotal() {
         viewModelScope.launch(Dispatchers.IO) {

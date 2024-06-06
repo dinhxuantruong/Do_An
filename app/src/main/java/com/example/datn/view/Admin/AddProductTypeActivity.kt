@@ -112,7 +112,7 @@ class AddProductTypeActivity : AppCompatActivity() {
             when (it) {
                 is ResponseResult.Success -> {
                     this.snackBar(it.data.message)
-                    ListProductFragment.update = true
+                    AdminProductTypeActivity.update = true
                 }
 
                 is ResponseResult.Error -> {
@@ -333,7 +333,7 @@ class AddProductTypeActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (checkAddSize){
-            ListProductFragment.update = true
+            AdminProductTypeActivity.update = true
             finish()
         }
         if (prefManager.getText()!!.isNotEmpty()){
@@ -343,7 +343,7 @@ class AddProductTypeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ListProductFragment.update = false
+        AdminProductTypeActivity.update = false
         _binding = null
     }
 }

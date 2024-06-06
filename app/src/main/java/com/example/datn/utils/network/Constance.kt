@@ -15,6 +15,6 @@ class Constance {
         const val GRANT_TYPE_GOOGLE = "refresh_token"
 
 
-        const val NETWORK_PAGE_SIZE = 6
+        const val NETWORK_PAGE_SIZE = 10
     }
 }

@@ -6,6 +6,7 @@ import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
+import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.data.model.BodyAddSize
 import com.velmurugan.paging3android.ProductResponse
@@ -146,4 +147,8 @@ interface AdminApi {
     //Thống kê tổng doanh thu
     @GET("admin/total-revenue")
     suspend fun getAllTotal() : Response<resultTotalDate>
+
+    //get statistic
+    @GET("statistics")
+    suspend fun getStatistic() : Response<resultStatistic>
 }

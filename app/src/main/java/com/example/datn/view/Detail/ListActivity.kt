@@ -121,6 +121,7 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+
     private fun init() {
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
