@@ -91,7 +91,7 @@ class ProductActivity : AppCompatActivity() {
     }
 
     private fun callViewModel() {
-        viewModel.getCartCount()
+        //viewModel.getCartCount()
         viewModel.getDetailProduct(id)
     }
 
@@ -111,18 +111,18 @@ class ProductActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.resultGetCartCount.observe(this@ProductActivity) { result ->
-            when (result) {
-                is ResponseResult.Success -> {
-                    cartQuantity = result.data.item_count
-                    this@ProductActivity.invalidateOptionsMenu()  // Yêu cầu cập nhật lại menu
-                }
-
-                is ResponseResult.Error -> {
-                    // Xử lý lỗi
-                }
-            }
-        }
+//        viewModel.resultGetCartCount.observe(this@ProductActivity) { result ->
+//            when (result) {
+//                is ResponseResult.Success -> {
+//                    cartQuantity = result.data.item_count
+//                    this@ProductActivity.invalidateOptionsMenu()  // Yêu cầu cập nhật lại menu
+//                }
+//
+//                is ResponseResult.Error -> {
+//                    // Xử lý lỗi
+//                }
+//            }
+//        }
 
         viewModel.resultDetail.observe(this) {
             when (it) {
@@ -315,7 +315,7 @@ class ProductActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getCartCount()
+        //viewModel.getCartCount()
     }
     override fun onDestroy() {
         super.onDestroy()

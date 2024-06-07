@@ -104,18 +104,31 @@ class NewTaskSheet : BottomSheetDialogFragment() {
 //                    }
 //                }
 //            }
-            if (ProductActivity.isLoggedInFirstTime) {
-                viewModel.resultAddCart.observeOnceAfterInit(viewLifecycleOwner) { result ->
-                    handleResult(result)
-                    //HomeFragment.isLoggedInFirstTime = false
+//            if (ProductActivity.isLoggedInFirstTime) {
+//                viewModel.resultAddCart.observeOnceAfterInit(viewLifecycleOwner) { result ->
+//                    handleResult(result)
+//                    //HomeFragment.isLoggedInFirstTime = false
+//                }
+//            } else {
+//                viewModel.resultAddCart.observeOnce(viewLifecycleOwner) { result ->
+//                    handleResult(result)
+//                }
+//                ProductActivity.isLoggedInFirstTime = true
+//            }
+//            Log.e("CHECK", "${ProductActivity.isLoggedInFirstTime}")
+            viewModel.resultAddCart.observe(viewLifecycleOwner){
+                when (it) {
+                    is ResponseResult.Success -> {
+                        viewModel.getCartCount()
+                        dismiss()
+                        //requireActivity().snackBar(result.data.message)
+                    }
+
+                    is ResponseResult.Error -> {
+                        //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-            } else {
-                viewModel.resultAddCart.observeOnce(viewLifecycleOwner) { result ->
-                    handleResult(result)
-                }
-                ProductActivity.isLoggedInFirstTime = true
             }
-            Log.e("CHECK", "${ProductActivity.isLoggedInFirstTime}")
         }
 
 
@@ -155,11 +168,11 @@ class NewTaskSheet : BottomSheetDialogFragment() {
             is ResponseResult.Success -> {
                viewModel.getCartCount()
                 dismiss()
-           requireActivity().snackBar(result.data.message)
+           //requireActivity().snackBar(result.data.message)
             }
 
             is ResponseResult.Error -> {
-                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

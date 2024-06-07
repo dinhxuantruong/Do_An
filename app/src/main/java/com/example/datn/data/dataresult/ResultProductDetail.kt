@@ -20,6 +20,7 @@ data class ProductTypeDetail(
     val count_rating : Int,
     val lowest_price: Int,
     val made: String,
+    val status : Int,
     val name: String,
     val package_size: String,
     val productlikes_count: Int,
