@@ -15,12 +15,17 @@ import com.example.datn.R
 import com.example.datn.adapter.checkoutAdapter
 import com.example.datn.data.dataresult.ItemCartsWithTotal
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.model.AddressRequest
+import com.example.datn.data.model.dataVoucher
 import com.example.datn.databinding.FragmentCheckoutBinding
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
+import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
+import com.example.datn.view.Detail.ProductActivity
 import com.example.datn.viewmodel.Products.OrderViewModel
 import java.util.UUID
 
@@ -32,9 +37,13 @@ class CheckoutFragment : Fragment() {
     private val viewModel : OrderViewModel by  activityViewModels()
 
     private var uuid : String = ""
+    private var total : Int = 0
+    //private var isLoggedInFirstTime : Boolean = false
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
     companion object {
+        var isLoggedInFirstTime : Boolean = false
         var idAddress: Int? = null
+        var voucher : String? = null
     }
 
     private  var adapter : checkoutAdapter? = null
@@ -66,6 +75,10 @@ class CheckoutFragment : Fragment() {
             }
         }
 
+        binding.btnAllVoucher.setOnClickListener {
+            startActivity(Intent(requireActivity(),DiscountActivity::class.java))
+        }
+
         binding.addAddresses.setOnClickListener {
             findNavController().navigate(R.id.action_checkoutFragment_to_listAddressFragment)
         }
@@ -89,7 +102,7 @@ class CheckoutFragment : Fragment() {
                 ) {
                     requireActivity().snackBar("Chọn phương thức thanh toán.")
                 } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1,uuid))
+                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1,uuid, voucher))
                 }
             }else{
                 Toast.makeText(requireContext(), "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
@@ -162,7 +175,10 @@ class CheckoutFragment : Fragment() {
                     }
                     adapter = checkoutAdapter(requireActivity(), listOrder)
                     binding.recyclerViewCart.adapter = adapter
-                    setPriceAll(it.data)
+                    total = it.data.total
+                    if (voucher == null) {
+                        setPriceAll(total, 0, total, false)
+                    }
                 }
 
                 is ResponseResult.Error -> {
@@ -171,12 +187,32 @@ class CheckoutFragment : Fragment() {
                 }
             }
         }
+        if (voucher != null){
+            viewModel.testVoucher(dataVoucher(total, voucher!!, idAddress))
+            if (isLoggedInFirstTime) {
+                viewModel.resultCheckVoucher.observeOnceAfterInit(viewLifecycleOwner) { result ->
+                    handleResult(result)
+                }
+            } else {
+                viewModel.resultCheckVoucher.observeOnce(viewLifecycleOwner) { result ->
+                    handleResult(result)
+                }
+                isLoggedInFirstTime = true
+            }
+        }
+
     }
 
-    private fun setPriceAll(data: resultCart) {
-        binding.total.text = data.total.toVietnameseCurrency()
-        binding.txtCountDraf.text = data.total.toVietnameseCurrency()
-        binding.txtTotalFinal.text = data.total.toVietnameseCurrency()
+    private fun setPriceAll(total: Int, discount : Int, final_amount : Int,check : Boolean) {
+        binding.total.text = final_amount.toVietnameseCurrency()
+        binding.txtCountDraf.text = total.toVietnameseCurrency()
+        binding.txtTotalFinal.text = final_amount.toVietnameseCurrency()
+        binding.txtMinusVoucher.text = "- ${discount.toVietnameseCurrency()}"
+        if (!check){
+            binding.txtFreeShip.text = "0 đ"
+        }else{
+            binding.txtFreeShip.text = "- 30.000 đ"
+        }
     }
 
     private fun init() {
@@ -196,8 +232,37 @@ class CheckoutFragment : Fragment() {
         if (idAddress==null){
             viewModel.getDefaultAddress()
         }
+        if (voucher != null){
+            viewModel.testVoucher(dataVoucher(total, voucher!!, idAddress))
+            if (isLoggedInFirstTime) {
+                viewModel.resultCheckVoucher.observeOnceAfterInit(viewLifecycleOwner) { result ->
+                    handleResult(result)
+                }
+            } else {
+                viewModel.resultCheckVoucher.observeOnce(viewLifecycleOwner) { result ->
+                    handleResult(result)
+                }
+                isLoggedInFirstTime = true
+            }
+        }
     }
 
+    private fun handleResult(result: ResponseResult<Order>) {
+        when (result) {
+            is ResponseResult.Success -> {
+                setPriceAll(
+                    total,
+                    result.data.discount.toInt(),
+                    result.data.final_amount.toInt(),
+                    result.data.check
+                )
+            }
+
+            is ResponseResult.Error -> {
+                //
+            }
+        }
+    }
 
 
     private fun finishView() {

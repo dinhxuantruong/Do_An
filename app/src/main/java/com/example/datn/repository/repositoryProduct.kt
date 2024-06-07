@@ -10,14 +10,17 @@ import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
+import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.orderstatistics
+import com.example.datn.data.dataresult.resultAllVoucher
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultHistoryRating
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
+import com.example.datn.data.model.dataVoucher
 import com.example.datn.data.model.ratingBody
 import com.example.datn.utils.network.RetrofitAddress
 import com.example.datn.utils.network.RetrofitInstance
@@ -25,6 +28,7 @@ import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
+import retrofit2.http.Body
 
 class repositoryProduct() {
 
@@ -268,4 +272,12 @@ class repositoryProduct() {
         return RetrofitInstance.appApi.getHistoryRating()
     }
 
+    suspend fun getAllVoucher() : Response<resultAllVoucher>{
+        return RetrofitInstance.appApi.getAllVoucher()
+    }
+
+
+    suspend fun testVoucher( dataVoucher : dataVoucher) : Response<Order>{
+        return  RetrofitInstance.appApi.testVoucher(dataVoucher)
+    }
 }

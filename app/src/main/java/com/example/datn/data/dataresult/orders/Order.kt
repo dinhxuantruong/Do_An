@@ -6,5 +6,8 @@ data class Order(
     val orders_address_id: Int,
     val total: Double,
     val user_id: Int,
+    val check : Boolean,
+    val discount : Double,
+    val final_amount : Double,
     val review_status : Int,
 )

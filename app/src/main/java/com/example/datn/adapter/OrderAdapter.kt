@@ -118,7 +118,7 @@ class OrderAdapter(
 
         textCount.text = "Tổng tiền(${order.items.size} sản phẩm)"
         Picasso.get().load(itemProduct.product.image_url).into(Image)
-        tong.text = order.total.toInt().toVietnameseCurrency()
+        tong.text = order.final_amount.toInt().toVietnameseCurrency()
         productName.text = order.items[0].product.type.name
         quantity.text = "Phân loại: ${itemProduct.product.size}"
         Price.text = "${itemProduct.product.price.toVietnameseCurrency()}"

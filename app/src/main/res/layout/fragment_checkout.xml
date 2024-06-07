@@ -345,6 +345,55 @@
 
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/imageView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:src="@drawable/tag"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="46dp"
+                        android:text="Mã giảm giá"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/btnAllVoucher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="end"
+                        android:paddingRight="16dp"
+                        android:text="Nhập hoặc chọn mã"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -424,6 +473,7 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/txtFreeShip"
                         android:layout_width="match_parent"
                         android:fontFamily="@font/roboto"
                         android:layout_gravity="end"
@@ -447,13 +497,14 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/txtMinusVoucher"
                         android:layout_width="match_parent"
-                        android:fontFamily="@font/roboto"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="end"
+                        android:fontFamily="@font/roboto"
                         android:gravity="end"
                         android:text="0 đ"
-                        android:textSize="16sp"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

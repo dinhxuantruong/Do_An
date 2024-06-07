@@ -4,5 +4,6 @@ data class AddressRequest(
     val idaddress: Int,
     val payment_method_id : Int,
     val bank_transaction_id : Int?,
-    val uuid : String
+    val uuid : String,
+    val voucher_code : String?,
 )

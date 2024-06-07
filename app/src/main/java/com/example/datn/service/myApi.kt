@@ -12,8 +12,10 @@ import com.example.datn.data.dataresult.apiAddress.resultHuyen
 import com.example.datn.data.dataresult.apiAddress.resultListAddress
 import com.example.datn.data.dataresult.apiAddress.resultTInh
 import com.example.datn.data.dataresult.apiAddress.resultXa
+import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.data.dataresult.orders.ResultOrders
 import com.example.datn.data.dataresult.orderstatistics
+import com.example.datn.data.dataresult.resultAllVoucher
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultHistoryRating
 import com.example.datn.data.dataresult.resultOrderDetails
@@ -24,6 +26,7 @@ import com.example.datn.data.model.ForgetPass
 import com.example.datn.data.model.Register
 import com.example.datn.data.model.addAddress
 import com.example.datn.data.model.addCart
+import com.example.datn.data.model.dataVoucher
 import com.example.datn.data.model.google_input
 import com.example.datn.data.model.loginWithGoogle
 import com.example.datn.data.model.ratingBody
@@ -308,4 +311,12 @@ interface myApi {
     //lấy danh sách lịch sử đáng giá
     @GET("get/all/reviewed/products")
     suspend fun getHistoryRating() : Response<resultHistoryRating>
+
+    //get all vouver
+    @GET("all/voucher")
+    suspend fun getAllVoucher() : Response<resultAllVoucher>
+
+    //check voucher
+    @POST("test/voucher")
+    suspend fun testVoucher(@Body dataVoucher : dataVoucher) : Response<Order>
 }

@@ -64,6 +64,10 @@ class AdminProductTypeActivity : AppCompatActivity() {
             }
         })
 
+        binding.toolBarCart.setNavigationOnClickListener {
+            finish()
+        }
+
         binding.recyclerview.adapter = adapter
 
         viewModel.errorMessage.observe(this@AdminProductTypeActivity) {

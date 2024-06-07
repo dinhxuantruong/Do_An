@@ -9,9 +9,11 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.UserX
 import com.example.datn.data.dataresult.apiAddress.resultDefault
+import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.data.dataresult.resultCart
 import com.example.datn.data.dataresult.resultOrderDetails
 import com.example.datn.data.model.AddressRequest
+import com.example.datn.data.model.dataVoucher
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +50,32 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
     private val _resultUpdateProfile : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultUpdateProfile : LiveData<ResponseResult<ResultMessage>> get() = _resultUpdateProfile
 
+    private val _resultCheckVoucher : MutableLiveData<ResponseResult<Order>> = MutableLiveData()
+    val resultCheckVoucher : LiveData<ResponseResult<Order>> get() = _resultCheckVoucher
+    fun testVoucher( dataVoucher : dataVoucher){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.testVoucher(dataVoucher)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultCheckVoucher.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultCheckVoucher.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultCheckVoucher.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultCheckVoucher.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultCheckVoucher.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
     fun updateProFileUser(
         name: RequestBody,
         profession: RequestBody,
