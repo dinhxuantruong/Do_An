@@ -18,17 +18,9 @@ class SuccessActivity : AppCompatActivity() {
 
 
         binding.btnContinue.setOnClickListener {
-          startActivity(Intent(this@SuccessActivity,MainActivity2::class.java))
+          finish()
         }
 
-    }
-
-    private fun finishView(){
-        finish()
-    }
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finishView()
     }
 
     override fun onDestroy() {

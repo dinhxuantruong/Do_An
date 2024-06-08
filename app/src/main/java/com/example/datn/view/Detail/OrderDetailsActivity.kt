@@ -42,13 +42,25 @@ class OrderDetailsActivity : AppCompatActivity() {
             when (it) {
                 is ResponseResult.Success -> {
                     val dataUser = it.data
+                    val finalTotal =dataUser.final_amount.toInt()
+                    val drafTotal = dataUser.total.toInt()
+                    val discount  = dataUser.discount.toInt()
+
                     binding.tvName.text = dataUser.name
                     binding.tvSdt.text = " | ${dataUser.phone}"
                     binding.tvAddress.text = "${dataUser.address}, Xã ${dataUser.ward}, Huyện ${dataUser.district}, Tỉnh ${dataUser.province}"
                     binding.txtThanhToan.text = dataUser.payment_method
-                    binding.txtTotalFinal.text = "${dataUser.total.toInt().toVietnameseCurrency()}"
+                    binding.txtTotalFinal.text = "${finalTotal.toVietnameseCurrency()}"
                     binding.txtCreateAt.text = dataUser.created_at
                     binding.txtUuid.text =dataUser.uuid
+                    binding.txtCountDraf.text = "${drafTotal.toVietnameseCurrency()}"
+                    binding.txtMinusVoucher.text = "- ${discount.toVietnameseCurrency()}"
+                    if (drafTotal - (finalTotal + discount) == 0){
+                        binding.txtFreeShip.text = "- 30000 đ"
+                    }else{
+                        binding.txtFreeShip.text = "- 0 đ"
+                    }
+
                     listProduct.clear()
                     val data = dataUser.items
                     data.forEach { item ->

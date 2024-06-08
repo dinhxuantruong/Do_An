@@ -14,7 +14,9 @@ data class resultOrderDetails(
     val province: String,
     val total: Double,
     val updated_at: String,
-    val ward: String
+    val ward: String,
+    val final_amount: Double,
+    val discount: Double,
 )
 data class Type(
     val id: Int,

@@ -2,9 +2,9 @@ package com.example.datn.data.dataresult
 
 data class resultCart(
     val itemCartsWithTotal: List<ItemCartsWithTotal>,
-    val total : Int
+    val total : Int,
+    val final_amount : Int,
 )
-
 data class ItemCartsWithTotal(
     val cart_id: Int,
     val id: Int,

@@ -38,7 +38,12 @@ class CheckoutFragment : Fragment() {
 
     private var uuid : String = ""
     private var total : Int = 0
-    //private var isLoggedInFirstTime : Boolean = false
+    private var finalTotal : Int = 0
+    private var oneCall : Boolean = false
+    private var discount : Int = 0
+    private var freeShip : Int = 0
+    private var oldVoucher : String = ""
+
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
     companion object {
         var isLoggedInFirstTime : Boolean = false
@@ -121,7 +126,7 @@ class CheckoutFragment : Fragment() {
                     binding.tvName.text = data.username
                     binding.tvSdt.text = " | ${data.phone}"
                     binding.tvAddress.text =
-                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
+                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, Tỉnh ${data.province}"
                 }
 
                 is ResponseResult.Error -> {
@@ -134,12 +139,23 @@ class CheckoutFragment : Fragment() {
         viewModel.resultDetailAddress.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ResponseResult.Success -> {
+                    Log.e("CHECK","SIUU")
+                    if (oneCall){
+                       if (result.data.default_address.province == "Hà Nội"){
+                            freeShip = 30000
+                           finalTotal = total - discount
+                        }else {
+                            finalTotal = total + 30000 - discount
+                           freeShip = 0
+                        }
+                        setPriceAll()
+                    }
                     val data = result.data.default_address
                     idAddress = data.id
                     binding.tvName.text = data.username
                     binding.tvSdt.text = " | ${data.phone}"
                     binding.tvAddress.text =
-                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, ${data.province}"
+                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, Tỉnh ${data.province}"
                 }
 
                 is ResponseResult.Error -> {
@@ -175,9 +191,16 @@ class CheckoutFragment : Fragment() {
                     }
                     adapter = checkoutAdapter(requireActivity(), listOrder)
                     binding.recyclerViewCart.adapter = adapter
-                    total = it.data.total
-                    if (voucher == null) {
-                        setPriceAll(total, 0, total, false)
+                    if (!oneCall) {
+                        total = it.data.total
+                        finalTotal = it.data.final_amount - discount
+                        freeShip = if (total == finalTotal){
+                            30000
+                        }else{
+                            0
+                        }
+                        setPriceAll()
+                        oneCall  = true
                     }
                 }
 
@@ -187,32 +210,14 @@ class CheckoutFragment : Fragment() {
                 }
             }
         }
-        if (voucher != null){
-            viewModel.testVoucher(dataVoucher(total, voucher!!, idAddress))
-            if (isLoggedInFirstTime) {
-                viewModel.resultCheckVoucher.observeOnceAfterInit(viewLifecycleOwner) { result ->
-                    handleResult(result)
-                }
-            } else {
-                viewModel.resultCheckVoucher.observeOnce(viewLifecycleOwner) { result ->
-                    handleResult(result)
-                }
-                isLoggedInFirstTime = true
-            }
-        }
-
     }
 
-    private fun setPriceAll(total: Int, discount : Int, final_amount : Int,check : Boolean) {
-        binding.total.text = final_amount.toVietnameseCurrency()
+    private fun setPriceAll() {
+        binding.total.text = finalTotal.toVietnameseCurrency()
         binding.txtCountDraf.text = total.toVietnameseCurrency()
-        binding.txtTotalFinal.text = final_amount.toVietnameseCurrency()
+        binding.txtTotalFinal.text = finalTotal.toVietnameseCurrency()
         binding.txtMinusVoucher.text = "- ${discount.toVietnameseCurrency()}"
-        if (!check){
-            binding.txtFreeShip.text = "0 đ"
-        }else{
-            binding.txtFreeShip.text = "- 30.000 đ"
-        }
+        binding.txtFreeShip.text = "- ${freeShip.toVietnameseCurrency()}"
     }
 
     private fun init() {
@@ -229,10 +234,10 @@ class CheckoutFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (idAddress==null){
-            viewModel.getDefaultAddress()
-        }
-        if (voucher != null){
+//        if (idAddress==null){
+//            viewModel.getDefaultAddress()
+//        }
+        if (voucher != null && oldVoucher!= voucher){
             viewModel.testVoucher(dataVoucher(total, voucher!!, idAddress))
             if (isLoggedInFirstTime) {
                 viewModel.resultCheckVoucher.observeOnceAfterInit(viewLifecycleOwner) { result ->
@@ -250,12 +255,10 @@ class CheckoutFragment : Fragment() {
     private fun handleResult(result: ResponseResult<Order>) {
         when (result) {
             is ResponseResult.Success -> {
-                setPriceAll(
-                    total,
-                    result.data.discount.toInt(),
-                    result.data.final_amount.toInt(),
-                    result.data.check
-                )
+                oldVoucher = voucher!!
+                discount = result.data.discount.toInt()
+                viewModel.getDetailAddress(idAddress.toString())
+                Toast.makeText(requireContext(), "handleResult", Toast.LENGTH_SHORT).show()
             }
 
             is ResponseResult.Error -> {

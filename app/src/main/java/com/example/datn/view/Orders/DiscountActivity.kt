@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.adapter.adapterVoucher
 import com.example.datn.data.dataresult.Coupon
 import com.example.datn.data.dataresult.ResponseResult
+import com.example.datn.data.model.dataVoucher
 import com.example.datn.databinding.ActivityDiscountBinding
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
