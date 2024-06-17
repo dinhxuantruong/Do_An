@@ -15,12 +15,14 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultAllVoucher
 import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
+import com.example.datn.data.model.addVoucher
 import com.example.datn.repository.repositoryAdmin
 import com.example.datn.utils.Extension.ErrorBodyMessage.getErrorBodyMessage
 import com.example.datn.utils.network.Constance
@@ -113,7 +115,15 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultStatistic : MutableLiveData<ResponseResult<resultStatistic>> = MutableLiveData()
     val resultStatistic : LiveData<ResponseResult<resultStatistic>> get() = _resultStatistic
 
+    private val _resultAllVoucher : MutableLiveData<ResponseResult<resultAllVoucher>> = MutableLiveData()
+    val resultAllVoucher : LiveData<ResponseResult<resultAllVoucher>> get() = _resultAllVoucher
 
+
+    private val _resultCountVoucher : MutableLiveData<ResponseResult<resultAllVoucher>> = MutableLiveData()
+    val resultCountVoucher : LiveData<ResponseResult<resultAllVoucher>> get() = _resultCountVoucher
+
+    private val _resultAddVoucher : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultAddVoucher : LiveData<ResponseResult<ResultMessage>> get() = _resultAddVoucher
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -140,8 +150,84 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         return page
     }
 
+    fun addVoucher(voucher : addVoucher){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.addVoucher(voucher)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultAddVoucher.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAddVoucher.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAddVoucher.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAddVoucher.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAddVoucher.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+    fun getCountVoucher(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getCountVoucher()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultCountVoucher.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultCountVoucher.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultCountVoucher.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultCountVoucher.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultCountVoucher.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getAllVoucher(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.getAllVoucher()
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultAllVoucher.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultAllVoucher.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultAllVoucher.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultAllVoucher.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultAllVoucher.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
     fun getStatistic(){
-        Log.e("MAINN","START")
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.postValue(true)
@@ -149,9 +235,7 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
                     _resultStatistic.postValue(ResponseResult.Success(resultBody))
-                    Log.e("MAINN",_resultStatistic.toString())
                 } else {
-                    Log.e("MAINN","ERROR")
                     val errorBodyMessage = response.getErrorBodyMessage()
                     val finalErrorMessage =
                         if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
@@ -177,7 +261,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllTotal()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultTotalAll.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -204,7 +287,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getBarChart()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultBarChart.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -231,7 +313,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getPieChart()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultPieChart.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -258,7 +339,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.logout()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultLogout.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -285,7 +365,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderCancel()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAllOrderCancel.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -312,7 +391,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderReceived()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAllOrderRe.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -339,7 +417,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderDelivery()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAllOrderDelivery.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -366,7 +443,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderShipping()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAllOrderShipping.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -393,7 +469,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderPacking()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAllOrderPack.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -420,7 +495,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.confirmOrder(idOrder)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultChangeConfirm.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -447,7 +521,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllOrderConfirm()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultOrderConfirm.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -475,7 +548,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.deleteType(id)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultDeleteType.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -502,7 +574,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getProductType(id)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultType.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -557,7 +628,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 )
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAddType.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -614,7 +684,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 )
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultUpdateType.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -641,7 +710,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getAllCategory()
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultCate.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -668,7 +736,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.deleteProductSize(id)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultDeleteSize.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -706,7 +773,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 )
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultUpdateSize.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -745,7 +811,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 )
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultAddSize.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()
@@ -772,7 +837,6 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
                 val response = repositoryAdmin.getDetailProduct(idAddress)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
-                    Log.e("MAIN", resultBody.toString())
                     _resultDetail.postValue(ResponseResult.Success(resultBody))
                 } else {
                     val errorBodyMessage = response.getErrorBodyMessage()

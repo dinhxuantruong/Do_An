@@ -2,6 +2,7 @@ package com.example.datn.service
 
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultAllVoucher
 import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
@@ -9,6 +10,7 @@ import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
 import com.example.datn.data.model.BodyAddSize
+import com.example.datn.data.model.addVoucher
 import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -151,4 +153,15 @@ interface AdminApi {
     //get statistic
     @GET("statistics")
     suspend fun getStatistic() : Response<resultStatistic>
+
+    //quản lý mã giảm giá admin
+    @GET("get/all/voucher/admin")
+    suspend fun getAllVoucher() : Response<resultAllVoucher>
+
+    @GET("get/count/voucher")
+    suspend fun getCountVoucher() : Response<resultAllVoucher>
+
+    //thêm mã giảm giá
+    @POST("admin/add/voucher")
+    suspend fun addVoucher(@Body voucher : addVoucher): Response<ResultMessage>
 }

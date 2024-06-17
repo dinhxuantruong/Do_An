@@ -1,7 +1,8 @@
 package com.example.datn.data.dataresult
 
 data class resultAllVoucher(
-    val coupons: List<Coupon>
+    val coupons: List<Coupon>,
+    val total_coupons : Int
 )
 
 data class Coupon(
@@ -14,5 +15,6 @@ data class Coupon(
     val start_date: String,
     val updated_at: String,
     val usage_limit: Int,
-    val used: Int
+    val used: Int,
+    val is_valid : Boolean
 )

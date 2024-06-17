@@ -107,10 +107,10 @@ class ViewModelDetailProduct(private val repositoryProduct: repositoryProduct) :
     }
 
 
-    private suspend fun getProductSame(category : Int) {
+     fun getProductSame(idType : Int,category : Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = repositoryProduct.searchByCategory(category)
+                val response = repositoryProduct.searchByCategory(idType,category)
                 if (response.isSuccessful) {
                     val resultMessage = response.body()!!
                     _resultProductSame.postValue(ResponseResult.Success(resultMessage))
@@ -136,7 +136,6 @@ class ViewModelDetailProduct(private val repositoryProduct: repositoryProduct) :
                      val result = response.body()!!
                      _resultDetail.postValue(ResponseResult.Success(result))
                      val categoryId = result.ProductType.id_category
-                     getProductSame(categoryId)
                  } else {
                      val errorMessage = "Detail product does not exist : ${response.message()}"
                      _resultDetail.postValue(ResponseResult.Error(errorMessage))

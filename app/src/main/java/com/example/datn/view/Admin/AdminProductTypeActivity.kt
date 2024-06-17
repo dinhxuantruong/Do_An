@@ -68,6 +68,10 @@ class AdminProductTypeActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.btnAdd.setOnClickListener {
+            intentView(true, null, 1)
+        }
+
         binding.recyclerview.adapter = adapter
 
         viewModel.errorMessage.observe(this@AdminProductTypeActivity) {

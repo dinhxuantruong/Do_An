@@ -83,7 +83,7 @@ class ForgotFragment : Fragment(), View.OnClickListener, View.OnKeyListener,
                    bundle.putString("email", EmailType.FORGOT)
                    bundle.putString("pass", password)
                    bundle.putString("conf pass", confirmPassword)
-                   findNavController().navigate(R.id.action_forgotFragment_to_otpFragment,bundle)
+                   findNavController().navigate(R.id.action_forgotFragment_to_otpFragment2,bundle)
                }
 
                is ResponseResult.Error -> {

@@ -4,7 +4,7 @@ class Constance {
     companion object {
         //const val BASE_URL = "http://192.168.0.116:8000/api/"
         const val BASE_URL = "http://192.168.1.25:8000/api/"
-       // const val BASE_URL = "http://192.168.179.173:8000/api/"
+        //const val BASE_URL = "http://192.168.179.173:8000/api/"
          const val BASE_URL_ADDRESS = "https://esgoo.net/"
         const val GOOGLE_URL = "https://oauth2.googleapis.com/"
 

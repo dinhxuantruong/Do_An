@@ -53,8 +53,13 @@ RecyclerView.Adapter<adapterListAddress.aViewholder>(){
 
         name.text = itemAddress.username
         phone.text = " | ${itemAddress.phone}"
-        address.text = "${itemAddress.address}, Xã ${itemAddress.ward}," +
-                " Huyện ${itemAddress.district}, Tỉnh ${itemAddress.province}"
+        if (itemAddress.province == "Hà Nội"){
+            address.text = "${itemAddress.address}, Phường ${itemAddress.ward}," +
+                    " Quận ${itemAddress.district}, Thành phố ${itemAddress.province}"
+        }else{
+            address.text = "${itemAddress.address}, Xã ${itemAddress.ward}," +
+                    " Huyện ${itemAddress.district}, Tỉnh ${itemAddress.province}"
+        }
     }
 
 

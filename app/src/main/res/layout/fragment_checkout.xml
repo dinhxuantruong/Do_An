@@ -596,7 +596,7 @@
                 android:layout_gravity="center"
                 android:background="@color/colorPrimary"
                 android:fontFamily="@font/robotomedium"
-                android:text="Mua hàng"
+                android:text="Thanh toán"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />

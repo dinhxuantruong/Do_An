@@ -208,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginRight="16dp"
-            android:background="@drawable/row_back_bg2"
+            android:background="@drawable/rounded_button"
             android:padding="10dp"
             android:paddingRight="10dp"
             android:fontFamily="@font/robotomedium"

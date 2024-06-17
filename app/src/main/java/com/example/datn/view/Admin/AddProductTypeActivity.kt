@@ -295,7 +295,10 @@ class AddProductTypeActivity : AppCompatActivity() {
         check = intent.getBooleanExtra("check", true)
         if (!check) {
             idCateNew = intent.getIntExtra("idCate", 0)
+            binding.btnAdd.text = "Cập nhật sản phẩm"
             viewModel.getProductType(idType)
+        }else{
+            binding.btnAdd.text  = "Thêm sản phẩm"
         }
         _prefManager = PrefManager(this)
         setImageView()

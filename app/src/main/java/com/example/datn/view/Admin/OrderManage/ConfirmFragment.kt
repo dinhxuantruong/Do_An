@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -48,7 +49,7 @@ class ConfirmFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
-        viewModel.resultOrderConfirm.observe(viewLifecycleOwner, Observer { data ->
+        viewModel.resultOrderConfirm.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is ResponseResult.Success -> {
                     listPending.clear()
@@ -58,13 +59,23 @@ class ConfirmFragment : Fragment() {
                     }
                     if (listPending.size == 0) {
                         visiGoneView()
-                    }else{
+                    } else {
                         visiView()
                     }
                     adapter = OrderAdapter(requireActivity(), listPending, true,
                         object : OrderAdapter.buttonOnClick {
                             override fun onClick(itemOrder: Order) {
-                                viewModel.confirmOrder(itemOrder.id)
+                                val builder = AlertDialog.Builder(requireActivity())
+                                builder.setTitle("Xác nhận đơn hàng")
+                                builder.setPositiveButton("Xác nhận") { dialog, _ ->
+                                    viewModel.confirmOrder(itemOrder.id)
+                                    dialog.dismiss()
+                                }
+                                builder.setNegativeButton("Hủy") { dialog, _ ->
+                                    dialog.dismiss()
+                                }
+                                val dialog = builder.create()
+                                dialog.show()
                                 if (isLoggedInFirstTime) {
                                     viewModel.resultChangeConfirm.observeOnceAfterInit(
                                         viewLifecycleOwner
@@ -80,15 +91,17 @@ class ConfirmFragment : Fragment() {
                             }
 
                             override fun moreOnclick(itemOrder: Order) {
-                                val intent = Intent(requireContext(),OrderDetailsActivity::class.java)
-                                intent.putExtra("id",itemOrder.id)
+                                val intent =
+                                    Intent(requireContext(), OrderDetailsActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
                                 startActivity(intent)
                             }
 
                             override fun onRating(itemOrder: Order) {
                                 TODO("Not yet implemented")
                             }
-                        },0)
+                        }, 0
+                    )
                     binding.recyclerView.adapter = adapter!!
                 }
 
@@ -97,7 +110,7 @@ class ConfirmFragment : Fragment() {
                 }
 
             }
-        })
+        }
 
     }
 

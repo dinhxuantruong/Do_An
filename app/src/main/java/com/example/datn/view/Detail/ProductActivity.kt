@@ -35,7 +35,6 @@ import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.ViewModelDetailProduct
 
-
 class ProductActivity : AppCompatActivity() {
     private var _binding: ActivityProductBinding? = null
     private lateinit var listImageProduct: MutableList<SlideModel>
@@ -46,11 +45,11 @@ class ProductActivity : AppCompatActivity() {
     private var adapter: productAdapter? = null
     private var adapterRate: ratingAdapter? = null
     private var id = 0
-    private var cartQuantity : Int = 0
+    private var cartQuantity: Int = 0
+
     companion object {
         var isLoggedInFirstTime = false
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,20 +57,27 @@ class ProductActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
-        callViewModel()
+        handleIntent(intent) // Xử lý intent khi activity được tạo lần đầu
         observeView()
         onClickButton()
-
-
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent) // Xử lý intent khi activity được khởi tạo lại
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        intent?.let {
+            id = it.getIntExtra("id", 0)
+            callViewModel()
+        }
+    }
 
     private fun onClickButton() {
         binding.btnCart.setOnClickListener {
             NewTaskSheet().show(supportFragmentManager, "New Task Sheet")
         }
-
-
 
         binding.toolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -135,10 +141,11 @@ class ProductActivity : AppCompatActivity() {
                 is ResponseResult.Success -> {
                     val productType = it.data.ProductType
                     val listImages = it.data.Images
-                    if (productType.status == 0){
+                    if (productType.status == 0) {
                         binding.btnCart.text = "Sản phẩm ngừng kinh doanh"
                         binding.btnCart.isEnabled = false
                     }
+                    listImageProduct.clear()
                     listImages.forEach { image ->
                         listImageProduct.add(SlideModel(image))
                     }
@@ -165,10 +172,10 @@ class ProductActivity : AppCompatActivity() {
                         binding.recylerRating.adapter = adapterRate
                         binding.listitemrating.rating = it.data.ProductType.average_rating.toFloat()
                         binding.txtTextCount.text = "Đánh giá(${it.data.ProductType.count_rating}): "
-                    }
-                    else{
+                    } else {
                         binding.layoutRate.visibility = View.GONE
                     }
+                    viewModel.getProductSame(id,it.data.ProductType.id_category)
                 }
 
                 is ResponseResult.Error -> {
@@ -192,22 +199,27 @@ class ProductActivity : AppCompatActivity() {
                     }
                     adapter = productAdapter(this, object : productAdapter.ClickListener2 {
                         override fun onClickedItem(itemBlog: ProductTypeX) {
-                            Toast.makeText(this@ProductActivity, itemBlog.id.toString(), Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@ProductActivity, ProductActivity::class.java).apply {
+                                putExtra("id", itemBlog.id)
+                            }
+                            isLoggedInFirstTime = false
+                            startActivity(intent)
+                            //finish()
                         }
-                    },listProductSame)
+                    }, listProductSame)
 
                     binding.reSame.adapter = adapter
                 }
 
                 is ResponseResult.Error -> {
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
     }
 
-    private fun setFavoriteView(check: Boolean, countFav : Int) {
+    private fun setFavoriteView(check: Boolean, countFav: Int) {
         binding.txtCountFav.text = " $countFav"
         val colorBlue = ContextCompat.getColor(this, R.color.colorPrimary)
         val colorWhite = ContextCompat.getColor(this, android.R.color.black)
@@ -226,7 +238,7 @@ class ProductActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.cart, menu)
-        val menuItem  = menu.findItem(R.id.cart_id)
+        val menuItem = menu.findItem(R.id.cart_id)
         val actionView = menuItem.actionView
         val cartIcon = actionView!!.findViewById<TextView>(R.id.txtCartView2)
         cartIcon.text = cartQuantity.toString()
@@ -236,15 +248,17 @@ class ProductActivity : AppCompatActivity() {
         }
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.cart_id -> {
-                startActivity(Intent(this@ProductActivity,CartActivity::class.java))
+                startActivity(Intent(this@ProductActivity, CartActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun init() {
         listRating = mutableListOf()
         id = intent.getIntExtra("id", 0)
@@ -270,7 +284,6 @@ class ProductActivity : AppCompatActivity() {
         (this as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
         (this as? AppCompatActivity)?.supportActionBar?.apply {
             title = ""
-//            setDisplayHomeAsUpEnabled(true)
         }
         val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.qqq)
         Palette.from(bitmap).generate {
@@ -282,23 +295,14 @@ class ProductActivity : AppCompatActivity() {
 
         binding.appBarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val isCollapsed = verticalOffset <= -(appBarLayout.totalScrollRange / 100)
-            // Màu mặc định của icon
             val defaultColor = Color.WHITE
-
-
-            // Màu mà icon sẽ chuyển đổi thành
             val targetColor = if (isCollapsed) Color.WHITE else defaultColor
-            // val targetColor2 = if (isCollapsed) Color.parseColor("#1EA0DB") else defaultColor
 
-
-            // Tìm icon trong menu và thay đổi màu sắc
             val cartItem = binding.toolbar.menu.findItem(R.id.icCart)
             val notifiItem = binding.toolbar.menu.findItem(R.id.icNotifi)
 
-            // Thay đổi màu sắc của collapsing toolbar tùy thuộc vào trạng thái của toolbar
             binding.collapsingToolbar.setContentScrimColor(targetColor)
 
-            // Thay đổi màu sắc của icon
             cartItem?.icon?.let { icon ->
                 icon.mutate()
                 icon.setTint(targetColor)
@@ -311,21 +315,11 @@ class ProductActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> {
-//                finish()
-//                onBackPressed()
-//                return true
-//            }
-//        }
-//        return super.onOptionsItemSelected(item)
-//    }
-
     override fun onResume() {
         super.onResume()
         viewModel.getCartCount()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         isLoggedInFirstTime = false
@@ -334,5 +328,3 @@ class ProductActivity : AppCompatActivity() {
         _binding = null
     }
 }
-
-

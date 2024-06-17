@@ -1,7 +1,7 @@
 package com.example.datn.data.dataresult.apiAddress
 
 data class resultTInh(
-    val `data`: List<Data>,
+    val data: List<Data>,
     val data_name: String,
     val error: Int,
     val error_text: String

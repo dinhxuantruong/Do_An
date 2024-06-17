@@ -78,8 +78,8 @@ class repositoryProduct() {
     }
 
     //get product_type same
-    suspend fun searchByCategory(category : Int) : Response<ProductType>{
-        return RetrofitInstance.appApi.searchByCategory(category)
+    suspend fun searchByCategory(idType : Int,category : Int) : Response<ProductType>{
+        return RetrofitInstance.appApi.searchByCategory(idType,category)
     }
 
     //get page product

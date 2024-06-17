@@ -417,11 +417,7 @@ class ChatActivity : AppCompatActivity() {
                             }
                         }
                 } else {
-                    Toast.makeText(
-                        this@ChatActivity,
-                        "Failed to upload image: ${task.exception?.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.d("IMAGE","Failed to upload image: ${task.exception?.message}")
                 }
             }
         }

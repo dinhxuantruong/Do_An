@@ -65,7 +65,6 @@ class AddressesActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         init()
-        viewModel.getAllTinh()
         onclickButton()
         observeView()
     }
@@ -400,6 +399,7 @@ class AddressesActivity : AppCompatActivity() {
         viewModel.resultTinh.observe(this@AddressesActivity) { result ->
             when (result) {
                 is ResponseResult.Success -> {
+                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                     listHuyenName.clear()
                     listTinhName.clear()
                     result.data.data.forEach { item ->
@@ -440,6 +440,7 @@ class AddressesActivity : AppCompatActivity() {
         val repositoryProduct = repositoryProduct()
         val vmFactory = OrdersViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(this@AddressesActivity,vmFactory)[AddressesViewModel::class.java]
+        viewModel.getAllTinh()
     }
 
 

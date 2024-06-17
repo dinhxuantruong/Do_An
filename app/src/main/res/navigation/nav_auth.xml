@@ -20,7 +20,7 @@
         android:id="@+id/forgotFragment"
         android:name="com.example.datn.view.Auth.ForgotFragment">
         <action
-            android:id="@+id/action_forgotFragment_to_otpFragment"
+            android:id="@+id/action_forgotFragment_to_otpFragment2"
             app:destination="@id/otpFragment" />
     </fragment>
     <fragment

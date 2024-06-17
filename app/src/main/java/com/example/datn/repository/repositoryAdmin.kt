@@ -3,12 +3,14 @@ package com.example.datn.repository
 import com.example.datn.data.dataresult.ResultMessage
 import com.example.datn.data.dataresult.ResultProductDetail
 import com.example.datn.data.dataresult.orders.ResultOrders
+import com.example.datn.data.dataresult.resultAllVoucher
 import com.example.datn.data.dataresult.resultBarrChart
 import com.example.datn.data.dataresult.resultCategory
 import com.example.datn.data.dataresult.resultPieChart
 import com.example.datn.data.dataresult.resultProductTYpe
 import com.example.datn.data.dataresult.resultStatistic
 import com.example.datn.data.dataresult.resultTotalDate
+import com.example.datn.data.model.addVoucher
 import com.example.datn.utils.network.RetrofitInstance
 import com.velmurugan.paging3android.ProductResponse
 import okhttp3.MultipartBody
@@ -183,4 +185,18 @@ class repositoryAdmin {
     suspend fun getStatistic() : Response<resultStatistic>{
         return RetrofitInstance.adminApi.getStatistic()
     }
+
+    //get all voucher admin
+    suspend fun getAllVoucher() : Response<resultAllVoucher> {
+        return RetrofitInstance.adminApi.getAllVoucher()
+    }
+
+    suspend fun getCountVoucher() : Response<resultAllVoucher>{
+        return RetrofitInstance.adminApi.getCountVoucher()
+    }
+
+    suspend fun addVoucher(voucher : addVoucher) : Response<ResultMessage>{
+        return RetrofitInstance.adminApi.addVoucher(voucher)
+    }
+
 }

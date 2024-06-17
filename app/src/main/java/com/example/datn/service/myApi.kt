@@ -120,8 +120,9 @@ interface myApi {
     suspend fun addFavorite(@Path("id") id: Int): Response<ResultMessage>
 
     //get product_type same
-    @GET("product/search/category")
-    suspend fun searchByCategory(@Query("category_id") categoryId: Int): Response<ProductType>
+    @GET("product/search/category/{idType}")
+    suspend fun searchByCategory(@Path("idType") idType : Int,
+                                 @Query("category_id") categoryId: Int,): Response<ProductType>
 
     //get paging product
     @GET("product/page")

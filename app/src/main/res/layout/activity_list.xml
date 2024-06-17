@@ -23,7 +23,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolListProduct"
             android:fitsSystemWindows="false"
-            app:title="All Product"
+            app:title="Tất cả sản phẩm"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/white"

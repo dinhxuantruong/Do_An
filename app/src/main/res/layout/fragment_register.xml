@@ -57,7 +57,7 @@
         android:layout_marginStart="12dp"
         android:fontFamily="@font/robotobold"
         android:layout_marginTop="160dp"
-        android:text="XIN CHÀO"
+        android:text="ĐĂNG KÝ"
         android:textColor="@color/black"
         android:textSize="30dp"
         app:layout_constraintStart_toStartOf="parent"

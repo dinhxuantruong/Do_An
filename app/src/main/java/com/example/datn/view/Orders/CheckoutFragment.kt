@@ -234,9 +234,9 @@ class CheckoutFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        if (idAddress==null){
-//            viewModel.getDefaultAddress()
-//        }
+        if (idAddress==null){
+            viewModel.getDefaultAddress()
+        }
         if (voucher != null && oldVoucher!= voucher){
             viewModel.testVoucher(dataVoucher(total, voucher!!, idAddress))
             if (isLoggedInFirstTime) {
@@ -262,7 +262,9 @@ class CheckoutFragment : Fragment() {
             }
 
             is ResponseResult.Error -> {
-                //
+                discount = 0
+                viewModel.getDetailAddress(idAddress.toString())
+                Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

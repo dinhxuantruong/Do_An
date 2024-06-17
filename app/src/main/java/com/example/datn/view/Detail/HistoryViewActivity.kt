@@ -137,6 +137,7 @@ class HistoryViewActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        _adapter = null
         _binding = null
     }
 }

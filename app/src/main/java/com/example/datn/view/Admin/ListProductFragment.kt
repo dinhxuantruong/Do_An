@@ -143,6 +143,10 @@ class ListProductFragment : Fragment() {
             startActivity(Intent(requireActivity(),AdminProductTypeActivity::class.java))
         }
 
+        binding.btnAllVoucher.setOnClickListener {
+            startActivity(Intent(requireActivity(),AdminVoucherActivity::class.java))
+        }
+
         return binding.root
     }
 
@@ -202,6 +206,18 @@ class ListProductFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.resultCountVoucher.observe(viewLifecycleOwner){
+            when(it){
+                is ResponseResult.Success -> {
+                    binding.txtCountVoucher.text = it.data.total_coupons.toString()
+                }
+
+                is ResponseResult.Error -> {
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 
@@ -216,6 +232,7 @@ class ListProductFragment : Fragment() {
             registerFireBaseChat()
         }
         viewModel.getStatistic()
+        viewModel.getCountVoucher()
     }
 
     private fun loginFirebase() {

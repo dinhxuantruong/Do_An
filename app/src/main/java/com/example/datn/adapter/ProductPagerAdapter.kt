@@ -49,7 +49,7 @@ class ProductPagerAdapter(private val onClick: ClickListener) :
         } else {
             txtNg.visibility = View.GONE
             price.visibility = View.VISIBLE
-            price.text = "${product.price}/${product.quantity}"
+            price.text = "${product.price.toVietnameseCurrency()}/${product.quantity}"
         }
 
         countFav.text = " " + product.favorites_count.toString()
