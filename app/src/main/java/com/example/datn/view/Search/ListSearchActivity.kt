@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ListSearchActivity : AppCompatActivity() {
     private var _binding: ActivityListSearchBinding? = null
     private val binding get() = _binding!!
-    private var adapter: adapterSearch? = null
+    private lateinit var adapter: adapterSearch
     private lateinit var listSearch: MutableList<HistoryItemSearch.SearchHistory>
     private var flag = true
     private lateinit var vSearch: RoomViewModel
@@ -37,8 +37,24 @@ class ListSearchActivity : AppCompatActivity() {
         binding.rycSearch.isNestedScrollingEnabled = false
         binding.rycSearch.layoutManager = LinearLayoutManager(this)
         listSearch = mutableListOf()
-    }
 
+        // Initialize adapter and set it to RecyclerView
+        adapter = adapterSearch(this, listSearch, object : adapterSearch.OnItemDeleteListener {
+            override fun onItemDelete(item: HistoryItemSearch.SearchHistory) {
+                vSearch.deleteData(item)
+                updateListView()
+            }
+        })
+        binding.rycSearch.adapter = adapter
+
+        // Observe the data once to set initial list
+        vSearch.readAllData.observe(this) { data ->
+            listSearch.clear()
+            listSearch.addAll(data.reversed()) // Đảo ngược danh sách để mới nhất xuất hiện đầu tiên
+            adapter.notifyDataSetChanged()
+            showText()
+        }
+    }
 
     private fun setupListeners() {
         binding.backIcon.setOnClickListener { finish() }
@@ -55,6 +71,7 @@ class ListSearchActivity : AppCompatActivity() {
                         })
                     val searchItem = HistoryItemSearch.SearchHistory(0, it)
                     vSearch.insertData(searchItem)
+                    // Update list and adapter immediately
                     updateListView()
                 }
                 return true
@@ -66,7 +83,6 @@ class ListSearchActivity : AppCompatActivity() {
         binding.txtShowAll.setOnClickListener {
             if (flag) {
                 binding.rycSearch.visibility = View.VISIBLE
-                adapter!!.updateList(listSearch)
                 binding.txtShowAll.text = "Xóa tất cả"
                 flag = false
             } else {
@@ -82,15 +98,7 @@ class ListSearchActivity : AppCompatActivity() {
         vSearch.readAllData.observe(this) { data ->
             listSearch.clear()
             listSearch.addAll(data.reversed()) // Đảo ngược danh sách để mới nhất xuất hiện đầu tiên
-            val initialList = listSearch.take(6).toMutableList()
-            adapter =
-                adapterSearch(this, initialList, object : adapterSearch.OnItemDeleteListener {
-                    override fun onItemDelete(item: HistoryItemSearch.SearchHistory) {
-                        vSearch.deleteData(item)
-                        updateListView()
-                    }
-                })
-            binding.rycSearch.adapter = adapter
+            adapter.notifyDataSetChanged()
             showText()
         }
     }

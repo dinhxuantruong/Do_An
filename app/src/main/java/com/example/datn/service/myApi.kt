@@ -235,7 +235,10 @@ interface myApi {
 
     //tìm kiếm sản phẩm
     @GET("user/search/type/all")
-    suspend fun getSearchProduct(@Query("name") name : String) : Response<ProductType>
+    suspend fun getSearchProduct(@Query("name") name : String,
+                                 @Query("start_price") startPrice : Int?,
+                                 @Query("end_price") endPrice : Int?,
+                                 @Query("sort") sort : String?) : Response<ProductType>
 
     //Hủy đơn hàng
     @POST("user/canncel/order/{orderId}")

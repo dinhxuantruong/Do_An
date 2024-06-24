@@ -107,6 +107,7 @@ class ConfirmFragment : Fragment() {
                                 val intent =
                                     Intent(requireContext(), OrderDetailsActivity::class.java)
                                 intent.putExtra("id", itemOrder.id)
+                                intent.putExtra("status","Chờ xác nhận")
                                 startActivity(intent)
                             }
 

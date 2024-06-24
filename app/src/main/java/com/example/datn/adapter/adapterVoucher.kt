@@ -49,7 +49,7 @@ class adapterVoucher(
             onClick.onClick(data)
         }
 
-        if (!data.is_valid){
+        if (data.used >= data.usage_limit ){
             bgrVoucher.setBackgroundColor(Color.parseColor("#FFE6E6E6"))
         }else{
             bgrVoucher.setBackgroundColor(Color.WHITE)

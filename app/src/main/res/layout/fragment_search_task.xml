@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.Search.SearchTaskFragment">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="@font/robotomedium"
+            android:text="Lọc theo giá sản phẩm"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txtStart"
+                android:layout_width="200dp"
+                android:maxLines="1"
+                android:background="@drawable/rounded_button_white"
+                android:maxLength="10"
+                android:gravity="center"
+                android:inputType="number"
+                android:layout_marginEnd="5dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="0 đ" />
+
+            <EditText
+                android:id="@+id/txtEnd"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_button_white"
+                android:hint="0 đ"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="10"
+                android:gravity="center" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:text="Chọn khoảng giá"
+            android:fontFamily="@font/robotomedium"
+            android:layout_margin="16dp"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn1"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:text="0 - 100.000"
+                android:textSize="16sp"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_button_white"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn2"
+                android:layout_width="match_parent"
+                android:text="100.000 - 300.000"
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/rounded_button_white"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn3"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:text="300.000 - 500.000"
+                android:textSize="16sp"
+                android:layout_marginEnd="5dp"
+                android:stateListAnimator="@null"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_button_white"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn4"
+                android:layout_width="match_parent"
+                android:text="500.000 - 1000.000"
+                android:textSize="16sp"
+                android:stateListAnimator="@null"
+                android:layout_weight="1"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/rounded_button_white"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginBottom="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:stateListAnimator="@null"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/rounded_button_white"
+                android:text="Mặc định"
+                android:textColor="@color/black" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAdd"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:textColor="@color/white"
+                android:stateListAnimator="@null"
+                android:background="@drawable/rounded_button"
+                android:text="Xác nhận" />
+
+        </LinearLayout>
+
+    </LinearLayout>

@@ -125,6 +125,10 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultAddVoucher : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultAddVoucher : LiveData<ResponseResult<ResultMessage>> get() = _resultAddVoucher
 
+    private val _resultChangeProduct : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultChangeProduct : LiveData<ResponseResult<ResultMessage>> get() = _resultChangeProduct
+
+
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
     fun getProductAllType(): LiveData<PagingData<ProductType>> {
@@ -148,6 +152,32 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         ).liveData.cachedIn(viewModelScope)
 
         return page
+    }
+
+    fun changeStatusProduct(id : Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.changeStatusProduct(id)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultChangeProduct.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultChangeProduct.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultChangeProduct.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultChangeProduct.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultChangeProduct.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
     }
 
     fun addVoucher(voucher : addVoucher){

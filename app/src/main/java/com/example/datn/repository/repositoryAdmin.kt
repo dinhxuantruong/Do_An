@@ -199,4 +199,8 @@ class repositoryAdmin {
         return RetrofitInstance.adminApi.addVoucher(voucher)
     }
 
+    suspend fun changeStatusProduct(id : Int) : Response<ResultMessage>{
+        return RetrofitInstance.adminApi.changeStatusProduct(id)
+    }
+
 }

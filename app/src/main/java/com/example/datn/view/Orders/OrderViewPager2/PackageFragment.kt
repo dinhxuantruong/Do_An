@@ -1,5 +1,6 @@
 package com.example.datn.view.Orders.OrderViewPager2
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.databinding.FragmentConfirmBinding
 import com.example.datn.databinding.FragmentPackageBinding
 import com.example.datn.databinding.FragmentPaymentsBinding
+import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Admin.AdminViewModel
 import com.example.datn.viewmodel.Orders.OrdersViewModel
 
@@ -64,7 +66,11 @@ class PackageFragment : Fragment() {
                             }
 
                             override fun moreOnclick(itemOrder: Order) {
-                                Toast.makeText(requireContext(), "haha", Toast.LENGTH_SHORT).show()
+                                val intent =
+                                    Intent(requireContext(), OrderDetailsActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
+                                intent.putExtra("status","Đang đóng gói")
+                                startActivity(intent)
                             }
 
                             override fun onRating(itemOrder: Order) {

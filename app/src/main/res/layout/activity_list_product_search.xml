@@ -57,20 +57,66 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:paddingEnd="8dp"
-        android:id="@+id/recyclerViewCart"
-        android:paddingLeft="8dp"
+    <LinearLayout
+        android:id="@+id/linearLayout8"
+        android:paddingStart="11dp"
         android:layout_width="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSort"
+            android:text="Sắp xếp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:insetRight="5dp"
+            android:insetLeft="5dp" />
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroup"
+            app:singleSelection="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnASC"
+                android:text="Tăng dần"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:insetLeft="5dp"
+                android:insetRight="5dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDESC"
+                android:text="Giảm dần"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:insetLeft="5dp" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCart"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingLeft="8dp"
+        android:paddingEnd="8dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8"
         app:spanCount="2"
         tools:itemCount="4"
-        tools:listitem="@layout/layout_search_item"/>
+        tools:listitem="@layout/layout_search_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

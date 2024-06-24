@@ -1,15 +1,17 @@
 package com.example.datn.view.Orders
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.R
 import com.example.datn.adapter.adapterVoucher
 import com.example.datn.data.dataresult.Coupon
 import com.example.datn.data.dataresult.ResponseResult
-import com.example.datn.data.model.dataVoucher
 import com.example.datn.databinding.ActivityDiscountBinding
 import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
@@ -23,11 +25,11 @@ class DiscountActivity : AppCompatActivity() {
     private var _adapter: adapterVoucher? = null
     private val adapter get() = _adapter!!
     private lateinit var listVoucher: MutableList<Coupon>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityDiscountBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         init()
         observeData()
@@ -35,7 +37,6 @@ class DiscountActivity : AppCompatActivity() {
             CheckoutFragment.voucher = binding.txtVoucher.text.toString()
             finish()
         }
-
     }
 
     private fun init() {
@@ -49,6 +50,10 @@ class DiscountActivity : AppCompatActivity() {
 
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.toolBarCart.setNavigationOnClickListener {
+            finish()
+        }
+        setSupportActionBar(binding.toolBarCart)
     }
 
     private fun observeData() {
@@ -64,7 +69,7 @@ class DiscountActivity : AppCompatActivity() {
                     data.forEach { item ->
                         listVoucher.add(item)
                     }
-                    _adapter = adapterVoucher(this,listVoucher,object : adapterVoucher.onClickVoucher{
+                    _adapter = adapterVoucher(this, listVoucher, object : adapterVoucher.onClickVoucher {
                         override fun onClick(voucher: Coupon) {
                             CheckoutFragment.voucher = voucher.code
                             finish()
@@ -80,6 +85,21 @@ class DiscountActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.voucher, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.id_voucher -> {
+                CheckoutFragment.voucher = ""
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()

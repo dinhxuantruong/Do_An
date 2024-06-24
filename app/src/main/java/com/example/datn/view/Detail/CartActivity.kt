@@ -23,6 +23,8 @@ import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.MyButton
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
+import com.example.datn.view.Orders.CheckoutActivity
+import com.example.datn.view.Orders.CheckoutFragment
 import com.example.datn.view.Orders.OrdersActivity
 import com.example.datn.viewmodel.Products.CartViewModel
 import com.example.datn.viewmodel.Products.MainViewModelFactory
@@ -102,8 +104,8 @@ class CartActivity : AppCompatActivity() {
         viewModel.resultCheckStock.observe(this){
             when(it){
                 is ResponseResult.Success -> {
-                    startActivity(Intent(this@CartActivity,OrdersActivity::class.java))
-                    finish()
+                    startActivity(Intent(this@CartActivity,CheckoutActivity::class.java))
+                    this.finish()
                 }
 
                 is ResponseResult.Error -> {

@@ -1,5 +1,6 @@
 package com.example.datn.view.Admin.OrderManage
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.example.datn.databinding.FragmentPackingBinding
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
+import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Admin.AdminViewModel
 
 
@@ -63,7 +65,11 @@ class PackingFragment : Fragment() {
                             }
 
                             override fun moreOnclick(itemOrder: Order) {
-
+                                val intent =
+                                    Intent(requireContext(), OrderDetailsActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
+                                intent.putExtra("status","Đang đóng gói")
+                                startActivity(intent)
                             }
 
                             override fun onRating(itemOrder: Order) {

@@ -1,5 +1,6 @@
 package com.example.datn.view.Admin.OrderManage
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import com.example.datn.adapter.OrderAdapter
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.databinding.FragmentDeliveringBinding
+import com.example.datn.view.Detail.OrderDetailsActivity
 import com.example.datn.viewmodel.Admin.AdminViewModel
 
 class DeliFragment : Fragment() {
@@ -59,7 +61,11 @@ class DeliFragment : Fragment() {
                             }
 
                             override fun moreOnclick(itemOrder: Order) {
-
+                                val intent =
+                                    Intent(requireContext(), OrderDetailsActivity::class.java)
+                                intent.putExtra("id", itemOrder.id)
+                                intent.putExtra("status","Đang giao hàng")
+                                startActivity(intent)
                             }
 
                             override fun onRating(itemOrder: Order) {

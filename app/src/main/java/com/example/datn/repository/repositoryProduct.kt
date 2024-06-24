@@ -29,6 +29,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.Query
 
 class repositoryProduct() {
 
@@ -193,8 +194,10 @@ class repositoryProduct() {
     suspend fun getCartCount() : Response<ResultMessage>{
         return RetrofitInstance.appApi.getCartCount()
     }
-    suspend fun getSearchProduct(name : String) : Response<ProductType>{
-        return RetrofitInstance.appApi.getSearchProduct(name)
+    suspend fun getSearchProduct(name : String, startPrice : Int?,
+                                 endPrice : Int?,
+                                sort : String?) : Response<ProductType>{
+        return RetrofitInstance.appApi.getSearchProduct(name,startPrice,endPrice,sort)
     }
 
     suspend fun deleteOrder(id : Int) : Response<ResultMessage>{

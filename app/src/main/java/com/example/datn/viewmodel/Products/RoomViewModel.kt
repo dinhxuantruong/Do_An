@@ -19,9 +19,10 @@ class RoomViewModel @Inject constructor(private val repository: RoomRepository) 
     fun insertData(person: HistoryItemSearch.SearchHistory) {
         viewModelScope.launch(Dispatchers.IO) {
             val existingItem = repository.getSearchHistoryByText(person.searchtext)
-            if (existingItem == null) {
-                repository.insertData(person)
+            if (existingItem != null) {
+                repository.deleteData(existingItem)
             }
+            repository.insertData(person)
         }
     }
 

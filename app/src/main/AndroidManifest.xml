@@ -27,6 +27,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.Orders.ListAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Orders.CheckoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.Search.SearchTaskActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.Admin.AddVoucherActivity"
             android:exported="false" />
         <activity

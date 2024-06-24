@@ -46,17 +46,24 @@ class AdminProductTypeActivity : AppCompatActivity() {
 
             override fun onLongItemClick(itemProduct: ProductType) {
                 val builder = AlertDialog.Builder(this@AdminProductTypeActivity)
+                var text = ""
+                text = if (itemProduct.status == 0){
+                    "Bán tiếp"
+                }else{
+                    "Ngừng bán"
+                }
                 builder.setTitle("Chỉnh sửa")
                 builder.setPositiveButton("Sửa") { _, _ ->
-                    val idCategory = itemProduct.id_category?.toIntOrNull()
+                    val idCategory = itemProduct.id_category.toIntOrNull()
                     if (idCategory != null) {
                         intentView(false, itemProduct.id, idCategory)
                     } else {
                         Toast.makeText(this@AdminProductTypeActivity, "ID category is null or invalid", Toast.LENGTH_SHORT).show()
                     }
                 }
-                builder.setNegativeButton("Xóa") { dialog, _ ->
-                    viewModel.deleteProductType(itemProduct.id)
+                builder.setNegativeButton(text) { dialog, _ ->
+                    //viewModel.deleteProductType(itemProduct.id)
+                    viewModel.changeStatusProduct(itemProduct.id)
                     dialog.dismiss()
                 }
                 val dialog = builder.create()
@@ -106,6 +113,18 @@ class AdminProductTypeActivity : AppCompatActivity() {
             adapter.addLoadStateListener { loadState ->
                 binding.swipeRefreshLayout.isRefreshing =
                     loadState.refresh is LoadState.Loading || loadState.append is LoadState.Loading
+            }
+        }
+
+        viewModel.resultChangeProduct.observe(this){
+            when(it){
+                is ResponseResult.Success -> {
+                    refreshData()
+                }
+
+                is ResponseResult.Error -> {
+                    //
+                }
             }
         }
 

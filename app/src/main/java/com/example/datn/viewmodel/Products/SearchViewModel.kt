@@ -18,14 +18,22 @@ class SearchViewModel(private val repositoryProduct: repositoryProduct) : ViewMo
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _sort = MutableLiveData<String>()
+    val sort: LiveData<String> get() = _sort
+    fun setSort(sortValue: String) {
+        _sort.value = sortValue
+    }
+
     private val _resultSearchProduct : MutableLiveData<ResponseResult<ProductType>> = MutableLiveData()
     val resultSearchProduct : LiveData<ResponseResult<ProductType>> get() =  _resultSearchProduct
 
-    fun getAllProductTypeSearch(name : String) {
+    fun getAllProductTypeSearch(name : String, startPrice : Int?,
+                                endPrice : Int?,
+                                sort : String?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.postValue(true) // Show ProgressBar
-                val response = repositoryProduct.getSearchProduct(name)
+                val response = repositoryProduct.getSearchProduct(name,startPrice,endPrice,sort)
                 if (response.isSuccessful) {
                     val logout = response.body()!!
                     _resultSearchProduct.postValue(ResponseResult.Success(logout))

@@ -20,9 +20,11 @@ class OrderDetailsActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private var id = 0
+    private var status = ""
     private lateinit var viewModel: OrderViewModel
     private lateinit var listProduct: MutableList<Item>
     private var adapter: adapterOrderDetails? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityOrderDetailsBinding.inflate(layoutInflater)
@@ -82,6 +84,8 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun init() {
         listProduct = mutableListOf()
         id = intent.getIntExtra("id", 0)
+        status = intent.getStringExtra("status").toString()
+        binding.btnXacNhan.text = status
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel =

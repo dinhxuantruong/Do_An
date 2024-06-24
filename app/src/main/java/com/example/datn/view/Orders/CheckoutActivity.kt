@@ -1,14 +1,11 @@
 package com.example.datn.view.Orders
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
@@ -18,22 +15,21 @@ import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.data.dataresult.orders.Order
 import com.example.datn.data.model.AddressRequest
 import com.example.datn.data.model.dataVoucher
-import com.example.datn.databinding.FragmentCheckoutBinding
+import com.example.datn.databinding.ActivityCheckoutBinding
+import com.example.datn.repository.repositoryProduct
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnce
 import com.example.datn.utils.Extension.LiveDataExtensions.observeOnceAfterInit
 import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
+import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
 import java.util.UUID
 
-class CheckoutFragment : Fragment() {
-
-    private var _binding : FragmentCheckoutBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel : OrderViewModel by  activityViewModels()
-
+class CheckoutActivity : AppCompatActivity() {
+    private var _binding : ActivityCheckoutBinding? = null
+    private val binding get () = _binding!!
+    private lateinit var viewModel: OrderViewModel
     private var uuid : String = ""
     private var total : Int = 0
     private var finalTotal : Int = 0
@@ -48,77 +44,72 @@ class CheckoutFragment : Fragment() {
         var idAddress: Int? = null
         var voucher: String = ""
     }
-
     private  var adapter : checkoutAdapter? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        _binding = ActivityCheckoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCheckoutBinding.inflate(inflater,container,false)
         init()
-
         observeView()
 
         onClickButton()
 
-        return binding.root
-    }
 
+
+    }
     private fun onClickButton() {
         binding.bankCheckBox.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked){
                 binding.codCheckBox.isChecked = false
-                requireActivity().snackBar("Bank")
+                this.snackBar("Bank")
             }else{
 
             }
         }
 
         binding.btnAllVoucher.setOnClickListener {
-            startActivity(Intent(requireActivity(),DiscountActivity::class.java))
+            startActivity(Intent(this,DiscountActivity::class.java))
         }
 
         binding.addAddresses.setOnClickListener {
-            findNavController().navigate(R.id.action_checkoutFragment_to_listAddressFragment)
+            startActivity(Intent(this,ListAddressActivity::class.java))
         }
         binding.addAddresses2.setOnClickListener {
-            startActivity(Intent(requireActivity(),AddressesActivity::class.java))
+            startActivity(Intent(this,AddressesActivity::class.java))
         }
 
         binding.codCheckBox.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked){
                 binding.bankCheckBox.isChecked = false
-                requireActivity().snackBar("Cod")
+                this.snackBar("Cod")
             }else{
 
             }
         }
 
         binding.btnMua.setOnClickListener {
-            if (idAddress != null) {
+            if (CheckoutFragment.idAddress != null) {
                 if (!binding.bankCheckBox.isChecked && !binding.codCheckBox.isChecked ||
                     binding.bankCheckBox.isChecked && binding.codCheckBox.isChecked
                 ) {
-                    requireActivity().snackBar("Chọn phương thức thanh toán.")
+                    this.snackBar("Chọn phương thức thanh toán.")
                 } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
-                    viewModel.createAddOrders(AddressRequest(idAddress!!.toInt(), 1, 1,uuid, voucher))
+                    viewModel.createAddOrders(AddressRequest(CheckoutFragment.idAddress!!.toInt(), 1, 1,uuid, CheckoutFragment.voucher))
                 }
             }else{
-                Toast.makeText(requireContext(), "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
     private fun observeView() {
-        viewModel.resultDetailAddress.observe(viewLifecycleOwner) { result ->
+        viewModel.resultDetailAddress.observe(this) { result ->
             when (result) {
                 is ResponseResult.Success -> {
+                    val data = result.data.default_address
                     binding.addAddresses2.visibility = View.GONE
                     binding.addAddresses.visibility = View.VISIBLE
-                    Toast.makeText(requireActivity(), "END ${result.data.default_address.id}", Toast.LENGTH_SHORT).show()
-                    idAddress = result.data.default_address.id
+                    CheckoutFragment.idAddress = result.data.default_address.id
                     if (oneCall) {
                         if (result.data.default_address.province == "Hà Nội") {
                             freeShip = 30000
@@ -129,39 +120,40 @@ class CheckoutFragment : Fragment() {
                         }
                         setPriceAll()
                     }
-                    val data = result.data.default_address
-
                     binding.tvName.text = data.username
                     binding.tvSdt.text = " | ${data.phone}"
-                    binding.tvAddress.text =
-                        "${data.address}, Xã ${data.ward}, Huyện ${data.district}, Tỉnh ${data.province}"
+                    if (data.province == "Hà Nội" || data.province == "Hồ Chí Minh") {
+                        binding.tvAddress.text =
+                            "${data.address}, Phường ${data.ward}, Quận ${data.district}, Thành Phố ${data.province}"
+                    } else {
+                        binding.tvAddress.text =
+                            "${data.address}, Xã ${data.ward}, Huyện ${data.district}, Tỉnh ${data.province}"
+                    }
                 }
-
                 is ResponseResult.Error -> {
                     //
                 }
             }
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+        viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
 
-        viewModel.resultCreateOrder.observe(viewLifecycleOwner) {
-//            when (it) {
-//                is ResponseResult.Success -> {
-//                    startActivity(Intent(requireActivity(), SuccessActivity::class.java))
-//                    requireActivity().finish()
-//                }
-//
-//                is ResponseResult.Error -> {
-//                    requireActivity().snackBar(it.message)
-//                }
-//            }
-            Toast.makeText(requireContext(), "$idAddress", Toast.LENGTH_SHORT).show()
+        viewModel.resultCreateOrder.observe(this) {
+            when (it) {
+                is ResponseResult.Success -> {
+                    startActivity(Intent(this, SuccessActivity::class.java))
+                    finish()
+                }
+
+                is ResponseResult.Error -> {
+                    snackBar(it.message)
+                }
+            }
         }
 
-        viewModel.resultCheckout.observe(viewLifecycleOwner) {
+        viewModel.resultCheckout.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
                     listOrder.clear()
@@ -169,7 +161,7 @@ class CheckoutFragment : Fragment() {
                     data.forEach { item ->
                         listOrder.add(item)
                     }
-                    adapter = checkoutAdapter(requireActivity(), listOrder)
+                    adapter = checkoutAdapter(this, listOrder)
                     binding.recyclerViewCart.adapter = adapter
                     if (!oneCall) {
                         total = it.data.total
@@ -185,13 +177,12 @@ class CheckoutFragment : Fragment() {
                 }
 
                 is ResponseResult.Error -> {
-                    requireActivity().snackBar(it.message)
+                    this.snackBar(it.message)
                     binding.btnMua.isEnabled = false
                 }
             }
         }
     }
-
     private fun setPriceAll() {
         binding.total.text = finalTotal.toVietnameseCurrency()
         binding.txtCountDraf.text = total.toVietnameseCurrency()
@@ -200,49 +191,52 @@ class CheckoutFragment : Fragment() {
         binding.txtFreeShip.text = "- ${freeShip.toVietnameseCurrency()}"
     }
 
-    private fun init() {
+    private fun init(){
+        val repositoryProduct = repositoryProduct()
+        val vmFactory = MainViewModelFactory(repositoryProduct)
+        viewModel = ViewModelProvider(this, vmFactory)[OrderViewModel::class.java]
         listOrder = mutableListOf()
         binding.recyclerViewCart.setHasFixedSize(true)
         binding.recyclerViewCart.isNestedScrollingEnabled = false
-        binding.recyclerViewCart.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewCart.layoutManager = LinearLayoutManager(this)
 
         binding.toolListProduct.setNavigationOnClickListener {
             finishView()
         }
         uuid = UUID.randomUUID().toString()
         viewModel.checkoutOrders()
-        Toast.makeText(requireContext(), "Create ed $idAddress", Toast.LENGTH_SHORT).show()
-        viewModel.getDetailAddress(idAddress.toString())
-
+        viewModel.getDetailAddress(CheckoutFragment.idAddress.toString())
+    }
+    private fun finishView() {
+        startActivity(Intent(this, CartActivity::class.java))
+        finish()
     }
 
     override fun onResume() {
         super.onResume()
-        Toast.makeText(requireContext(), "Resume $idAddress", Toast.LENGTH_SHORT).show()
-        if (oldVoucher != voucher && oneCall) {
-            viewModel.testVoucher(dataVoucher(total, voucher, idAddress))
-            if (isLoggedInFirstTime) {
-                viewModel.resultCheckVoucher.observeOnceAfterInit(viewLifecycleOwner) { result ->
+        viewModel.getDetailAddress(CheckoutFragment.idAddress.toString())
+        if (oldVoucher != CheckoutFragment.voucher && oneCall) {
+            viewModel.testVoucher(dataVoucher(total, CheckoutFragment.voucher, CheckoutFragment.idAddress))
+            if (CheckoutFragment.isLoggedInFirstTime) {
+                viewModel.resultCheckVoucher.observeOnceAfterInit(this) { result ->
                     handleResult(result)
                 }
             } else {
-                viewModel.resultCheckVoucher.observeOnce(viewLifecycleOwner) { result ->
+                viewModel.resultCheckVoucher.observeOnce(this) { result ->
                     handleResult(result)
                 }
-                isLoggedInFirstTime = true
+                CheckoutFragment.isLoggedInFirstTime = true
             }
         }
     }
-
-
     private fun handleResult(result: ResponseResult<Order>) {
         when (result) {
             is ResponseResult.Success -> {
-                oldVoucher = voucher.ifEmpty {
+                oldVoucher = CheckoutFragment.voucher.ifEmpty {
                     "123"
                 }
                 discount = result.data.discount.toInt()
-                viewModel.getDetailAddress(idAddress.toString())
+                viewModel.getDetailAddress(CheckoutFragment.idAddress.toString())
             }
 
             is ResponseResult.Error -> {
@@ -250,22 +244,12 @@ class CheckoutFragment : Fragment() {
             }
         }
     }
-
-    private fun finishView() {
-        startActivity(Intent(requireActivity(), CartActivity::class.java))
-        requireActivity().finish()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        idAddress = 0
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
         adapter = null
-        voucher = ""
-        isLoggedInFirstTime = false
+        CheckoutFragment.voucher = ""
+        CheckoutFragment.isLoggedInFirstTime = false
+        idAddress = null
         _binding = null
     }
 }

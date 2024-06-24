@@ -164,4 +164,8 @@ interface AdminApi {
     //thêm mã giảm giá
     @POST("admin/add/voucher")
     suspend fun addVoucher(@Body voucher : addVoucher): Response<ResultMessage>
+
+    //đổi trạng thái sản phẩm
+    @POST("product-types/{id}/deactivate")
+    suspend fun changeStatusProduct(@Path("id") id : Int) : Response<ResultMessage>
 }

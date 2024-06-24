@@ -349,6 +349,7 @@ class AddressesActivity : AppCompatActivity() {
             when (result) {
                 is ResponseResult.Success -> {
                     this@AddressesActivity.snackBar(result.data.message)
+                    finish()
                 }
 
                 is ResponseResult.Error -> {
@@ -356,6 +357,9 @@ class AddressesActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+
         viewModel.resultHuyen.observe(this@AddressesActivity) { result ->
             when (result) {
                 is ResponseResult.Success -> {
