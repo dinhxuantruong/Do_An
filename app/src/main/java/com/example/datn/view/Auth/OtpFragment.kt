@@ -30,7 +30,7 @@ class OtpFragment : Fragment() {
     private var _editTextList: List<EditText>? = null
     private val editTextList get() = _editTextList!!
     private lateinit var countDownTimer: CountDownTimer
-    private val otpTimeout = 1 * 60 * 1000L
+    private val otpTimeout = 1 * 20 * 1000L
     private val viewModel: AuthViewModel by activityViewModels()
     var email: String? = ""
 

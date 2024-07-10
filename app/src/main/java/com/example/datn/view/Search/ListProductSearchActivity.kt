@@ -62,16 +62,19 @@ class ListProductSearchActivity : AppCompatActivity() {
                 when (checkedId) {
                     R.id.btnASC -> {
                         viewModel.getAllProductTypeSearch(name, startPrice, endPrice,"asc")
+                        sort = "asc"
                         binding.btnDESC.isChecked = false
                     }
                     R.id.btnDESC -> {
                         viewModel.getAllProductTypeSearch(name, startPrice, endPrice,"desc")
+                        sort = "desc"
                         binding.btnASC.isChecked = false
                     }
                 }
             } else {
                 if (group.checkedButtonId == View.NO_ID) {
-                    viewModel.getAllProductTypeSearch(name,null,null,null)
+                    sort = null
+                    viewModel.getAllProductTypeSearch(name, startPrice, endPrice, null)
                 }
             }
         }

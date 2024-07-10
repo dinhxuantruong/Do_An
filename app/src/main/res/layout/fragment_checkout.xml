@@ -312,9 +312,9 @@
                         <ImageView
                             android:id="@+id/codImage"
                             android:layout_marginLeft="16dp"
-                            android:src="@drawable/bank"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:src="@drawable/zalo"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -323,7 +323,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="46dp"
-                            android:text="Thanh toán qua thẻ ngân hàng"
+                            android:text="Thanh toán qua ZaloPay"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

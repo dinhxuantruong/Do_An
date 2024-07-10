@@ -2,6 +2,7 @@ package com.example.datn.view.MainView
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -97,9 +98,11 @@ class MainViewActivity : AppCompatActivity() {
         val email = prefManager.getEmail()!!
         val password = prefManager.getEmail()!!
         auth.signInWithEmailAndPassword(email,password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                   intentChat()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    intentChat()
+                } else {
+                   Log.d("FIREBASE",task.exception?.message.toString())
                 }
             }
     }
