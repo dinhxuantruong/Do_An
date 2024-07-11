@@ -232,7 +232,7 @@
         android:layout_marginStart="12dp"
         android:fontFamily="@font/roboto"
         android:layout_marginTop="10dp"
-        android:text="Nhập tài khoản và mật khẩu của bạn để tiêp tục đăng nhập"
+        android:text="Nhập tài khoản và mật khẩu để tiếp tục đăng nhập."
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />

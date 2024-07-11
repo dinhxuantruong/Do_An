@@ -49,11 +49,11 @@ class ChatAdapter(
             if (chat.sender == firebaseUser!!.uid) {
                 showTextMessage?.visibility = View.GONE
                 rightImageView?.visibility = View.VISIBLE
-                Picasso.get().load(chat.url).into(rightImageView)
+                Picasso.get().load(chat.url).resize(800, 600).into(rightImageView)
             } else if (chat.sender != firebaseUser.uid) {
                 showTextMessage?.visibility = View.GONE
                 leftImageView?.visibility = View.VISIBLE
-                Picasso.get().load(chat.url).into(leftImageView)
+                Picasso.get().load(chat.url).resize(800, 600).into(leftImageView)
             }
         } else {
             showTextMessage?.text = chat.message

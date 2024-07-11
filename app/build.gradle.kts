@@ -145,6 +145,15 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    //ZaloPay
+    implementation(fileTree(mapOf(
+        "dir" to "C:\\Users\\truon\\OneDrive\\Máy tính\\zalosdk",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf("")
+    )))
+    implementation("commons-codec:commons-codec:1.14")
+    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+
     implementation ("com.google.auth:google-auth-library-oauth2-http:1.4.0")
 
 

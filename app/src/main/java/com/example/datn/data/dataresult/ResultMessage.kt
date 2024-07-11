@@ -9,4 +9,9 @@ data class ResultMessage(
     val count : Int,
     val item_count : Int,
     val id_type : String,
+    val order : order
+)
+
+data class order(
+    val final_amount : Double
 )

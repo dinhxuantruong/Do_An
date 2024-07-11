@@ -3,6 +3,7 @@ package com.example.datn.view.Orders
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,12 @@ import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.view.Detail.CartActivity
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
+import com.example.zalopaykotlin.Api.CreateOrder
+import org.json.JSONObject
+import vn.zalopay.sdk.Environment
+import vn.zalopay.sdk.ZaloPayError
+import vn.zalopay.sdk.ZaloPaySDK
+import vn.zalopay.sdk.listeners.PayOrderListener
 import java.util.UUID
 
 class CheckoutActivity : AppCompatActivity() {
@@ -37,6 +44,7 @@ class CheckoutActivity : AppCompatActivity() {
     private var discount : Int = 0
     private var freeShip : Int = 0
     private var oldVoucher : String = ""
+    private var payment : Boolean? = null
 
     private lateinit var listOrder : MutableList<ItemCartsWithTotal>
     companion object {
@@ -55,6 +63,12 @@ class CheckoutActivity : AppCompatActivity() {
 
         onClickButton()
 
+        // Thiết lập StrictMode
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        // Khởi tạo ZaloPay SDK
+        ZaloPaySDK.init(2553, Environment.SANDBOX)
 
 
     }
@@ -62,7 +76,6 @@ class CheckoutActivity : AppCompatActivity() {
         binding.bankCheckBox.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked){
                 binding.codCheckBox.isChecked = false
-                this.snackBar("Bank")
             }else{
 
             }
@@ -82,7 +95,6 @@ class CheckoutActivity : AppCompatActivity() {
         binding.codCheckBox.setOnCheckedChangeListener{_, isChecked ->
             if (isChecked){
                 binding.bankCheckBox.isChecked = false
-                this.snackBar("Cod")
             }else{
 
             }
@@ -95,13 +107,19 @@ class CheckoutActivity : AppCompatActivity() {
                 ) {
                     this.snackBar("Chọn phương thức thanh toán.")
                 } else if (binding.codCheckBox.isChecked && !binding.bankCheckBox.isChecked) {
+                    payment = false
                     viewModel.createAddOrders(AddressRequest(CheckoutFragment.idAddress!!.toInt(), 1, 1,uuid, CheckoutFragment.voucher))
+                }else if (!binding.codCheckBox.isChecked && binding.bankCheckBox.isChecked) {
+                    payment = true
+                    viewModel.createAddOrders(AddressRequest(CheckoutFragment.idAddress!!.toInt(), 2, null,uuid, CheckoutFragment.voucher))
                 }
-            }else{
+            }
+            else{
                 Toast.makeText(this, "Chưa có địa chỉ", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     private fun observeView() {
         viewModel.resultDetailAddress.observe(this) { result ->
             when (result) {
@@ -143,8 +161,51 @@ class CheckoutActivity : AppCompatActivity() {
         viewModel.resultCreateOrder.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
-                    startActivity(Intent(this, SuccessActivity::class.java))
-                    finish()
+                    if (payment == false) {
+                        val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
+                        intent1.putExtra("idPay", 0)
+                        startActivity(intent1)
+                        finish()
+                    }else if(payment == true){
+                        val total = it.data.order.final_amount
+                        val totalString = String.format("%.0f", total)
+                        val orderApi = CreateOrder()
+                        try {
+                            val data: JSONObject? = orderApi.createOrder(totalString)
+                            val code = data?.getString("return_code")
+                            if (code == "1") {
+                                val token = data.getString("zp_trans_token")
+                                ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
+                                    override fun onPaymentSucceeded(p0: String, p1: String, p2: String) {
+                                        val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
+                                        intent1.putExtra("result", "Thanh toán thành công")
+                                        intent1.putExtra("order_id", p0) // Lưu mã hóa đơn
+                                        intent1.putExtra("idPay", 1)
+                                        startActivity(intent1)
+                                        finish()
+                                    }
+
+                                    override fun onPaymentCanceled(p0: String, p1: String) {
+                                        val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
+                                        intent1.putExtra("result", "Hủy thanh toán")
+                                        intent1.putExtra("idPay", 1)
+                                        startActivity(intent1)
+                                        finish()
+                                    }
+
+                                    override fun onPaymentError(zaloPayError: ZaloPayError, p0: String, p1: String) {
+                                        val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
+                                        intent1.putExtra("result", "Lỗi thanh toán")
+                                        intent1.putExtra("idPay", 1)
+                                        startActivity(intent1)
+                                        finish()
+                                    }
+                                })
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                 }
 
                 is ResponseResult.Error -> {
@@ -243,6 +304,11 @@ class CheckoutActivity : AppCompatActivity() {
                 discount = 0
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        ZaloPaySDK.getInstance().onResult(intent)
     }
     override fun onDestroy() {
         super.onDestroy()
