@@ -34,6 +34,10 @@ class AdminVoucherActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener {
             startActivity(Intent(this,AddVoucherActivity::class.java))
         }
+        //binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.getAllVoucher()
+        //}
+
 
 
 
@@ -71,6 +75,11 @@ class AdminVoucherActivity : AppCompatActivity() {
         val repository = repositoryAdmin()
         val vmFactory = AdminViewModelFactory(repository)
         viewModel = ViewModelProvider(this,vmFactory)[AdminViewModel::class.java]
+        viewModel.getAllVoucher()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getAllVoucher()
     }
 

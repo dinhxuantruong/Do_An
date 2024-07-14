@@ -1,16 +1,22 @@
 package com.example.datn.view.Detail
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.R
 import com.example.datn.adapter.adapterOrderDetails
 import com.example.datn.data.dataresult.Item
 import com.example.datn.data.dataresult.ResponseResult
 import com.example.datn.databinding.ActivityOrderDetailsBinding
 import com.example.datn.repository.repositoryProduct
+import com.example.datn.utils.Extension.NumberExtensions.snackBar
 import com.example.datn.utils.Extension.NumberExtensions.toVietnameseCurrency
 import com.example.datn.viewmodel.Products.MainViewModelFactory
 import com.example.datn.viewmodel.Products.OrderViewModel
@@ -24,6 +30,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     private lateinit var viewModel: OrderViewModel
     private lateinit var listProduct: MutableList<Item>
     private var adapter: adapterOrderDetails? = null
+    private var role: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +40,31 @@ class OrderDetailsActivity : AppCompatActivity() {
         init()
         observeView()
 
+        onLongClick()
+
     }
 
+
+    private fun onLongClick(){
+        binding.txtUuid.setOnLongClickListener {
+            // Get the text to copy
+            val textToCopy = binding.txtUuid.text.toString()
+
+            // Get the ClipboardManager
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            // Create a new ClipData
+            val clip = ClipData.newPlainText("Copied Text", textToCopy)
+
+            // Set the ClipData to the ClipboardManager
+            clipboard.setPrimaryClip(clip)
+
+            // Show a toast message
+            Toast.makeText(this, "Đã sao chép", Toast.LENGTH_SHORT).show()
+
+            true // Return true to indicate the event was handled
+        }
+    }
     private fun observeView() {
 
         viewModel.isLoading.observe(this) { isLoading ->
@@ -47,6 +77,27 @@ class OrderDetailsActivity : AppCompatActivity() {
                     val finalTotal =dataUser.final_amount.toInt()
                     val drafTotal = dataUser.total.toInt()
                     val discount  = dataUser.discount.toInt()
+
+                    when(it.data.status){
+                        0 -> {
+                            if (role == "admin") {
+                                binding.btnXacNhan.setTextColor(ContextCompat.getColor(this, R.color.white))
+                                binding.btnXacNhan.setBackgroundResource(R.color.colorPrimary)
+                                binding.btnXacNhan.text = "Hủy đơn hàng"
+                                binding.btnXacNhan.setOnClickListener {
+                                    viewModel.deleteOrderAdmin(id)
+                                }
+                            } else {
+                                binding.btnXacNhan.isEnabled = false
+                                binding.btnXacNhan.text = "Chờ xác nhận"
+                            }
+                        }
+                        1 -> {  binding.btnXacNhan.text = "Đang đóng gói"}
+                        2 -> {  binding.btnXacNhan.text = "Đang vận chuyển"}
+                        3 -> {  binding.btnXacNhan.text = "Đang giao hàng"}
+                        4 -> {  binding.btnXacNhan.text = "Đã hoàn thành"}
+                        5 -> {  binding.btnXacNhan.text = "Đã hủy"}
+                    }
 
                     binding.tvName.text = dataUser.name
                     binding.tvSdt.text = " | ${dataUser.phone}"
@@ -78,6 +129,19 @@ class OrderDetailsActivity : AppCompatActivity() {
                 }
             }
         }
+
+        viewModel.resultOrderDelete.observe(this@OrderDetailsActivity){
+            when(it){
+                is ResponseResult.Success -> {
+                    Toast.makeText(this, it.data.message, Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+
+                is ResponseResult.Error -> {
+                    this.snackBar(it.message)
+                }
+            }
+        }
     }
 
 
@@ -85,7 +149,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         listProduct = mutableListOf()
         id = intent.getIntExtra("id", 0)
         status = intent.getStringExtra("status").toString()
-        binding.btnXacNhan.text = status
+        role = intent.getStringExtra("role").toString()
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel =

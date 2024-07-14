@@ -425,13 +425,14 @@
                     <TextView
                         android:id="@+id/txtUuid"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto"
                         android:layout_gravity="start"
                         android:gravity="start"
+                        android:textIsSelectable="true"
                         android:textColor="@color/black"
                         android:text="2bd7eee3-fd65-49ac-8b15-9580ef88411f"
-                        android:textSize="18sp"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -526,13 +527,12 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnXacNhan"
             android:layout_marginTop="10dp"
-            android:enabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="#B8B8B8"
             android:fontFamily="@font/robotomedium"
-            android:text="Đang xác nhận"
+            android:text=""
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="10dp"
             android:textAllCaps="false"

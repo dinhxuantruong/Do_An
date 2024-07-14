@@ -128,6 +128,62 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     private val _resultChangeProduct : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
     val resultChangeProduct : LiveData<ResponseResult<ResultMessage>> get() = _resultChangeProduct
 
+    private val _resultSearchOrders : MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultSearchOrders : LiveData<ResponseResult<ResultOrders>> get() = _resultSearchOrders
+
+    private val _resultSearchOrdersUuid : MutableLiveData<ResponseResult<ResultOrders>> = MutableLiveData()
+    val resultSearchOrdersUuid : LiveData<ResponseResult<ResultOrders>> get() = _resultSearchOrdersUuid
+    fun searchUuidOrders(uuid : String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.searchUuidOrders(uuid)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultSearchOrdersUuid.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultSearchOrdersUuid.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultSearchOrdersUuid.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultSearchOrdersUuid.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultSearchOrdersUuid.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+    fun searchOrdersAdmin(email : String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryAdmin.adminSearchOrders(email)
+                if (response.isSuccessful) {
+                    val resultBody = response.body()!!
+                    _resultSearchOrders.postValue(ResponseResult.Success(resultBody))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage =
+                        if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultSearchOrders.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultSearchOrders.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultSearchOrders.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultSearchOrders.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -284,11 +340,11 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
     }
 
 
-    fun getAllTotal() {
+    fun getAllTotal(year : Int? , month : Int?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.postValue(true)
-                val response = repositoryAdmin.getAllTotal()
+                val response = repositoryAdmin.getAllTotal(year,month)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
                     _resultTotalAll.postValue(ResponseResult.Success(resultBody))
@@ -310,11 +366,11 @@ class AdminViewModel(private val repositoryAdmin: repositoryAdmin) : ViewModel()
         }
     }
 
-    fun getBarChart(){
+    fun getBarChart(year : Int?){
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _isLoading.postValue(true)
-                val response = repositoryAdmin.getBarChart()
+                val response = repositoryAdmin.getBarChart(year)
                 if (response.isSuccessful) {
                     val resultBody = response.body()!!
                     _resultBarChart.postValue(ResponseResult.Success(resultBody))

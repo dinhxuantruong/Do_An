@@ -2,6 +2,7 @@ package com.example.datn.data.dataresult.orders
 
 data class Order(
     val id: Int,
+    val status : Int,
     val items: List<Item>,
     val orders_address_id: Int,
     val total: Double,

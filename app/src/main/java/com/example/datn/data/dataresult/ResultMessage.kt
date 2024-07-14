@@ -13,5 +13,6 @@ data class ResultMessage(
 )
 
 data class order(
-    val final_amount : Double
+    val final_amount : Double,
+    val id : Int
 )

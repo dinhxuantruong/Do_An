@@ -45,6 +45,8 @@ class SearchTaskFragment : BottomSheetDialogFragment() {
 
         binding.btnDefault.setOnClickListener {
             viewModel.getAllProductTypeSearch(ListProductSearchActivity.name,null,null,ListProductSearchActivity.sort)
+            ListProductSearchActivity.startPrice = null
+            ListProductSearchActivity.endPrice = null
             dismiss()
         }
 

@@ -133,7 +133,7 @@ class ListProductFragment : Fragment() {
 
 
         binding.btnSearch.setOnClickListener {
-            //FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(requireActivity(),SearchOrdersActivity::class.java))
         }
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.getStatistic()

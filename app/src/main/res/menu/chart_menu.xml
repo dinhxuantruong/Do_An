@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item android:id="@+id/usrSetting"
-        android:title="Xem thêm"
-        app:showAsAction="never"
-        android:icon="@drawable/iconsetting"/>
-
-    <item android:id="@+id/idYear"
-        android:title="Năm"
+    <item android:id="@+id/idMonth"
+        android:title="Tháng"
         app:showAsAction="never"
         android:icon="@drawable/iconsetting"/>
 </menu>

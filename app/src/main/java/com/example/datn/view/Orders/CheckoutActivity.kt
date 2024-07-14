@@ -1,15 +1,13 @@
 package com.example.datn.view.Orders
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datn.R
 import com.example.datn.adapter.checkoutAdapter
 import com.example.datn.data.dataresult.ItemCartsWithTotal
 import com.example.datn.data.dataresult.ResponseResult
@@ -34,25 +32,28 @@ import vn.zalopay.sdk.listeners.PayOrderListener
 import java.util.UUID
 
 class CheckoutActivity : AppCompatActivity() {
-    private var _binding : ActivityCheckoutBinding? = null
-    private val binding get () = _binding!!
+    private var _binding: ActivityCheckoutBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: OrderViewModel
-    private var uuid : String = ""
-    private var total : Int = 0
-    private var finalTotal : Int = 0
-    private var oneCall : Boolean = false
-    private var discount : Int = 0
-    private var freeShip : Int = 0
-    private var oldVoucher : String = ""
-    private var payment : Boolean? = null
+    private var uuid: String = ""
+    private var total: Int = 0
+    private var finalTotal: Int = 0
+    private var oneCall: Boolean = false
+    private var discount: Int = 0
+    private var freeShip: Int = 0
+    private var oldVoucher: String = ""
+    private var payment: Boolean? = null
+    private var idOrder = 0
 
-    private lateinit var listOrder : MutableList<ItemCartsWithTotal>
+    private lateinit var listOrder: MutableList<ItemCartsWithTotal>
+
     companion object {
-        var isLoggedInFirstTime : Boolean = false
+        var isLoggedInFirstTime: Boolean = false
         var idAddress: Int? = null
         var voucher: String = ""
     }
-    private  var adapter : checkoutAdapter? = null
+
+    private var adapter: checkoutAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityCheckoutBinding.inflate(layoutInflater)
@@ -161,6 +162,7 @@ class CheckoutActivity : AppCompatActivity() {
         viewModel.resultCreateOrder.observe(this) {
             when (it) {
                 is ResponseResult.Success -> {
+                    idOrder = it.data.order.id
                     if (payment == false) {
                         val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
                         intent1.putExtra("idPay", 0)
@@ -177,12 +179,24 @@ class CheckoutActivity : AppCompatActivity() {
                                 val token = data.getString("zp_trans_token")
                                 ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
                                     override fun onPaymentSucceeded(p0: String, p1: String, p2: String) {
-                                        val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
-                                        intent1.putExtra("result", "Thanh toán thành công")
-                                        intent1.putExtra("order_id", p0) // Lưu mã hóa đơn
-                                        intent1.putExtra("idPay", 1)
-                                        startActivity(intent1)
-                                        finish()
+                                        viewModel.changeStatusZaloPay(idOrder,p0)
+                                        viewModel.resultStatusZaloPay.observe(this@CheckoutActivity) {result ->
+                                            when (result) {
+                                                is ResponseResult.Success -> {
+                                                    val intent1 = Intent(this@CheckoutActivity, SuccessActivity::class.java)
+                                                    intent1.putExtra("result", "Thanh toán thành công")
+                                                    intent1.putExtra("order_id", p0) // Lưu mã hóa đơn
+                                                    intent1.putExtra("idPay", 1)
+                                                    startActivity(intent1)
+                                                    finish()
+                                                }
+
+                                                is ResponseResult.Error -> {
+                                                    Toast.makeText(this@CheckoutActivity, "Thanh toán không thành công", Toast.LENGTH_SHORT)
+                                                        .show()
+                                                }
+                                            }
+                                        }
                                     }
 
                                     override fun onPaymentCanceled(p0: String, p1: String) {
@@ -243,7 +257,10 @@ class CheckoutActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
+
+
     private fun setPriceAll() {
         binding.total.text = finalTotal.toVietnameseCurrency()
         binding.txtCountDraf.text = total.toVietnameseCurrency()
@@ -252,7 +269,7 @@ class CheckoutActivity : AppCompatActivity() {
         binding.txtFreeShip.text = "- ${freeShip.toVietnameseCurrency()}"
     }
 
-    private fun init(){
+    private fun init() {
         val repositoryProduct = repositoryProduct()
         val vmFactory = MainViewModelFactory(repositoryProduct)
         viewModel = ViewModelProvider(this, vmFactory)[OrderViewModel::class.java]

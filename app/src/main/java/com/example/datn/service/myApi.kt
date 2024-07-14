@@ -36,6 +36,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -323,4 +324,14 @@ interface myApi {
     //check voucher
     @POST("test/voucher")
     suspend fun testVoucher(@Body dataVoucher : dataVoucher) : Response<Order>
+
+
+    //Zalopay
+    @POST("post/change/order/{orderId}")
+    suspend fun changeStatusZaloPay(@Path("orderId") id : Int,
+                                    @Query("bank_transaction_id") page: String) : Response<ResultMessage>
+
+    //Hủy đơn hàng admin
+    @DELETE("admin/orders/{orderId}")
+    suspend fun deleteOrderAdmin(@Path("orderId") id : Int) : Response<ResultMessage>
 }

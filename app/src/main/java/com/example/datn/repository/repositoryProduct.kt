@@ -283,4 +283,14 @@ class repositoryProduct() {
     suspend fun testVoucher( dataVoucher : dataVoucher) : Response<Order>{
         return  RetrofitInstance.appApi.testVoucher(dataVoucher)
     }
+
+    //Zalopay change status
+    suspend fun changeStatusZaloPay(idOrder : Int, bank_transaction_id : String) : Response<ResultMessage>{
+        return RetrofitInstance.appApi.changeStatusZaloPay(idOrder, bank_transaction_id)
+    }
+
+    //delete order admin
+    suspend fun deleteOrderAdmin(idOrder : Int) : Response<ResultMessage>{
+        return RetrofitInstance.appApi.deleteOrderAdmin(idOrder)
+    }
 }

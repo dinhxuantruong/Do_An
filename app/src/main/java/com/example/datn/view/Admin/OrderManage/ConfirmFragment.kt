@@ -95,6 +95,7 @@ class ConfirmFragment : Fragment() {
                                     Intent(requireContext(), OrderDetailsActivity::class.java)
                                 intent.putExtra("id", itemOrder.id)
                                 intent.putExtra("status","Chờ xác nhận")
+                                intent.putExtra("role","admin")
                                 startActivity(intent)
                             }
 

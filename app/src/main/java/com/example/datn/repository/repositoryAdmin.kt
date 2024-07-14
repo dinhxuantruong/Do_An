@@ -174,12 +174,12 @@ class repositoryAdmin {
         return RetrofitInstance.adminApi.getPieChart()
     }
 
-    suspend fun getBarChart(): Response<resultBarrChart> {
-        return RetrofitInstance.adminApi.getBarChart()
+    suspend fun getBarChart(year : Int?): Response<resultBarrChart> {
+        return RetrofitInstance.adminApi.getBarChart(year)
     }
 
-    suspend fun getAllTotal() : Response<resultTotalDate>{
-        return RetrofitInstance.adminApi.getAllTotal()
+    suspend fun getAllTotal(year : Int?, month : Int?) : Response<resultTotalDate>{
+        return RetrofitInstance.adminApi.getAllTotal(year,month)
     }
 
     suspend fun getStatistic() : Response<resultStatistic>{
@@ -203,4 +203,11 @@ class repositoryAdmin {
         return RetrofitInstance.adminApi.changeStatusProduct(id)
     }
 
+    suspend fun adminSearchOrders(email : String) : Response<ResultOrders>{
+        return  RetrofitInstance.adminApi.adminSearchOrders(email)
+    }
+
+    suspend fun searchUuidOrders(uuid : String) : Response<ResultOrders>{
+        return RetrofitInstance.adminApi.searchUuidOrders(uuid)
+    }
 }

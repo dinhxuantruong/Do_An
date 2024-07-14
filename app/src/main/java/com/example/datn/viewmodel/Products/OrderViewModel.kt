@@ -52,6 +52,66 @@ class OrderViewModel(private val repositoryProduct: repositoryProduct) : ViewMod
 
     private val _resultCheckVoucher : MutableLiveData<ResponseResult<Order>> = MutableLiveData()
     val resultCheckVoucher : LiveData<ResponseResult<Order>> get() = _resultCheckVoucher
+
+    //Change status zalopay
+    private val _resultStatusZaloPay : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultStatusZaloPay : LiveData<ResponseResult<ResultMessage>> get() =  _resultStatusZaloPay
+
+    //response delete order
+    private val _resultOrderDelete : MutableLiveData<ResponseResult<ResultMessage>> = MutableLiveData()
+    val resultOrderDelete : LiveData<ResponseResult<ResultMessage>> get() = _resultOrderDelete
+
+    fun deleteOrderAdmin(idOrder: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.deleteOrderAdmin(idOrder)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultOrderDelete.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultOrderDelete.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultOrderDelete.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultOrderDelete.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultOrderDelete.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+    fun changeStatusZaloPay( idOrder: Int, bank_transaction_id : String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoading.postValue(true)
+                val response = repositoryProduct.changeStatusZaloPay(idOrder, bank_transaction_id)
+                if (response.isSuccessful) {
+                    val resultMessage = response.body()!!
+                    _resultStatusZaloPay.postValue(ResponseResult.Success(resultMessage))
+                } else {
+                    val errorBodyMessage = response.getErrorBodyMessage()
+                    val finalErrorMessage = if (errorBodyMessage != "Unknown error") errorBodyMessage else "Error"
+                    _resultStatusZaloPay.postValue(ResponseResult.Error(finalErrorMessage))
+                }
+            } catch (e: IOException) {
+                _resultStatusZaloPay.postValue(ResponseResult.Error("Network connection error!"))
+            } catch (e: HttpException) {
+                _resultStatusZaloPay.postValue(ResponseResult.Error("Error HTTP: ${e.message}"))
+            } catch (e: Exception) {
+                _resultStatusZaloPay.postValue(ResponseResult.Error("An unknown error has occurred!"))
+            }finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+
+
     fun testVoucher( dataVoucher : dataVoucher){
         viewModelScope.launch(Dispatchers.IO) {
             try {

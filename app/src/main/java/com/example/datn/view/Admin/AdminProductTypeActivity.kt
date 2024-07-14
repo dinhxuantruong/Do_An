@@ -148,7 +148,7 @@ class AdminProductTypeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        refreshData()
+        //refreshData()
     }
 
     override fun onDestroy() {

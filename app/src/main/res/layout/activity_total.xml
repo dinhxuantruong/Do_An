@@ -24,6 +24,7 @@
             android:backgroundTint="@color/white"
             android:fitsSystemWindows="false"
             app:boxBackgroundMode="none"
+            app:menu="@menu/chart_menu"
             app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
             app:navigationIcon="@drawable/back"
             app:title="Tổng quan doanh năm"

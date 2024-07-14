@@ -9,6 +9,7 @@ data class resultOrderDetails(
     val items: List<Item>,
     val name: String,
     val order_id: Int,
+    val status : Int,
     val payment_method: String,
     val phone: String,
     val province: String,

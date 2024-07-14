@@ -144,11 +144,12 @@ interface AdminApi {
 
     //get data chart
     @GET("orders/monthly-revenue")
-    suspend fun getBarChart() : Response<resultBarrChart>
+    suspend fun getBarChart(@Query("year") year: Int?) : Response<resultBarrChart>
 
     //Thống kê tổng doanh thu
     @GET("admin/total-revenue")
-    suspend fun getAllTotal() : Response<resultTotalDate>
+    suspend fun getAllTotal(@Query("year") year: Int?,
+                            @Query("month") month: Int?) : Response<resultTotalDate>
 
     //get statistic
     @GET("statistics")
@@ -168,4 +169,11 @@ interface AdminApi {
     //đổi trạng thái sản phẩm
     @POST("product-types/{id}/deactivate")
     suspend fun changeStatusProduct(@Path("id") id : Int) : Response<ResultMessage>
+
+    //Tìm kiếm đơn hàng
+    @GET("orders/search")
+    suspend fun adminSearchOrders(@Query("email") email : String) : Response<ResultOrders>
+
+    @GET("orders/search/uuid")
+    suspend fun searchUuidOrders(@Query("uuid") uuid : String) : Response<ResultOrders>
 }

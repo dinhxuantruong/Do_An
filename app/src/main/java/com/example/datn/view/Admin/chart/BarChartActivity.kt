@@ -1,12 +1,12 @@
 package com.example.datn.view.Admin.chart
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.datn.R
 import com.example.datn.data.dataresult.ResponseResult
@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import java.util.Calendar
 import kotlin.random.Random
 
 class BarChartActivity : AppCompatActivity() {
@@ -29,6 +30,10 @@ class BarChartActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private lateinit var barChart: BarChart
     private lateinit var viewModel: AdminViewModel
+
+    companion object {
+        var yearNow = 2024
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +48,7 @@ class BarChartActivity : AppCompatActivity() {
 
         barChart = findViewById(R.id.bar_chart)
 
-        viewModel.getBarChart()
+        viewModel.getBarChart(null)
 
         viewModel.resultBarChart.observe(this@BarChartActivity) { response ->
             when (response) {
@@ -63,6 +68,7 @@ class BarChartActivity : AppCompatActivity() {
     }
 
     private fun updateBarChart(revenueData: List<resultBarrChartItem>) {
+        binding.toolBarCart.title = "Thống kê doanh thu $yearNow"
         val revenueMap = mutableMapOf<Int, Float>()
         for (data in revenueData) {
             revenueMap[data.month] = data.total_revenue.toFloat() / 1_000_000  // Chia để đơn giản hóa đơn vị triệu
@@ -95,7 +101,7 @@ class BarChartActivity : AppCompatActivity() {
         barChart.axisRight.valueFormatter = barChart.axisLeft.valueFormatter
 
         barChart.setFitBars(true)
-        barChart.description.text = "Thống kê doanh thu theo tháng"
+        barChart.description.text = "Thống kê doanh thu $yearNow"
         barChart.animateY(1000)
         barChart.invalidate() // Refresh the chart
     }
@@ -119,9 +125,25 @@ class BarChartActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.usrSetting -> {
-                startActivity(Intent(this@BarChartActivity,TotalActivity::class.java))
+                startActivity(Intent(this@BarChartActivity, TotalActivity::class.java))
                 true
             }
+
+            R.id.idYear -> {
+                // Get current date
+                val calendar = Calendar.getInstance()
+                val year = calendar.get(Calendar.YEAR)
+                val month = calendar.get(Calendar.MONTH)
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                // Show DatePickerDialog
+                DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+                    viewModel.getBarChart(selectedYear)
+                    yearNow = selectedYear
+                }, year, month, day).show()
+                true
+            }
+
 
             else -> super.onOptionsItemSelected(item)
         }
